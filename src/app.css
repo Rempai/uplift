@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  font-size: 1.1em;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/roboto.ttf");
+}
+
+@layer base {
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-frost-1;
+    line-height: 2.5em;
+  }
+
+  h1 {
+    @apply text-frost-2;
+    font-size: 2.8rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  h3 {
+    font-size: 2rem;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+  }
+
+  a {
+    @apply text-aurora-orange cursor-pointer hover:text-aurora-orange/80;
+  }
+
+  hr {
+    @apply border-storm-3 w-full border border-solid;
+  }
+
+  mark {
+    @apply bg-aurora-orange cursor-pointer;
+  }
+}

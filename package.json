@@ -1,0 +1,42 @@
+{
+  "name": "moed",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "npx eslint . --ext .js,.ts,.svelte --ignore-pattern '*.cjs'",
+    "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "format": "prettier --plugin-search-dir . --write .",
+    "generate-client": "node ./openapi_download && node ./openapi_cleaner && openapi --indent 2 --input ./openapi.json --output ./src/lib/client"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "@vincjo/datatables": "^0.9.994",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "openapi-typescript-codegen": "^0.23.0",
+    "postcss": "^8.4.21",
+    "prettier": "^2.8.3",
+    "prettier-plugin-svelte": "^2.9.0",
+    "svelte": "^3.54.0",
+    "svelte-highlight": "^7.1.2",
+    "svelte-simple-datatables": "^0.3.0",
+    "tailwindcss": "^3.2.4",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.0.0",
+    "vite-plugin-mkcert": "^1.11.0"
+  },
+  "dependencies": {
+    "highlight.js": "^11.7.0",
+    "svelte-icons": "^2.1.0",
+    "svelte-spa-router": "^3.3.0"
+  }
+}
