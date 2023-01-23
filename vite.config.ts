@@ -6,6 +6,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [svelte(), mkcert()],
+  base: "/moed/moed/",
   server: {
     host: "127.0.0.1",
   },
