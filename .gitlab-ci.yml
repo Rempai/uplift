@@ -1,33 +1,16 @@
-workflow:
-  rules:
-    - if: "$CI_COMMIT_BRANCH"
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
-
+# The Docker image that will be used to build your app
 image: node:lts
-
-stages:
-  - lint
-  - page
-
-before_script: npm install --progress=false
-
-prettier:
-  stage: lint
-  script:
-    - npm run lint
-eslint:
-  stage: lint
-  script:
-    - npm run check
-
+# Functions that should be executed before the build script is run
+before_script:
+  - npm i
 pages:
-  stage: page
   script:
     - npm run build
   artifacts:
     paths:
+      # The folder that contains the files to be exposed at the Page URL
       - public
-
-  only:
-    - main
+  rules:
+    # This ensures that only pushes to the default branch will trigger
+    # a pages deploy
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
