@@ -10,8 +10,7 @@ stages:
   - lint
   - page
 
-before_script:
-  npm install --progress=false
+before_script: npm install --progress=false
 
 prettier:
   stage: lint
