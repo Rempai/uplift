@@ -675,7 +675,7 @@
       {:else if page == 4}
         <Phone on:close={phoneToggle} on:item={handleClick} menuName="Dashboard">
           <div slot="content" class="px-4 mt-3 flex justify-around">
-            <div class="flex flex-col items-center gap-5 mx-12">
+            <div class="flex flex-col items-center gap-5">
               {#if typeof passage == "object"}
                 <span on:keypress on:click={dialogToggle} class="w-full">
                   <Button text="Toggle Dialog" class="bg-frost-1 w-full" />
