@@ -1,4 +1,5 @@
 # Repository Moed
+
 This is the repository for the frontend of the project `Moed`.
 
 Code is pretty fucked up. Don't worry about it. Tight deadlines and stuff.
@@ -9,11 +10,13 @@ that's our priority. It is also written with [TailwindCSS](https://tailwindcss.c
 ## Installation
 
 ### Requirements
+
 The frontend requires the next packages to be installed:
 
 - [npm](https://nodejs.org/dist/v16.18.0/node-v16.18.0-x64.msi)
 
 ### Install & Start server
+
 Run the next commands to install the development packages and start the server:
 
 ```sh
@@ -22,6 +25,7 @@ npm run dev
 ```
 
 ## Structure
+
 - /:
   The root folder is full with configuration files and other stuff. You'd probably never touch this so I won't really go into detail.
 
@@ -51,8 +55,8 @@ npm run dev
   This folder has all the extra TypeScript files, that aren't components/routes. It also includes the `client` folder which is getting generated through the
   `npm run generate-client` command.
 
-
 ## Generate OpenAPI
+
 I made a couple Nodejs scripts to generate API calls to our backend server. Since you won't need to have the backend installed locally, or ran locally,
 I have created these scripts so you can automate the process of updating all the API calls in the project (including types)
 

@@ -31,7 +31,9 @@
 
   const getSolution = async (score: number) => {
     // @ts-ignore type is not void
-    solution = await CharactersService.getReviews(null, current_ride.id).catch((err) => console.log(err));
+    solution = await CharactersService.getReviews(null, current_ride.id).catch((err) =>
+      console.log(err)
+    );
 
     for (const [iterate] of Object.entries(solution)) {
       const setup = solution[iterate];

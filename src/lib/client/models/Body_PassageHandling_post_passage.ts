@@ -9,4 +9,3 @@ export type Body_PassageHandling_post_passage = {
   trunk?: any;
   attribute_id: any;
 };
-
