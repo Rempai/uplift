@@ -82,6 +82,7 @@
     },
   ];
   let radio_select: number;
+  let ambientNoise = false;
 
   let page: number;
   let showPhoneButton = true;
@@ -186,6 +187,10 @@
     showPhoneButton = !showPhoneButton;
   };
 
+  const ambientToggle = () => {
+    ambientNoise = !ambientNoise;
+  };
+
   const journalToggle = () => {
     phoneToggle();
     journal = !journal;
@@ -232,6 +237,7 @@
     current_ride = ride;
     dialog = true;
     showPhoneButton = true;
+    ambientNoise = true;
     page = 0;
   };
 
@@ -423,6 +429,9 @@
   </video>
   {#if radio_select}
     <audio class="hidden" autoplay controls loop src={radios[radio_select].source} />
+  {/if}
+  {#if ambientNoise}
+    <audio class="hidden" autoplay controls loop src="/ambient.mp3" />
   {/if}
   <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
@@ -665,14 +674,17 @@
         </Phone>
       {:else if page == 4}
         <Phone on:close={phoneToggle} on:item={handleClick} menuName="Dashboard">
-          <div slot="content" class="px-4 mt-3">
-            <div class="flex flex-col items-center gap-5">
+          <div slot="content" class="px-4 mt-3 flex justify-around">
+            <div class="flex flex-col items-center gap-5 mx-12">
               {#if typeof passage == "object"}
-                <span on:keypress on:click={dialogToggle}>
-                  <Button text="Toggle Dialog" class="bg-frost-1" />
+                <span on:keypress on:click={dialogToggle} class="w-full">
+                  <Button text="Toggle Dialog" class="bg-frost-1 w-full" />
                 </span>
-                <span on:keypress on:click={journalToggle}>
-                  <Button text="Toggle Journal" class="bg-frost-2" />
+                <span on:keypress on:click={journalToggle} class="w-full">
+                  <Button text="Toggle Journal" class="bg-frost-2 w-full" />
+                </span>
+                <span on:keypress on:click={ambientToggle} class="w-full">
+                  <Button text="Toggle Ambient Noise" class="bg-frost-4 w-full" />
                 </span>
               {:else}
                 <p class="text-center w-full">
