@@ -236,7 +236,7 @@
   };
 
   const showError = (err: string) => {
-    error = true
+    error = true;
     errorVisible = true;
     notificationMessage.push(err);
   };
