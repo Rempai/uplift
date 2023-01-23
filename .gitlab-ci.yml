@@ -4,22 +4,30 @@ workflow:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
-image: node:latest
+image: node:lts
 
 stages:
   - lint
+  - page
+
+before_script: npm install --progress=false
 
 prettier:
   stage: lint
   script:
-    - npm install npm@latest -g
-    - npm install -g npm
-    - npm install --progress=false
     - npm run lint
 eslint:
   stage: lint
   script:
-    - npm install npm@latest -g
-    - npm install -g npm
-    - npm install --progress=false
     - npm run check
+
+pages:
+  stage: page
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - public
+
+  only:
+    - main
