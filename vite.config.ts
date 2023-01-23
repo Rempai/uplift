@@ -6,8 +6,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [svelte(), mkcert()],
-  // base path for gitlab pages
-  base: "/id-2223-s1/moed/moed/",
+  base: "/id-2223-s1/moed/uplift/",
   server: {
     host: "127.0.0.1",
   },
