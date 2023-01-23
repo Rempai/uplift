@@ -6,4 +6,3 @@ export type PassengerUpdate = {
   name: string;
   icon: string;
 };
-

@@ -12,4 +12,3 @@ export type PassageUpdate = {
   attribute_id: number;
   ride_id: number;
 };
-

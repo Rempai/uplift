@@ -6,7 +6,7 @@ const dest = "./openapi.json";
 const options = {
   cert: readFileSync("./cert.pem"),
   key: readFileSync("./key.pem"),
-  rejectUnauthorized: false
+  rejectUnauthorized: false,
 };
 
 const download = (url, dest) => {
