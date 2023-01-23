@@ -9,6 +9,9 @@
   import AdminNav from "@/components/AdminNav.svelte";
   import Modal from "@/components/Modal.svelte";
 
+  import RealAnalysis1 from "public/real-analysis1.png";
+  import RealAnalysis2 from "public/real-analysis2.png";
+
   checkAccount();
 
   let log = "";
@@ -92,12 +95,12 @@
       <div class="card">
         <h2>Happy users</h2>
         <hr class="mb-3" />
-        <img class="w-full rounded" src="/real-analysis1.png" alt="" />
+        <img class="w-full rounded" src={RealAnalysis1} alt="Happy Users" />
       </div>
       <div class="card">
         <h2>Stock value</h2>
         <hr class="mb-3" />
-        <img class="w-full rounded" src="/real-analysis2.png" alt="" />
+        <img class="w-full rounded" src={RealAnalysis2} alt="Stock Value" />
       </div>
     </div>
   </div>
