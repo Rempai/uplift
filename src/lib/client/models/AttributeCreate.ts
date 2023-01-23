@@ -7,4 +7,3 @@ export type AttributeCreate = {
   font_size: string;
   font_family: string;
 };
-

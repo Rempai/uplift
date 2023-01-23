@@ -1,33 +1,30 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AttributeCreate } from '../models/AttributeCreate';
-import type { AttributeRead } from '../models/AttributeRead';
-import type { AttributeUpdate } from '../models/AttributeUpdate';
-import type { Body_PassageHandling_post_passage } from '../models/Body_PassageHandling_post_passage';
-import type { PassageRead } from '../models/PassageRead';
-import type { PassageUpdate } from '../models/PassageUpdate';
+import type { AttributeCreate } from "../models/AttributeCreate";
+import type { AttributeRead } from "../models/AttributeRead";
+import type { AttributeUpdate } from "../models/AttributeUpdate";
+import type { Body_PassageHandling_post_passage } from "../models/Body_PassageHandling_post_passage";
+import type { PassageRead } from "../models/PassageRead";
+import type { PassageUpdate } from "../models/PassageUpdate";
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { CancelablePromise } from "../core/CancelablePromise";
+import { OpenAPI } from "../core/OpenAPI";
+import { request as __request } from "../core/request";
 
 export class PassageHandlingService {
-
   /**
    * Get Passages
    * @param passageName
    * @returns PassageRead Successful Response
    * @throws ApiError
    */
-  public static getPassages(
-    passageName?: string,
-  ): CancelablePromise<Array<PassageRead>> {
+  public static getPassages(passageName?: string): CancelablePromise<Array<PassageRead>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/passage_handler/passages/',
+      method: "GET",
+      url: "/api/passage_handler/passages/",
       query: {
-        'passage_name': passageName,
+        passage_name: passageName,
       },
       errors: {
         422: `Validation Error`,
@@ -41,14 +38,12 @@ export class PassageHandlingService {
    * @returns PassageRead Successful Response
    * @throws ApiError
    */
-  public static getPassageById(
-    id: number,
-  ): CancelablePromise<PassageRead> {
+  public static getPassageById(id: number): CancelablePromise<PassageRead> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/passage_handler/passage/{id}/',
+      method: "GET",
+      url: "/api/passage_handler/passage/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -62,14 +57,12 @@ export class PassageHandlingService {
    * @returns void
    * @throws ApiError
    */
-  public static deletePassage(
-    id: number,
-  ): CancelablePromise<void> {
+  public static deletePassage(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/passage_handler/passage/{id}/',
+      method: "DELETE",
+      url: "/api/passage_handler/passage/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -86,16 +79,16 @@ export class PassageHandlingService {
    */
   public static updatePassage(
     id: number,
-    requestBody: PassageUpdate,
+    requestBody: PassageUpdate
   ): CancelablePromise<PassageUpdate> {
     return __request(OpenAPI, {
-      method: 'PATCH',
-      url: '/api/passage_handler/passage/{id}/',
+      method: "PATCH",
+      url: "/api/passage_handler/passage/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -108,14 +101,12 @@ export class PassageHandlingService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postPassage(
-    formData: Body_PassageHandling_post_passage,
-  ): CancelablePromise<any> {
+  public static postPassage(formData: Body_PassageHandling_post_passage): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/passage_handler/passage/',
+      method: "POST",
+      url: "/api/passage_handler/passage/",
       formData: formData,
-      mediaType: 'multipart/form-data',
+      mediaType: "multipart/form-data",
       errors: {
         422: `Validation Error`,
       },
@@ -129,8 +120,8 @@ export class PassageHandlingService {
    */
   public static getAttributes(): CancelablePromise<Array<AttributeRead>> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/passage_handler/attributes/',
+      method: "GET",
+      url: "/api/passage_handler/attributes/",
     });
   }
 
@@ -140,14 +131,12 @@ export class PassageHandlingService {
    * @returns AttributeRead Successful Response
    * @throws ApiError
    */
-  public static getAttributeById(
-    id: number,
-  ): CancelablePromise<AttributeRead> {
+  public static getAttributeById(id: number): CancelablePromise<AttributeRead> {
     return __request(OpenAPI, {
-      method: 'GET',
-      url: '/api/passage_handler/attribute/{id}/',
+      method: "GET",
+      url: "/api/passage_handler/attribute/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -161,14 +150,12 @@ export class PassageHandlingService {
    * @returns void
    * @throws ApiError
    */
-  public static deleteAttribute(
-    id: number,
-  ): CancelablePromise<void> {
+  public static deleteAttribute(id: number): CancelablePromise<void> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/passage_handler/attribute/{id}/',
+      method: "DELETE",
+      url: "/api/passage_handler/attribute/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         422: `Validation Error`,
@@ -185,16 +172,16 @@ export class PassageHandlingService {
    */
   public static updateAttribute(
     id: number,
-    requestBody: AttributeUpdate,
+    requestBody: AttributeUpdate
   ): CancelablePromise<AttributeUpdate> {
     return __request(OpenAPI, {
-      method: 'PATCH',
-      url: '/api/passage_handler/attribute/{id}/',
+      method: "PATCH",
+      url: "/api/passage_handler/attribute/{id}/",
       path: {
-        'id': id,
+        id: id,
       },
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
@@ -207,18 +194,15 @@ export class PassageHandlingService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postAttribute(
-    requestBody: AttributeCreate,
-  ): CancelablePromise<any> {
+  public static postAttribute(requestBody: AttributeCreate): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: 'POST',
-      url: '/api/passage_handler/attribute/',
+      method: "POST",
+      url: "/api/passage_handler/attribute/",
       body: requestBody,
-      mediaType: 'application/json',
+      mediaType: "application/json",
       errors: {
         422: `Validation Error`,
       },
     });
   }
-
 }

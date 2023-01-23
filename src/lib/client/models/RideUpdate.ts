@@ -15,4 +15,3 @@ export type RideUpdate = {
   enthusiasm: number;
   passenger_id: number;
 };
-

@@ -11,4 +11,3 @@ export type UserUpdate = {
   old_password?: string;
   confirm_password?: string;
 };
-

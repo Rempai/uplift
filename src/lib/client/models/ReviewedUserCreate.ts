@@ -8,4 +8,3 @@ export type ReviewedUserCreate = {
   review_id: number;
   date: string;
 };
-

@@ -8,4 +8,3 @@ export type AttributeRead = {
   font_family: string;
   id: number;
 };
-
