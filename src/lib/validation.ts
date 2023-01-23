@@ -61,6 +61,13 @@ async function reviewCheck(formdata: ReviewRead) {
 
 export async function validationErrorCheck(err: string) {
   validation_array.length = 0;
-  err = err.toString().replace(/{|detail|:|"|Error|}/gi, "");
-  validation_array.push(err);
+
+  if (err == "ApiError: Validation Error") {
+    validation_array.push("Username already in use");
+  } else if (err == "ApiError: Unauthorized") {
+    validation_array.push("Incorrect password or username");
+  } else {
+    validation_array.push(err);
+  }
+  // err = err.toString().replace(/{|detail|:|"|Error|}/gi, "");
 }
