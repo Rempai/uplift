@@ -8,6 +8,7 @@ image: node:lts
 
 stages:
   - lint
+  - page
 
 before_script:
   npm install --progress=false
@@ -22,6 +23,7 @@ eslint:
     - npm run check
 
 pages:
+  stage: page
   script:
     - npm run build
   artifacts:
