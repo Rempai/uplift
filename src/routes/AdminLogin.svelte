@@ -10,12 +10,12 @@
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
 
+  $validation.length = 0;
   const handleSubmit = async ({ target }) => {
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
     $validation = $validation;
-
     // @ts-ignore you want formdata dumbass
     await AuthService.loginForAccessToken(value)
       .then((res) => {
