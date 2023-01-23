@@ -38,6 +38,10 @@
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
 
+  import Logo from "public/logo.png";
+  import Background from "public/background.webm";
+  import Ambient from "public/ambient.mp3";
+
   let radios = [
     {
       id: 0,
@@ -425,13 +429,13 @@
     muted
     autoplay={typeof passage === "object"}>
     <track kind="captions" />
-    <source src="/background.webm" />
+    <source src={Background} />
   </video>
   {#if radio_select}
     <audio class="hidden" autoplay controls loop src={radios[radio_select].source} />
   {/if}
   {#if ambientNoise}
-    <audio class="hidden" autoplay controls loop src="/ambient.mp3" />
+    <audio class="hidden" autoplay controls loop src={Ambient} />
   {/if}
   <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
@@ -557,7 +561,7 @@
         <div slot="content" class="px-4 mt-3">
           <div class="flex flex-col items-center gap-6">
             <p class="text-3xl">Welcome to</p>
-            <img src="/logo.png" alt="" class="w-32" />
+            <img src={Logo} alt="Logo" class="w-32" />
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
           <p class="text-center">This is the uplift tutorial.</p>

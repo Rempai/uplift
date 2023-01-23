@@ -1,25 +1,39 @@
-workflow:
-  rules:
-    - if: "$CI_COMMIT_BRANCH"
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+image: node:lts
 
-image: node:latest
+before_script:
+  - npm i
 
 stages:
   - lint
+  - page
 
 prettier:
   stage: lint
   script:
-    - npm install npm@latest -g
-    - npm install -g npm
-    - npm install --progress=false
     - npm run lint
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "main"'
 eslint:
   stage: lint
   script:
-    - npm install npm@latest -g
-    - npm install -g npm
-    - npm install --progress=false
     - npm run check
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "main"'
+
+pages:
+  stage: page
+  cache:
+    key:
+      files:
+        - package-lock.json
+      prefix: npm
+    paths:
+      - node_modules/
+  script:
+    - npm run build
+    - cp -a dist/. public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH

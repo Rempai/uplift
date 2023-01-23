@@ -13,6 +13,8 @@
   import FaRegFileAlt from "svelte-icons/fa/FaRegFileAlt.svelte";
   import IoIosAttach from "svelte-icons/io/IoIosAttach.svelte";
 
+  import Logo from "public/logo.png";
+
   const logout = () => {
     localStorage.clear();
     push("/");
@@ -22,7 +24,7 @@
 <nav
   class="shadow bg-night-2 flex flex-col gap-2 fixed h-full left-0 top-0 overflow-x-hidden overflow-y-auto w-48 pl-2">
   <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l">
-    <img src="/logo.png" alt="logo" class="w-10 h-6 mr-2" />
+    <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
     <p>Uplift Admin</p>
   </div>
   <span on:keypress on:click={logout}>
