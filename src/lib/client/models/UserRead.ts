@@ -8,4 +8,3 @@ export type UserRead = {
   disabled?: boolean;
   id: number;
 };
-

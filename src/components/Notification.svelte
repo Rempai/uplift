@@ -1,6 +1,6 @@
 <script lang="ts">
   import { get } from "svelte/store";
-  import { error_message } from "@/lib/stores"
+  import { error_message } from "@/lib/stores";
 
   export let visible = true;
   export let info = false;

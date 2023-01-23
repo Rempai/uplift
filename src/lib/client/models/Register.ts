@@ -8,4 +8,3 @@ export type Register = {
   repeat_password: string;
   role?: string;
 };
-
