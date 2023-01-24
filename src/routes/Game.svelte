@@ -26,6 +26,7 @@
   import FaRoute from "svelte-icons/fa/FaRoute.svelte";
   import IoIosCalendar from "svelte-icons/io/IoIosCalendar.svelte";
   import FaStar from "svelte-icons/fa/FaStar.svelte";
+  import GiSmartphone from 'svelte-icons/gi/GiSmartphone.svelte';
 
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
@@ -524,9 +525,7 @@
       <button
         class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
         on:click={phoneToggle}>
-        <span class="h-8 bg-night-1 w-1" />
-        <span class="h-6 bg-night-1 w-1" />
-        <span class="h-4 bg-night-1 w-1" />
+        <span class="text-night-2"> <GiSmartphone /> </span>
       </button>
     {:else if login}
       <Phone on:close={phoneToggle} on:item={handleClick} menuName="Login">

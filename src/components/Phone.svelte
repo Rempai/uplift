@@ -47,7 +47,7 @@
       </button>
     </div>
   </div>
-  <div class="overflow-y-auto overflow-x-hidden h-full" in:fade={{ duration: 200 }}>
+  <div class="overflow-y-auto overflow-x-hidden h-full pb-4" in:fade={{ duration: 200 }}>
     {#if $$slots.content}
       <slot name="content" />
     {:else}
