@@ -7,6 +7,7 @@
 
   import Tabs from "@/components/Tab.svelte";
   import Form from "@/components/Form.svelte";
+  import Button from "@/components/Button.svelte";
 
   export let journal_data: Array<PassageRead>;
   export let context_data: journalAnswer;
@@ -61,6 +62,10 @@
     });
   };
 
+  const gotoBranch = async (branch_data) => {
+    dispatch("gotoTab", branch_data[0]);
+  };
+
   const submitForm = async ({ target }) => {
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
@@ -77,6 +82,11 @@
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
   <div class="overflow-y-auto flex flex-col flex-wrap">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+    <div class="content-center">
+      <span on:keypress on:click={() => gotoBranch(branch_data)}>
+        <Button text="click here to go to branch" />
+      </span>
+    </div>
     <div class="h-full" />
     {#if currentTab}
       {#each branch_data as data}
