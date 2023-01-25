@@ -130,19 +130,17 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    $validation = $validation;
-
     // @ts-ignore you want formdata dumbass
     await AuthService.loginForAccessToken(value)
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
-        $validation = $validation;
+
         startGame();
       })
       .catch((err) => {
-        validationErrorCheck(err);
-        $validation = $validation;
+        validationErrorCheck(err, false);
+        $validation = $validation; //Only runs when an error happens
       });
   }
 
@@ -150,22 +148,18 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    await userCheck(value as Register, true);
-    $validation = $validation;
-
-    if ($validation.length === 0) {
+    await userCheck(value as Register, true).then(async () => {
       await AuthService.registerUser(target)
         .then((res) => {
           localStorage.setItem("access_token", res.access_token);
           localStorage.setItem("refresh_token", res.refresh_token);
-          $validation = $validation;
           startGame();
         })
         .catch((err) => {
-          validationErrorCheck(err);
-          $validation = $validation;
+          validationErrorCheck(err, false);
+          $validation = $validation; //Only runs when an error happens
         });
-    }
+    });
   }
 
   const startGame = async () => {
