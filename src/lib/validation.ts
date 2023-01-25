@@ -4,7 +4,7 @@ import { get } from "svelte/store";
 import type { Register, PassengerRead, RideRead, ReviewRead } from "@/lib/client";
 
 // TODO: jthis fucker is not working properly anymore with the new API package
-const validation_array = get(validation);
+export const validation_array = get(validation);
 
 export function isEmailValid(value: string) {
   return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
@@ -12,13 +12,15 @@ export function isEmailValid(value: string) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function crudCheck(crudname: string, formdata: any, createMode: boolean) {
-  if (crudname == "/auth/register/" || crudname == "/auth/user/") userCheck(formdata, createMode);
+  if (crudname == "/auth/register/" || crudname == "/auth/users/") userCheck(formdata, createMode);
 
   if (crudname == "/character/passenger/") passengerCheck(formdata);
 
   if (crudname == "/character/ride/") rideCheck(formdata);
 
   if (crudname == "/character/review/") reviewCheck(formdata);
+
+  return ArrayChecker();
 }
 
 export async function userCheck(formdata: Register, createMode: boolean) {
@@ -26,7 +28,7 @@ export async function userCheck(formdata: Register, createMode: boolean) {
   if (formdata.username.length > 30)
     validation_array.push("Username is too long (Max 30 characters).");
 
-  if (formdata.username.length < 4)
+  if (formdata.username.length < 3)
     validation_array.push("Username is too short (Min 3 characters).");
 
   if (createMode == true) {
@@ -35,6 +37,7 @@ export async function userCheck(formdata: Register, createMode: boolean) {
     if (formdata.password.length < 6 || formdata.repeat_password.length < 6)
       validation_array.push("Password too short (Min 6 characters).");
   }
+  return ArrayChecker();
 }
 
 async function passengerCheck(formdata: PassengerRead) {
@@ -59,15 +62,26 @@ async function reviewCheck(formdata: ReviewRead) {
     validation_array.push("Only 0 to 5 stars is allowed");
 }
 
-export async function validationErrorCheck(err: string) {
+async function ArrayChecker() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (validation_array.length > 0) {
+        return reject("CAT");
+      } else {
+        return resolve("tertrete");
+      }
+    }, 0);
+  });
+}
+
+export async function validationErrorCheck(err: string, admin: boolean) {
   validation_array.length = 0;
 
-  if (err == "ApiError: Validation Error") {
+  if (err == "ApiError: Validation Error" && !admin) {
     validation_array.push("Username already in use");
-  } else if (err == "ApiError: Unauthorized") {
+  } else if (err == "ApiError: Unauthorized" && !admin) {
     validation_array.push("Incorrect password or username");
-  } else {
-    validation_array.push(err);
+  } else if (err) {
+    validation_array.push(err.toString());
   }
-  // err = err.toString().replace(/{|detail|:|"|Error|}/gi, "");
 }
