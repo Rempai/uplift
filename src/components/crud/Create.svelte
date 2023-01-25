@@ -3,7 +3,7 @@
 
   import { push } from "svelte-spa-router";
 
-  import { crudCheck, validationErrorCheck } from "@/lib/validation";
+  import { validateData, validationErrorCheck } from "@/lib/validation";
 
   import Form from "@/components/Form.svelte";
 
@@ -24,7 +24,7 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    await crudCheck(crudRoute, value, true).then(async () => {
+    await validateData(crudRoute, value, true).then(async () => {
       if (formData) {
         await service(target)
           .then(() => push("/admin/" + page))
