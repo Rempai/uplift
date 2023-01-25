@@ -1,12 +1,16 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
+  import type { journalAnswer } from "@/main";
+
   import type { PassageRead } from "@/lib/client";
 
   import Tabs from "@/components/Tab.svelte";
   import Form from "@/components/Form.svelte";
 
   export let journal_data: Array<PassageRead>;
+  export let context_data: journalAnswer;
+
   let branch_data: Array<PassageRead> = [];
 
   const dispatch = createEventDispatcher();
@@ -95,11 +99,32 @@
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
       <div slot="forms">
         <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="problem">Main Problem</label>
-        <input name="problem" required disabled class="cursor-not-allowed w-full !rounded-[0px]" />
+        <input
+          disabled
+          bind:value={context_data.marked_problem}
+          name="problem"
+          type="text"
+          placeholder="What?"
+          required
+          class="w-full !rounded-[0px]" />
         <label class="bg-aurora-orange p-2 !mb-0" for="parties">Parties Involved</label>
-        <input name="parties" required disabled class="cursor-not-allowed w-full !rounded-[0px]" />
+        <input
+          disabled
+          bind:value={context_data.marked_involved}
+          name="involved"
+          type="text"
+          placeholder="What?"
+          required
+          class="w-full !rounded-[0px]" />
         <label class="bg-aurora-orange p-2 !mb-0" for="cause">Primary Cause</label>
-        <input name="cause" required disabled class="cursor-not-allowed w-full !rounded-[0px]" />
+        <input
+          disabled
+          bind:value={context_data.marked_cause}
+          name="cause"
+          type="text"
+          placeholder="What?"
+          required
+          class="w-full !rounded-[0px]" />
         <div>
           <div class="bg-aurora-orange text-center p-2 mt-5"><b>Virtue of Courage</b></div>
           <div class="flex justify-end capitalize text-sm bg-frost-1">

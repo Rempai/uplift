@@ -6,7 +6,7 @@
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { userCheck, validationErrorCheck } from "@/lib/validation";
 
-  import type { report } from "@/main";
+  import type { report, journalAnswer } from "@/main";
 
   import {
     AuthService,
@@ -117,6 +117,8 @@
 
   let journal = false;
   let journal_data: Array<PassageRead> = [];
+
+  let context_data: journalAnswer = { marked_problem: "", marked_involved: "", marked_cause: "" };
 
   let resolution = false;
   let resolution_data: report;
@@ -342,6 +344,16 @@
     journal_data.push(dialog_update);
   };
 
+  const updateContextData = async (event: CustomEvent) => {
+    if (event.detail.type === "marked_problem") {
+      context_data.marked_problem = event.detail.text;
+    } else if (event.detail.type === "marked_involved") {
+      context_data.marked_involved = event.detail.text;
+    } else if (event.detail.type === "marked_cause") {
+      context_data.marked_cause = event.detail.text;
+    }
+  };
+
   const finishRide = async (event: CustomEvent) => {
     solution = event.detail;
     nextPassage("Paolo" + solution + "You" + 1);
@@ -414,7 +426,7 @@
   {#if loader}
     <Loader />
   {/if}
-  <CustomMenu />
+  <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
   <Notification info={error} visible={errorVisible} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
@@ -517,7 +529,7 @@
     {/if}
     {#if journal}
       <div in:fade>
-        <Journal {journal_data} on:report={showResolution} />
+        <Journal {journal_data} {context_data} on:report={showResolution} />
       </div>
     {/if}
     {#if showPhoneButton}
