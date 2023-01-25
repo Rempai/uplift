@@ -39,21 +39,20 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    $validation = $validation;
-
-    crudCheck(crudRoute, value, false);
-
-    if ($validation.length == 0) {
+    console.log(crudRoute);
+    await crudCheck(crudRoute, value, false).then(async () => {
       for (let x in value) {
         if (value[x] === "") {
           delete value[x];
         }
       }
-
       await service(id, value)
         .then(() => push("/admin/" + page))
-        .catch((err) => validationErrorCheck(err));
+        .catch((err) => validationErrorCheck(err, true));
       $validation = $validation;
+    });
+
+    if ($validation.length == 0) {
     }
   };
 
