@@ -341,7 +341,18 @@
     // Workaround for adding {user} template parsing for the journal
     let dialog_update = passage;
     dialog_update.passage_content = await text_parsed;
-    journal_data.push(dialog_update);
+    //prevent duplicate passages in journal
+    if (journal_data.length !== 0) {
+      let alreadyInJournal = false;
+      journal_data.forEach((obj) => {
+        if (obj.id === dialog_update.id) {
+          alreadyInJournal = true;
+        }
+      });
+      if (!alreadyInJournal) {
+        journal_data.push(dialog_update);
+      }
+    } else journal_data.push(dialog_update);
   };
 
   const updateContextData = async (event: CustomEvent) => {
@@ -352,6 +363,11 @@
     } else if (event.detail.type === "marked_cause") {
       context_data.marked_cause = event.detail.text;
     }
+  };
+
+  const gotoBranch = async (event: CustomEvent) => {
+    nextPassage(event.detail.passage_name);
+    dialogToggle();
   };
 
   const finishRide = async (event: CustomEvent) => {
@@ -529,7 +545,11 @@
     {/if}
     {#if journal}
       <div in:fade>
-        <Journal {journal_data} {context_data} on:report={showResolution} />
+        <Journal
+          {journal_data}
+          {context_data}
+          on:report={showResolution}
+          on:gotoTab={gotoBranch} />
       </div>
     {/if}
     {#if showPhoneButton}
