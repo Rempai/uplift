@@ -11,14 +11,20 @@ export function isEmailValid(value: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function crudCheck(crudname: string, formdata: any, createMode: boolean) {
-  if (crudname == "/auth/register/" || crudname == "/auth/users/" || crudname == "/auth/user/") userCheck(formdata, createMode);
+export async function validateData(mode: string, formdata: any, createMode: boolean) {
+  if (
+    mode == "/auth/register/" ||
+    mode == "/auth/users/" ||
+    mode == "/auth/user/" ||
+    mode == "Register"
+  )
+    userCheck(formdata, createMode);
 
-  if (crudname == "/character/passenger/") passengerCheck(formdata);
+  if (mode == "/character/passenger/") passengerCheck(formdata);
 
-  if (crudname == "/character/ride/") rideCheck(formdata);
+  if (mode == "/character/ride/") rideCheck(formdata);
 
-  if (crudname == "/character/review/") reviewCheck(formdata);
+  if (mode == "/character/review/") reviewCheck(formdata);
 
   return ArrayChecker();
 }
