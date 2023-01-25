@@ -22,7 +22,7 @@
         localStorage.setItem("refresh_token", res.refresh_token);
       })
       .catch((err) => {
-        validationErrorCheck(err, true);
+        validationErrorCheck(err, false);
         $validation = $validation;
       });
 
