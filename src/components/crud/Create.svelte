@@ -24,21 +24,19 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    crudCheck(crudRoute, value, true);
-    $validation = $validation;
-    if ($validation.length === 0) {
+    await crudCheck(crudRoute, value, true).then(async () => {
       if (formData) {
         await service(target)
           .then(() => push("/admin/" + page))
-          .catch((err: string) => validationErrorCheck(err));
+          .catch((err: string) => validationErrorCheck(err, true));
         $validation = $validation;
       } else {
         await service(value)
           .then(() => push("/admin/" + page))
-          .catch((err: string) => validationErrorCheck(err));
+          .catch((err: string) => validationErrorCheck(err, true));
         $validation = $validation;
       }
-    }
+    });
   };
 </script>
 
