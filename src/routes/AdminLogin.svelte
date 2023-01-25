@@ -15,7 +15,6 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    $validation = $validation;
     // @ts-ignore you want formdata dumbass
     await AuthService.loginForAccessToken(value)
       .then((res) => {
@@ -23,10 +22,9 @@
         localStorage.setItem("refresh_token", res.refresh_token);
       })
       .catch((err) => {
-        validationErrorCheck(err);
+        validationErrorCheck(err, true);
+        $validation = $validation;
       });
-
-    $validation = $validation;
 
     let parsed_jwt = await parseJwt(localStorage.getItem("access_token"));
 
