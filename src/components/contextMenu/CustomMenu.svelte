@@ -27,6 +27,7 @@
       showMenu = false;
       await new Promise((res) => setTimeout(res, 100));
     }
+    
     pos = { x: e.clientX, y: e.clientY };
     showMenu = true;
   }
