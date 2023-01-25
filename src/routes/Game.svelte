@@ -4,7 +4,7 @@
 
   import { passage_name, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
-  import { userCheck, validationErrorCheck } from "@/lib/validation";
+  import { validateData, validationErrorCheck } from "@/lib/validation";
 
   import type { report } from "@/main";
 
@@ -148,7 +148,7 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    await userCheck(value as Register, true).then(async () => {
+    await validateData("Register", value as Register, true).then(async () => {
       await AuthService.registerUser(target)
         .then((res) => {
           localStorage.setItem("access_token", res.access_token);
