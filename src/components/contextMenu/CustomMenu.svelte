@@ -13,11 +13,6 @@
 
   let selectedText = "";
 
-  interface marks {
-    text: string;
-    type: string;
-  }
-
   document.addEventListener(`selectionchange`, () => {});
   async function onRightClick(e) {
     selectedText = document.getSelection().toString();
@@ -27,7 +22,7 @@
       showMenu = false;
       await new Promise((res) => setTimeout(res, 100));
     }
-    
+
     pos = { x: e.clientX, y: e.clientY };
     showMenu = true;
   }
@@ -36,7 +31,12 @@
     showMenu = false;
   }
 
-  const dispatchClick = (marks) => {
+  interface marks {
+    text: string;
+    type: string;
+  }
+
+  const dispatchClick = (marks: marks) => {
     dispatch("menuClick", marks);
   };
 </script>
