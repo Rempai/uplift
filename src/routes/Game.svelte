@@ -104,7 +104,7 @@
   let settingsPlane = "";
 
   // TODO: notification
-  let notificationMessage = [""];
+  export let notificationMessage = [];
   let error = true;
   let errorVisible = false;
 
@@ -140,6 +140,7 @@
       })
       .catch((err) => {
         validationErrorCheck(err, false);
+        showError(err);
         $validation = $validation; //Only runs when an error happens
       });
   }
@@ -157,6 +158,7 @@
         })
         .catch((err) => {
           validationErrorCheck(err, false);
+          showError(err);
           $validation = $validation; //Only runs when an error happens
         });
     });
@@ -242,7 +244,8 @@
   const showError = (err: string) => {
     error = true;
     errorVisible = true;
-    notificationMessage.push(err);
+    notificationMessage.push(err + notificationMessage.length);
+    console.log(notificationMessage.length);
   };
 
   const showResolution = (event) => {
@@ -410,7 +413,7 @@
   {/if}
   <CustomMenu />
   <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
-  <Notification info={error} visible={errorVisible} />
+  <Notification info={error} visible={errorVisible} message={notificationMessage} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
     <span on:keypress on:click={() => (showModal = !showModal)}>
