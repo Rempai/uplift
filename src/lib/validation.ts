@@ -12,7 +12,7 @@ export function isEmailValid(value: string) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function crudCheck(crudname: string, formdata: any, createMode: boolean) {
-  if (crudname == "/auth/register/" || crudname == "/auth/users/") userCheck(formdata, createMode);
+  if (crudname == "/auth/register/" || crudname == "/auth/users/" || crudname == "/auth/user/") userCheck(formdata, createMode);
 
   if (crudname == "/character/passenger/") passengerCheck(formdata);
 
