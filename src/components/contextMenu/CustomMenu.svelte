@@ -13,7 +13,7 @@
 
   let selectedText = "";
 
-  document.addEventListener(`selectionchange`, () => {});
+  document.addEventListener(`selectionchange`, () => {return});
   async function onRightClick(e) {
     selectedText = document.getSelection().toString();
     console.log(selectedText);
