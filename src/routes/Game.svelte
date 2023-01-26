@@ -368,7 +368,7 @@
   };
 
   const gotoBranch = async (event: CustomEvent) => {
-    journal=false;
+    journal = false;
     dialogToggle();
     nextPassage(event.detail.passage_name);
   };
@@ -401,7 +401,7 @@
     };
 
     //use dialog text.branchname to determine the review you should get 1-5
-    if(reviewer_list[0].Review.id !== reviewScore){
+    if (reviewer_list[0].Review.id !== reviewScore) {
       CharactersService.postReviewedUser(input).catch((err) => showError(err));
     }
 

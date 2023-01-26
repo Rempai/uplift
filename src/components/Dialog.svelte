@@ -106,6 +106,7 @@
               {@html parsed_text}
             </p>
           {/await}
+
           {#if continue_button}
             <span
               style="background-color: {dialogColor}"
