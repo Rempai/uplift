@@ -14,7 +14,7 @@
 
 {#if visible}
   {#if message}
-    <div on:keypress class={classes} on:click={() => (visible = !visible)}>
+    <div on:keypress class={classes} on:click={() => (message = "")}>
       <p class="break-words">{message}</p>
     </div>
   {/if}
