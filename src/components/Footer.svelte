@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Buitenkamer from "public/buitenkamer.png";
+  import Buitenkamer from "/buitenkamer.png";
 </script>
 
 <footer class="bg-night-2 pt-10 pb-3 border-t-2 border-solid border-night-1">

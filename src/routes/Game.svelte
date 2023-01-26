@@ -39,9 +39,9 @@
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
 
-  import Logo from "public/logo.png";
-  import Background from "public/background.webm";
-  import Ambient from "public/ambient.mp3";
+  import Logo from "/logo.png";
+  import Background from "/background.webm";
+  import Ambient from "/ambient.mp3";
 
   let radios = [
     {

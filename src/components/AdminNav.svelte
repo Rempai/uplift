@@ -13,7 +13,7 @@
   import FaRegFileAlt from "svelte-icons/fa/FaRegFileAlt.svelte";
   import IoIosAttach from "svelte-icons/io/IoIosAttach.svelte";
 
-  import Logo from "public/logo.png";
+  import Logo from "/logo.png";
 
   const logout = () => {
     localStorage.clear();
