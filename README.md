@@ -1,6 +1,6 @@
-# Repository Moed
+# Uplift
 
-This is the repository for the frontend of the project `Moed`.
+This is the repository for the frontend of the project `Uplift`.
 
 Code is pretty fucked up. Don't worry about it. Tight deadlines and stuff.
 

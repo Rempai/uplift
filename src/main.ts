@@ -12,6 +12,12 @@ export type report = {
   enthusiasm: number;
 };
 
+export interface journalAnswer {
+  marked_problem: string;
+  marked_involved: string;
+  marked_cause: string;
+}
+
 const app = new App({
   target: document.getElementById("app"),
 });
