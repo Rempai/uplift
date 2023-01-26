@@ -47,8 +47,10 @@
       }
       await service(id, value)
         .then(() => push("/admin/" + page))
-        .catch((err) => validationErrorCheck(err, true));
-      $validation = $validation;
+        .catch((err) => {
+          validationErrorCheck(err, true);
+          $validation = $validation;
+        });
     });
   };
 
