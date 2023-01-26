@@ -592,7 +592,6 @@
             <img src={Logo} alt="Logo" class="w-32" />
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
-          <p class="text-center">This is the uplift tutorial.</p>
           <div class="gap-5 flex flex-col items-center mt-5">
             <span on:keypress on:click={triggerRegister}>
               <Button text="Continue" />
