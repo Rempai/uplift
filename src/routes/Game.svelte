@@ -103,10 +103,8 @@
 
   let settingsPlane = "";
 
-  // TODO: notification
+  // Todo fix info and stuff (For notification colors)
   let notificationMessage = "";
-  let error = true;
-  let errorVisible = false;
 
   let rider_list: Array<RideRead>;
   let reviewer_list: Array<ReviewedUser>;
@@ -242,9 +240,6 @@
 
   const showError = (err: string) => {
     if (!(err == "")) {
-      errorVisible = false;
-      error = true;
-      errorVisible = true;
       notificationMessage += err + "\n";
     }
   };
@@ -440,7 +435,7 @@
   {/if}
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
-  <Notification bind:message={notificationMessage} info={error} visible={errorVisible} />
+  <Notification bind:message={notificationMessage} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
     <span on:keypress on:click={() => (showModal = !showModal)}>
