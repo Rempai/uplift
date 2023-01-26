@@ -43,7 +43,6 @@ export async function userCheck(formdata: Register, createMode: boolean) {
     if (formdata.password.length < 6 || formdata.repeat_password.length < 6)
       validation_array.push("Password too short (Min 6 characters).");
   }
-  return ArrayChecker();
 }
 
 async function passengerCheck(formdata: PassengerRead) {
@@ -85,9 +84,12 @@ export async function validationErrorCheck(err: string, admin: boolean) {
 
   if (err == "ApiError: Validation Error" && !admin) {
     validation_array.push("Username already in use");
+    return "";
   } else if (err == "ApiError: Unauthorized" && !admin) {
     validation_array.push("Incorrect password or username");
-  } else if (err) {
+    return "";
+  } else {
     validation_array.push(err.toString());
+    return err.toString();
   }
 }
