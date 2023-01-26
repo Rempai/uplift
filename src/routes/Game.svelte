@@ -26,7 +26,7 @@
   import FaRoute from "svelte-icons/fa/FaRoute.svelte";
   import IoIosCalendar from "svelte-icons/io/IoIosCalendar.svelte";
   import FaStar from "svelte-icons/fa/FaStar.svelte";
-  import GiSmartphone from 'svelte-icons/gi/GiSmartphone.svelte';
+  import GiSmartphone from "svelte-icons/gi/GiSmartphone.svelte";
 
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
@@ -42,6 +42,7 @@
   import Logo from "public/logo.png";
   import Background from "public/background.webm";
   import Ambient from "public/ambient.mp3";
+  import { reviewEditHTML } from "@/lib/formHTML";
 
   let radios = [
     {
@@ -367,8 +368,9 @@
   };
 
   const gotoBranch = async (event: CustomEvent) => {
-    nextPassage(event.detail.passage_name);
+    journal=false;
     dialogToggle();
+    nextPassage(event.detail.passage_name);
   };
 
   const finishRide = async (event: CustomEvent) => {
@@ -399,7 +401,9 @@
     };
 
     //use dialog text.branchname to determine the review you should get 1-5
-    CharactersService.postReviewedUser(input).catch((err) => showError(err));
+    if(reviewer_list[0].Review.id !== reviewScore){
+      CharactersService.postReviewedUser(input).catch((err) => showError(err));
+    }
 
     await CharactersService.getReviews(null, parsed_jwt.sub).catch((err) => showError(err));
 
