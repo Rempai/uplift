@@ -39,7 +39,6 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    console.log(crudRoute);
     await validateData(crudRoute, value, false).then(async () => {
       for (let x in value) {
         if (value[x] === "") {
