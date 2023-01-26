@@ -1,7 +1,4 @@
 <script lang="ts">
-  import Game from "@/routes/Game.svelte";
-  import { get } from "svelte/store";
-
   export let visible = true;
   export let info = false;
   export let message;
@@ -17,10 +14,8 @@
 
 {#if visible}
   {#if message}
-    {#each message as text}
-      <div on:keypress class={classes} on:click={() => (visible = !visible)}>
-        <p class="break-words">{text}</p>
-      </div>
-    {/each}
+    <div on:keypress class={classes} on:click={() => (visible = !visible)}>
+      <p class="break-words">{message}</p>
+    </div>
   {/if}
 {/if}
