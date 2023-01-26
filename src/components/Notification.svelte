@@ -1,5 +1,4 @@
 <script lang="ts">
-  export let visible = true;
   export let info = false;
   export let message;
 
@@ -12,10 +11,8 @@
   }
 </script>
 
-{#if visible}
   {#if message}
     <div on:keypress class={classes} on:click={() => (message = "")}>
       <p class="break-words">{message}</p>
     </div>
   {/if}
-{/if}
