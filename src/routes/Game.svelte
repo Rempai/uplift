@@ -103,7 +103,7 @@
 
   let settingsPlane = "";
 
-  // Todo fix info and stuff (For notification colors)
+  // TODO: fix info and stuff (For notification colors)
   let notificationMessage = "";
 
   let rider_list: Array<RideRead>;
