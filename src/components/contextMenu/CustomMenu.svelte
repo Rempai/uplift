@@ -18,7 +18,6 @@
   });
   async function onRightClick(e) {
     selectedText = document.getSelection().toString();
-    console.log(selectedText);
 
     if (showMenu) {
       showMenu = false;

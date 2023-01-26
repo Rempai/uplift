@@ -1,11 +1,6 @@
 <script lang="ts">
-  import { get } from "svelte/store";
-  import { error_message } from "@/lib/stores";
-
-  export let visible = true;
   export let info = false;
-
-  const errormessage = get(error_message);
+  export let message;
 
   let classes = `hover:brightness-110 rounded py-2 px-3 w-48 absolute top-10 right-10 z-[99] cursor-pointer shadow`;
 
@@ -16,12 +11,8 @@
   }
 </script>
 
-{#if visible}
-  {#if errormessage}
-    <div on:keypress class={classes} on:click={() => (visible = !visible)}>
-      {#each errormessage as text}
-        <p class="break-words">{text}</p>
-      {/each}
-    </div>
-  {/if}
+{#if message}
+  <div on:keypress class={classes} on:click={() => (message = "")}>
+    <p class="break-words">{message}</p>
+  </div>
 {/if}

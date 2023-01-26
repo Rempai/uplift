@@ -2,7 +2,7 @@
   import { push } from "svelte-spa-router";
 
   import { validation } from "@/lib/stores";
-  import { validationErrorCheck, crudCheck } from "@/lib/validation";
+  import { validationErrorCheck, validateData } from "@/lib/validation";
   import { getData } from "@/lib/adminLogic";
 
   import Form from "@/components/Form.svelte";
@@ -39,22 +39,19 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    $validation = $validation;
-
-    crudCheck(crudRoute, value, false);
-
-    if ($validation.length == 0) {
+    await validateData(crudRoute, value, false).then(async () => {
       for (let x in value) {
         if (value[x] === "") {
           delete value[x];
         }
       }
-
       await service(id, value)
         .then(() => push("/admin/" + page))
-        .catch((err) => validationErrorCheck(err));
-      $validation = $validation;
-    }
+        .catch((err) => {
+          validationErrorCheck(err, true);
+          $validation = $validation;
+        });
+    });
   };
 
   const checkHTML = async () => {

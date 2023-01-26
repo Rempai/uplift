@@ -10,11 +10,10 @@
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
 
+  $validation.length = 0;
   const handleSubmit = async ({ target }) => {
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
-
-    $validation = $validation;
 
     // @ts-ignore you want formdata dumbass
     await AuthService.loginForAccessToken(value)
@@ -23,10 +22,9 @@
         localStorage.setItem("refresh_token", res.refresh_token);
       })
       .catch((err) => {
-        validationErrorCheck(err);
+        validationErrorCheck(err, false);
+        $validation = $validation;
       });
-
-    $validation = $validation;
 
     let parsed_jwt = await parseJwt(localStorage.getItem("access_token"));
 

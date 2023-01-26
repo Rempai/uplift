@@ -11,22 +11,30 @@ export function isEmailValid(value: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function crudCheck(crudname: string, formdata: any, createMode: boolean) {
-  if (crudname == "/auth/register/" || crudname == "/auth/user/") userCheck(formdata, createMode);
+export async function validateData(mode: string, formdata: any, createMode: boolean) {
+  if (
+    mode == "/auth/register/" ||
+    mode == "/auth/users/" ||
+    mode == "/auth/user/" ||
+    mode == "Register"
+  )
+    userCheck(formdata, createMode);
 
-  if (crudname == "/character/passenger/") passengerCheck(formdata);
+  if (mode == "/character/passenger/") passengerCheck(formdata);
 
-  if (crudname == "/character/ride/") rideCheck(formdata);
+  if (mode == "/character/ride/") rideCheck(formdata);
 
-  if (crudname == "/character/review/") reviewCheck(formdata);
+  if (mode == "/character/review/") reviewCheck(formdata);
+
+  return ArrayChecker();
 }
 
-export async function userCheck(formdata: Register, createMode: boolean) {
+async function userCheck(formdata: Register, createMode: boolean) {
   validation_array.length = 0;
   if (formdata.username.length > 30)
     validation_array.push("Username is too long (Max 30 characters).");
 
-  if (formdata.username.length < 4)
+  if (formdata.username.length < 3)
     validation_array.push("Username is too short (Min 3 characters).");
 
   if (createMode == true) {
@@ -59,8 +67,29 @@ async function reviewCheck(formdata: ReviewRead) {
     validation_array.push("Only 0 to 5 stars is allowed");
 }
 
-export async function validationErrorCheck(err: string) {
+async function ArrayChecker() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (validation_array.length > 0) {
+        return reject("CAT");
+      } else {
+        return resolve("tertrete");
+      }
+    }, 0);
+  });
+}
+
+export async function validationErrorCheck(err: string, admin: boolean) {
   validation_array.length = 0;
-  err = err.toString().replace(/{|detail|:|"|Error|}/gi, "");
-  validation_array.push(err);
+
+  if (err == "ApiError: Validation Error" && !admin) {
+    validation_array.push("Username already in use");
+    return "";
+  } else if (err == "ApiError: Unauthorized" && !admin) {
+    validation_array.push("Incorrect password or username");
+    return "";
+  } else {
+    validation_array.push(err.toString());
+    return err.toString();
+  }
 }
