@@ -4,7 +4,7 @@ import { get } from "svelte/store";
 import type { Register, PassengerRead, RideRead, ReviewRead } from "@/lib/client";
 
 // TODO: jthis fucker is not working properly anymore with the new API package
-export const validation_array = get(validation);
+const validation_array = get(validation);
 
 export function isEmailValid(value: string) {
   return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
@@ -29,7 +29,7 @@ export async function validateData(mode: string, formdata: any, createMode: bool
   return ArrayChecker();
 }
 
-export async function userCheck(formdata: Register, createMode: boolean) {
+async function userCheck(formdata: Register, createMode: boolean) {
   validation_array.length = 0;
   if (formdata.username.length > 30)
     validation_array.push("Username is too long (Max 30 characters).");
