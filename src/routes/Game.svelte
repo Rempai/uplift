@@ -282,7 +282,7 @@
         localStorage.clear();
       })
       .then(() => {
-        notificationMessage += ("Deleted User");
+        notificationMessage += "Deleted User";
         showPhoneButton = false;
         welcome = true;
         settingsPlane = "";
