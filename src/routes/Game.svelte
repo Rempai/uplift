@@ -104,7 +104,7 @@
   let settingsPlane = "";
 
   // TODO: notification
-  export let notificationMessage = [];
+  let notificationMessage = "";
   let error = true;
   let errorVisible = false;
 
@@ -138,9 +138,8 @@
 
         startGame();
       })
-      .catch((err) => {
-        validationErrorCheck(err, false);
-        showError(err);
+      .catch(async (err) => {
+        showError(await validationErrorCheck(err, false));
         $validation = $validation; //Only runs when an error happens
       });
   }
@@ -156,9 +155,8 @@
           localStorage.setItem("refresh_token", res.refresh_token);
           startGame();
         })
-        .catch((err) => {
-          validationErrorCheck(err, false);
-          showError(err);
+        .catch(async (err) => {
+          showError(await validationErrorCheck(err, false));
           $validation = $validation; //Only runs when an error happens
         });
     });
@@ -242,10 +240,12 @@
   };
 
   const showError = (err: string) => {
-    error = true;
-    errorVisible = true;
-    notificationMessage.push(err + notificationMessage.length);
-    console.log(notificationMessage.length);
+    if (!(err == "")) {
+      errorVisible = false;
+      error = true;
+      errorVisible = true;
+      notificationMessage = err + "\n";
+    }
   };
 
   const showResolution = (event) => {
@@ -282,7 +282,7 @@
         localStorage.clear();
       })
       .then(() => {
-        notificationMessage.push("Deleted User");
+        //notificationMessage.push("Deleted User");
         showPhoneButton = false;
         welcome = true;
         settingsPlane = "";
