@@ -4,7 +4,7 @@
 
   import { passage_name, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
-  import { userCheck, validationErrorCheck } from "@/lib/validation";
+  import { validateData, validationErrorCheck } from "@/lib/validation";
 
   import type { report, journalAnswer } from "@/main";
 
@@ -103,10 +103,8 @@
 
   let settingsPlane = "";
 
-  // TODO: notification
-  let notificationMessage = [""];
-  let error = true;
-  let errorVisible = false;
+  // TODO: fix info and stuff (For notification colors)
+  let notificationMessage = "";
 
   let rider_list: Array<RideRead>;
   let reviewer_list: Array<ReviewedUser>;
@@ -132,19 +130,16 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    $validation = $validation;
-
     // @ts-ignore you want formdata dumbass
     await AuthService.loginForAccessToken(value)
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
-        $validation = $validation;
         startGame();
       })
-      .catch((err) => {
-        validationErrorCheck(err);
-        $validation = $validation;
+      .catch(async (err) => {
+        showError(await validationErrorCheck(err, false));
+        $validation = $validation; //Only runs when an error happens
       });
   }
 
@@ -152,22 +147,18 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    await userCheck(value as Register, true);
-    $validation = $validation;
-
-    if ($validation.length === 0) {
+    await validateData("Register", value as Register, true).then(async () => {
       await AuthService.registerUser(target)
         .then((res) => {
           localStorage.setItem("access_token", res.access_token);
           localStorage.setItem("refresh_token", res.refresh_token);
-          $validation = $validation;
           startGame();
         })
-        .catch((err) => {
-          validationErrorCheck(err);
-          $validation = $validation;
+        .catch(async (err) => {
+          showError(await validationErrorCheck(err, false));
+          $validation = $validation; //Only runs when an error happens
         });
-    }
+    });
   }
 
   const startGame = async () => {
@@ -248,9 +239,9 @@
   };
 
   const showError = (err: string) => {
-    error = true;
-    errorVisible = true;
-    notificationMessage.push(err);
+    if (!(err == "")) {
+      notificationMessage += err + "\n";
+    }
   };
 
   const showResolution = (event) => {
@@ -287,7 +278,7 @@
         localStorage.clear();
       })
       .then(() => {
-        notificationMessage.push("Deleted User");
+        notificationMessage += "Deleted User";
         showPhoneButton = false;
         welcome = true;
         settingsPlane = "";
@@ -444,7 +435,7 @@
   {/if}
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
-  <Notification info={error} visible={errorVisible} />
+  <Notification bind:message={notificationMessage} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
     <span on:keypress on:click={() => (showModal = !showModal)}>
@@ -596,7 +587,6 @@
             <img src={Logo} alt="Logo" class="w-32" />
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
-          <p class="text-center">This is the uplift tutorial.</p>
           <div class="gap-5 flex flex-col items-center mt-5">
             <span on:keypress on:click={triggerRegister}>
               <Button text="Continue" />

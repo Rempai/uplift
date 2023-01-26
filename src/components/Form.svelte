@@ -13,12 +13,17 @@
 
   export let handleSubmit;
 
+  export function submitAndRefresh(target) {
+    handleSubmit(target);
+    $validation = $validation;
+  }
+
   const dispatch = createEventDispatcher();
 </script>
 
 <div class="form flex flex-col items-center">
   <form
-    on:submit|preventDefault={handleSubmit}
+    on:submit|preventDefault={submitAndRefresh}
     {enctype}
     method="POST"
     class="flex flex-col items-center mt-2 g-2 w-full">
