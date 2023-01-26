@@ -1,12 +1,17 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
+  import type { journalAnswer } from "@/main";
+
   import type { PassageRead } from "@/lib/client";
 
   import Tabs from "@/components/Tab.svelte";
   import Form from "@/components/Form.svelte";
+  import Button from "@/components/Button.svelte";
 
   export let journal_data: Array<PassageRead>;
+  export let context_data: journalAnswer;
+
   let branch_data: Array<PassageRead> = [];
 
   const dispatch = createEventDispatcher();
@@ -57,6 +62,10 @@
     });
   };
 
+  const gotoBranch = async (branch_data) => {
+    dispatch("gotoTab", branch_data[0]);
+  };
+
   const submitForm = async ({ target }) => {
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
@@ -73,6 +82,11 @@
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
   <div class="overflow-y-auto flex flex-col flex-wrap">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+    <div class="content-center">
+      <span on:keypress on:click={() => gotoBranch(branch_data)}>
+        <Button text="click here to go to branch" />
+      </span>
+    </div>
     <div class="h-full" />
     {#if currentTab}
       {#each branch_data as data}
@@ -95,11 +109,32 @@
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
       <div slot="forms">
         <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="problem">Main Problem</label>
-        <input name="problem" required disabled class="cursor-not-allowed w-full !rounded-[0px]" />
+        <input
+          disabled
+          bind:value={context_data.marked_problem}
+          name="problem"
+          type="text"
+          placeholder="What?"
+          required
+          class="w-full !rounded-[0px]" />
         <label class="bg-aurora-orange p-2 !mb-0" for="parties">Parties Involved</label>
-        <input name="parties" required disabled class="cursor-not-allowed w-full !rounded-[0px]" />
+        <input
+          disabled
+          bind:value={context_data.marked_involved}
+          name="involved"
+          type="text"
+          placeholder="What?"
+          required
+          class="w-full !rounded-[0px]" />
         <label class="bg-aurora-orange p-2 !mb-0" for="cause">Primary Cause</label>
-        <input name="cause" required disabled class="cursor-not-allowed w-full !rounded-[0px]" />
+        <input
+          disabled
+          bind:value={context_data.marked_cause}
+          name="cause"
+          type="text"
+          placeholder="What?"
+          required
+          class="w-full !rounded-[0px]" />
         <div>
           <div class="bg-aurora-orange text-center p-2 mt-5"><b>Virtue of Courage</b></div>
           <div class="flex justify-end capitalize text-sm bg-frost-1">

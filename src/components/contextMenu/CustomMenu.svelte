@@ -1,13 +1,25 @@
-<script>
+<script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   import Menu from "@/components/contextMenu/Menu.svelte";
   import MenuOption from "@/components/contextMenu/MenuOption.svelte";
+
+  const dispatch = createEventDispatcher();
 
   let pos = { x: 0, y: 0 };
   let showMenu = false;
 
   export const key = {};
 
+  let selectedText = "";
+
+  document.addEventListener(`selectionchange`, () => {
+    return;
+  });
   async function onRightClick(e) {
+    selectedText = document.getSelection().toString();
+    console.log(selectedText);
+
     if (showMenu) {
       showMenu = false;
       await new Promise((res) => setTimeout(res, 100));
@@ -20,6 +32,15 @@
   function closeMenu() {
     showMenu = false;
   }
+
+  interface marks {
+    text: string;
+    type: string;
+  }
+
+  const dispatchClick = (marks: marks) => {
+    dispatch("menuClick", marks);
+  };
 </script>
 
 {#if showMenu}
@@ -29,9 +50,15 @@
         text= "{pos.x}, {pos.y}"
       />
       <hr> -->
-    <MenuOption on:click={console.log} text="✏ main problem" />
-    <MenuOption on:click={console.log} text="✏ involved party" />
-    <MenuOption on:click={console.log} text="✏ primary cause" />
+    <MenuOption
+      on:click={() => dispatchClick({ text: selectedText, type: "marked_problem" })}
+      text="✏ Main Problem" />
+    <MenuOption
+      on:click={() => dispatchClick({ text: selectedText, type: "marked_involved" })}
+      text="✏ Involved Party" />
+    <MenuOption
+      on:click={() => dispatchClick({ text: selectedText, type: "marked_cause" })}
+      text="✏ Primary Cause" />
   </Menu>
 {/if}
 
