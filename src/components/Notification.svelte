@@ -11,8 +11,8 @@
   }
 </script>
 
-  {#if message}
-    <div on:keypress class={classes} on:click={() => (message = "")}>
-      <p class="break-words">{message}</p>
-    </div>
-  {/if}
+{#if message}
+  <div on:keypress class={classes} on:click={() => (message = "")}>
+    <p class="break-words">{message}</p>
+  </div>
+{/if}
