@@ -93,9 +93,7 @@
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
     <div class="mt-2 flex justify-between items-center">
       <span on:keypress on:click={() => gotoBranch(branch_data)}>
-        <Button
-          class="mx-8 flex justify-between items-center"
-          text="click here to go to branch" />
+        <Button class="mx-8 flex justify-between items-center" text="click here to go to branch" />
       </span>
     </div>
     <div class="h-full" />
