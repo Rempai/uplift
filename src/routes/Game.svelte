@@ -137,7 +137,6 @@
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
-
         startGame();
       })
       .catch(async (err) => {
