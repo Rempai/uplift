@@ -42,7 +42,6 @@
   import Logo from "public/logo.png";
   import Background from "public/background.webm";
   import Ambient from "public/ambient.mp3";
-  import { reviewEditHTML } from "@/lib/formHTML";
 
   let radios = [
     {
@@ -552,7 +551,7 @@
       <button
         class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
         on:click={phoneToggle}>
-        <span class="text-night-2"> <GiSmartphone /> </span>
+        <span class="text-night-2"><GiSmartphone /></span>
       </button>
     {:else if login}
       <Phone on:close={phoneToggle} on:item={handleClick} menuName="Login">
