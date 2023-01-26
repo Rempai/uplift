@@ -28,13 +28,17 @@
       if (formData) {
         await service(target)
           .then(() => push("/admin/" + page))
-          .catch((err: string) => validationErrorCheck(err, true));
-        $validation = $validation;
+          .catch((err: string) => {
+            validationErrorCheck(err, true);
+            $validation = $validation;
+          });
       } else {
         await service(value)
           .then(() => push("/admin/" + page))
-          .catch((err: string) => validationErrorCheck(err, true));
-        $validation = $validation;
+          .catch((err: string) => {
+            validationErrorCheck(err, true);
+            $validation = $validation;
+          });
       }
     });
   };
