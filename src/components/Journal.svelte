@@ -25,7 +25,7 @@
 
   let tabItems: Array<tabItem> = [{ label: "Trunk", value: 1 }];
 
-  let virtues: Array<string> = ["Bravery", "Perseverance", "Integrity", "Enthusiasm"];
+  let virtues: Array<string> = ["bravery", "perseverance", "integrity", "enthusiasm"];
 
   const getData = (tab: number) => {
     journal_data.forEach((obj) => {
@@ -66,8 +66,17 @@
     dispatch("gotoTab", branch_data[0]);
   };
 
+  function addInputToFormData(formData, key, value) {
+    formData.append(key, value);
+  }
+
   const submitForm = async ({ target }) => {
     const form_data = new FormData(target);
+
+    addInputToFormData(form_data, "main_problem", context_data.marked_problem);
+    addInputToFormData(form_data, "parties_involved", context_data.marked_involved);
+    addInputToFormData(form_data, "main_cause", context_data.marked_cause);
+
     const value = Object.fromEntries(form_data.entries());
     dispatch("report", value);
   };
@@ -82,9 +91,9 @@
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
   <div class="overflow-y-auto flex flex-col flex-wrap">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
-    <div class="content-center">
+    <div class="mt-2 flex justify-between items-center">
       <span on:keypress on:click={() => gotoBranch(branch_data)}>
-        <Button text="click here to go to branch" />
+        <Button class="mx-8 flex justify-between items-center" text="click here to go to branch" />
       </span>
     </div>
     <div class="h-full" />
@@ -108,29 +117,29 @@
   <div class="overflow-y-auto flex flex-col flex-wrap w-[30em] pb-4">
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
       <div slot="forms">
-        <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="problem">Main Problem</label>
+        <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="main_problem">Main Problem</label>
         <input
           disabled
-          bind:value={context_data.marked_problem}
-          name="problem"
+          value={context_data.marked_problem}
+          name="main_problem"
           type="text"
           placeholder="What?"
           required
           class="w-full !rounded-[0px]" />
-        <label class="bg-aurora-orange p-2 !mb-0" for="parties">Parties Involved</label>
+        <label class="bg-aurora-orange p-2 !mb-0" for="parties_involved">Parties Involved</label>
         <input
           disabled
-          bind:value={context_data.marked_involved}
-          name="involved"
+          value={context_data.marked_involved}
+          name="parties_involved"
           type="text"
           placeholder="What?"
           required
           class="w-full !rounded-[0px]" />
-        <label class="bg-aurora-orange p-2 !mb-0" for="cause">Primary Cause</label>
+        <label class="bg-aurora-orange p-2 !mb-0" for="main_cause">Primary Cause</label>
         <input
           disabled
-          bind:value={context_data.marked_cause}
-          name="cause"
+          value={context_data.marked_cause}
+          name="main_cause"
           type="text"
           placeholder="What?"
           required

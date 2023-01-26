@@ -52,10 +52,17 @@
       property; // Type is string
       value; // Type is any
 
+      if (typeof correctReport[property] === "string") {
+        let workplease = correctReport[property];
+        if (workplease.includes(value) && value >= 11) {
+          score = score + 2;
+          console.log(score);
+        }
+      }
+
       if (value === correctReport[property] && typeof data[property] === "number") {
         score = score + 1;
-      } else if (value === correctReport[property] && typeof data[property] === "string") {
-        score = score + 2;
+        console.log(score);
       }
     }
     return score;
@@ -91,12 +98,16 @@
 </script>
 
 <Modal modalHeader="Resolution" showModal={resolution}>
-  <h2>What should Paolo do?</h2>
-  {#await visibleSolution then solution}
-    {#each solution as solution}
-      <span on:keypress on:click={() => finishRide(solution)}>
-        <Button text={solution} />
-      </span>
-    {/each}
-  {/await}
+  <div class="overflow-y-auto overflow-x-hidden h-full pb-4">
+    <p class="text-3xl text-frost-1">What should Paolo do?</p>
+    {#await visibleSolution then solution}
+      {#each solution as solution}
+        <div class="flex flex-col gap-1 w-screen mt-3">
+          <span on:keypress on:click={() => finishRide(solution)}>
+            <Button text={solution} />
+          </span>
+        </div>
+      {/each}
+    {/await}
+  </div>
 </Modal>
