@@ -244,7 +244,7 @@
       errorVisible = false;
       error = true;
       errorVisible = true;
-      notificationMessage = err + "\n";
+      notificationMessage += err + "\n";
     }
   };
 
@@ -282,7 +282,7 @@
         localStorage.clear();
       })
       .then(() => {
-        //notificationMessage.push("Deleted User");
+        notificationMessage += ("Deleted User");
         showPhoneButton = false;
         welcome = true;
         settingsPlane = "";
@@ -413,7 +413,7 @@
   {/if}
   <CustomMenu />
   <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
-  <Notification info={error} visible={errorVisible} message={notificationMessage} />
+  <Notification bind:message={notificationMessage} info={error} visible={errorVisible} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
     <span on:keypress on:click={() => (showModal = !showModal)}>
