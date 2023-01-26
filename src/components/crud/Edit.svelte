@@ -51,9 +51,6 @@
         .catch((err) => validationErrorCheck(err, true));
       $validation = $validation;
     });
-
-    if ($validation.length == 0) {
-    }
   };
 
   const checkHTML = async () => {
