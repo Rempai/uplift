@@ -48,7 +48,7 @@
 
   let loc = $location + "/create";
 
-  const td_class = `border border-dotted border-storm-1 px-3 py-2`;
+  const td_class = `border border-dotted border-storm-1 px-3 py-2 overflow-hidden`;
 
   const locEdit = (id: number): string => {
     return $location + "/edit/" + id;
@@ -97,6 +97,7 @@
     window.location.reload();
   };
 
+  // TODO: fix this route for production
   const checkIcon = (data) => {
     data = data.toString();
     return data.endsWith(".png" || ".jpg");
@@ -206,7 +207,7 @@
                     {:else if data === true || data === false}
                       <td class={td_class}
                         ><input type="checkbox" bind:checked={data} disabled /></td>
-                    {:else if data == row.passage_content}
+                    {:else if data == row.content}
                       <td class="border border-dotted border-storm-1 px-3 py-2"
                         ><Highlight language={vbscriptHtml} code={data} /></td>
                     {:else if data == row.color}

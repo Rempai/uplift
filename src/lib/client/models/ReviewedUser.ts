@@ -2,9 +2,15 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ReviewRead } from "./ReviewRead";
+import type { ingeger } from "./ingeger";
+import type { PassengerRead } from "./PassengerRead";
 
 export type ReviewedUser = {
-  Review: ReviewRead;
+  id: ingeger;
   date: string;
+  stars: number;
+  description: string;
+  solution: string;
+  linked_score: number;
+  passenger: PassengerRead;
 };

@@ -43,27 +43,21 @@ export class CharactersService {
       path: {
         id: id,
       },
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
   /**
    * Delete Passenger
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deletePassenger(id: number): CancelablePromise<void> {
+  public static deletePassenger(id: number): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/character/passenger/{id}/",
       path: {
         id: id,
-      },
-      errors: {
-        422: `Validation Error`,
       },
     });
   }
@@ -87,9 +81,6 @@ export class CharactersService {
       },
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -105,9 +96,6 @@ export class CharactersService {
       url: "/api/character/passenger/",
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -123,9 +111,6 @@ export class CharactersService {
       url: "/api/character/rides/",
       query: {
         user_id: userId,
-      },
-      errors: {
-        422: `Validation Error`,
       },
     });
   }
@@ -143,27 +128,21 @@ export class CharactersService {
       path: {
         id: id,
       },
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
   /**
    * Delete Ride
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deleteRide(id: number): CancelablePromise<void> {
+  public static deleteRide(id: number): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/character/ride/{id}/",
       path: {
         id: id,
-      },
-      errors: {
-        422: `Validation Error`,
       },
     });
   }
@@ -184,9 +163,6 @@ export class CharactersService {
       },
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -202,9 +178,6 @@ export class CharactersService {
       url: "/api/character/ride/",
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -226,9 +199,6 @@ export class CharactersService {
         user_id: userId,
         ride_id: rideId,
       },
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -245,27 +215,21 @@ export class CharactersService {
       path: {
         id: id,
       },
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
   /**
    * Delete Review
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deleteReview(id: number): CancelablePromise<void> {
+  public static deleteReview(id: number): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/character/review/{id}/",
       path: {
         id: id,
-      },
-      errors: {
-        422: `Validation Error`,
       },
     });
   }
@@ -289,9 +253,6 @@ export class CharactersService {
       },
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -307,9 +268,6 @@ export class CharactersService {
       url: "/api/character/review/",
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -325,9 +283,6 @@ export class CharactersService {
       url: "/api/character/reviewed_user/",
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 }

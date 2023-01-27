@@ -1,25 +1,39 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "Moed",
-    "description": "Monolith API for the Based Moed app",
-    "version": "0.5"
+    "title": "Uplift",
+    "description": "Monolith API for the Based Uplift app",
+    "version": 1
   },
+  "tags": [
+    { "name": "Auth", "description": "All authentication logic, and User management" },
+    { "name": "Characters", "description": "REST API calls for passengers, reviews, and rides" },
+    {
+      "name": "PassageHandling",
+      "description": "All REST API calls that have to do with passages"
+    },
+    {
+      "name": "Factory // Enable CORS for All Routes;",
+      "description": "Factory function to create mock data"
+    }
+  ],
   "paths": {
-    "/api/auth/get_logs/": {
-      "get": {
+    "/api/auth/refresh/": {
+      "post": {
         "tags": ["Auth"],
-        "summary": "Get Logs",
-        "operationId": "get_logs",
+        "summary": "Refresh",
+        "operationId": "refresh",
         "responses": {
           "200": {
             "description": "Successful Response",
-            "content": { "application/json": { "schema": {} } }
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AccessToken" } }
+            }
           }
         }
       }
     },
-    "/api/auth/token/": {
+    "/api/auth/login/": {
       "post": {
         "tags": ["Auth"],
         "summary": "Login For Access Token",
@@ -37,43 +51,6 @@
             "description": "Successful Response",
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/Token" } }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/auth/refresh/": {
-      "post": {
-        "tags": ["Auth"],
-        "summary": "Refresh",
-        "operationId": "refresh",
-        "requestBody": {
-          "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/RefreshToken" } }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/AccessToken" } }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
             }
           }
         }
@@ -96,33 +73,11 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/Token" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         }
       }
     },
-    "/api/auth/logout/": {
-      "post": {
-        "tags": ["Auth"],
-        "summary": "Logout",
-        "operationId": "logout",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": { "application/json": { "schema": {} } }
-          }
-        },
-        "security": [{ "OAuth2PasswordBearer": [] }]
-      }
-    },
-    "/api/auth/user/me/": {
+    "/api/user/me/": {
       "get": {
         "tags": ["Auth"],
         "summary": "Get Me",
@@ -138,7 +93,7 @@
         "security": [{ "OAuth2PasswordBearer": [] }]
       }
     },
-    "/api/auth/users/": {
+    "/api/user/users/": {
       "get": {
         "tags": ["Auth"],
         "summary": "Get Users",
@@ -160,7 +115,7 @@
         "security": [{ "OAuth2PasswordBearer": [] }]
       }
     },
-    "/api/auth/user/{id}/": {
+    "/api/user/{id}/": {
       "get": {
         "tags": ["Auth"],
         "summary": "Get User By Id",
@@ -179,14 +134,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/UserRead" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -203,17 +150,7 @@
             "in": "path"
           }
         ],
-        "responses": {
-          "204": { "description": "Successful Response" },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        },
+        "responses": { "200": { "description": "Successful Response" } },
         "security": [{ "OAuth2PasswordBearer": [] }]
       },
       "patch": {
@@ -240,20 +177,12 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/UserUpdate" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
       }
     },
-    "/api/auth/user/": {
+    "/api/user/user/": {
       "post": {
         "tags": ["Auth"],
         "summary": "Post User",
@@ -268,14 +197,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -292,6 +213,12 @@
             "schema": { "title": "Passage Name", "type": "string" },
             "name": "passage_name",
             "in": "query"
+          },
+          {
+            "required": false,
+            "schema": { "title": "Passenger id", "type": "string" },
+            "name": "passenger_id",
+            "in": "query"
           }
         ],
         "responses": {
@@ -304,14 +231,6 @@
                   "type": "array",
                   "items": { "$ref": "#/components/schemas/PassageRead" }
                 }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
               }
             }
           }
@@ -338,14 +257,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/PassageRead" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -362,17 +273,7 @@
             "in": "path"
           }
         ],
-        "responses": {
-          "204": { "description": "Successful Response" },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        },
+        "responses": { "200": { "description": "Successful Response" } },
         "security": [{ "OAuth2PasswordBearer": [] }]
       },
       "patch": {
@@ -399,14 +300,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/PassageUpdate" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -429,14 +322,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -483,14 +368,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/AttributeRead" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -507,17 +384,7 @@
             "in": "path"
           }
         ],
-        "responses": {
-          "204": { "description": "Successful Response" },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        },
+        "responses": { "200": { "description": "Successful Response" } },
         "security": [{ "OAuth2PasswordBearer": [] }]
       },
       "patch": {
@@ -544,14 +411,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/AttributeUpdate" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -572,14 +431,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -626,14 +477,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/PassengerRead" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -650,17 +493,7 @@
             "in": "path"
           }
         ],
-        "responses": {
-          "204": { "description": "Successful Response" },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        },
+        "responses": { "200": { "description": "Successful Response" } },
         "security": [{ "OAuth2PasswordBearer": [] }]
       },
       "patch": {
@@ -687,14 +520,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/PassengerUpdate" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -715,14 +540,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -753,14 +570,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -785,14 +594,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/RideRead" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -809,17 +610,7 @@
             "in": "path"
           }
         ],
-        "responses": {
-          "204": { "description": "Successful Response" },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        },
+        "responses": { "200": { "description": "Successful Response" } },
         "security": [{ "OAuth2PasswordBearer": [] }]
       },
       "patch": {
@@ -846,14 +637,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/RideUpdate" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -874,14 +657,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -923,14 +698,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -953,14 +720,6 @@
           "200": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -977,17 +736,7 @@
             "in": "path"
           }
         ],
-        "responses": {
-          "204": { "description": "Successful Response" },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
-          }
-        },
+        "responses": { "200": { "description": "Successful Response" } },
         "security": [{ "OAuth2PasswordBearer": [] }]
       },
       "patch": {
@@ -1014,14 +763,6 @@
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/ReviewUpdate" } }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -1042,14 +783,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -1070,14 +803,6 @@
           "201": {
             "description": "Successful Response",
             "content": { "application/json": { "schema": {} } }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-              }
-            }
           }
         },
         "security": [{ "OAuth2PasswordBearer": [] }]
@@ -1098,13 +823,18 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": { "password": { "scopes": {}, "tokenUrl": "/api/auth/token" } }
+      }
+    },
     "schemas": {
       "AccessToken": {
         "title": "AccessToken",
-        "required": ["token_type", "access_token"],
+        "required": ["access_token"],
         "type": "object",
         "properties": {
-          "token_type": { "title": "Token Type", "type": "string", "example": "Bearer" },
           "access_token": {
             "title": "Access Token",
             "type": "string",
@@ -1117,12 +847,7 @@
         "required": ["color", "font_size", "font_family"],
         "type": "object",
         "properties": {
-          "color": {
-            "title": "Color",
-            "maxLength": 30,
-            "type": "string",
-            "example": "var(--n-aurora-red)"
-          },
+          "color": { "title": "Color", "maxLength": 30, "type": "string", "example": null },
           "font_size": { "title": "Font Size", "type": "string", "example": "1.2em" },
           "font_family": { "title": "Font Family", "type": "string", "example": "Arial" }
         }
@@ -1173,36 +898,25 @@
       },
       "Body_PassageHandling-post_passage": {
         "title": "Body_PassageHandling-post_passage",
-        "required": ["passage_content", "passage_name", "attribute_id"],
+        "required": ["content", "passage_name", "attributeId"],
         "type": "object",
         "properties": {
-          "passage_content": { "title": "Passage Content", "type": "string", "format": "binary" },
+          "content": { "title": "Passage Content", "type": "string", "format": "binary" },
           "passage_name": { "title": "Passage Name" },
           "continue_button": { "title": "Continue Button", "default": false },
           "trunk": { "title": "Trunk", "default": false },
-          "attribute_id": { "title": "Attribute Id" }
-        }
-      },
-      "HTTPValidationError": {
-        "title": "HTTPValidationError",
-        "type": "object",
-        "properties": {
-          "detail": {
-            "title": "Detail",
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/ValidationError" }
-          }
+          "attributeId": { "title": "Attribute Id" }
         }
       },
       "PassageRead": {
         "title": "PassageRead",
         "required": [
           "passage_name",
-          "passage_content",
+          "content",
           "branch_name",
           "speaker",
-          "attribute_id",
-          "ride_id",
+          "attributeId",
+          "rideId",
           "id",
           "ride",
           "attribute"
@@ -1215,7 +929,7 @@
             "example": "Story 1",
             "unique": true
           },
-          "passage_content": {
+          "content": {
             "title": "Passage Content",
             "type": "string",
             "example": "<p onclick=\"branch('PaoloFinish')\">lorem ipsum</p>"
@@ -1224,8 +938,8 @@
           "continue_button": { "title": "Continue Button", "type": "boolean", "example": true },
           "speaker": { "title": "Speaker", "type": "string", "example": "Paolo" },
           "trunk": { "title": "Trunk", "type": "boolean", "example": true },
-          "attribute_id": { "title": "Attribute Id", "type": "integer", "example": 1 },
-          "ride_id": { "title": "Ride Id", "type": "integer", "example": 1 },
+          "attributeId": { "title": "Attribute Id", "type": "integer", "example": 1 },
+          "rideId": { "title": "Ride Id", "type": "integer", "example": 1 },
           "id": { "title": "Id", "type": "integer", "example": 1 },
           "ride": { "title": "Ride", "type": "object" },
           "attribute": { "title": "Attribute", "type": "object" }
@@ -1233,14 +947,7 @@
       },
       "PassageUpdate": {
         "title": "PassageUpdate",
-        "required": [
-          "passage_name",
-          "passage_content",
-          "branch_name",
-          "speaker",
-          "attribute_id",
-          "ride_id"
-        ],
+        "required": ["passage_name", "content", "branch_name", "speaker", "attributeId", "rideId"],
         "type": "object",
         "properties": {
           "passage_name": {
@@ -1249,7 +956,7 @@
             "example": "Story 1",
             "unique": true
           },
-          "passage_content": {
+          "content": {
             "title": "Passage Content",
             "type": "string",
             "example": "<p onclick=\"branch('PaoloFinish')\">lorem ipsum</p>"
@@ -1258,8 +965,8 @@
           "continue_button": { "title": "Continue Button", "type": "boolean", "example": true },
           "speaker": { "title": "Speaker", "type": "string", "example": "Paolo" },
           "trunk": { "title": "Trunk", "type": "boolean", "example": true },
-          "attribute_id": { "title": "Attribute Id", "type": "integer", "example": 1 },
-          "ride_id": { "title": "Ride Id", "type": "integer", "example": 1 }
+          "attributeId": { "title": "Attribute Id", "type": "integer", "example": 1 },
+          "rideId": { "title": "Ride Id", "type": "integer", "example": 1 }
         }
       },
       "PassengerCreate": {
@@ -1315,7 +1022,7 @@
       },
       "ReviewCreate": {
         "title": "ReviewCreate",
-        "required": ["stars", "description", "solution", "linked_score", "passenger_id"],
+        "required": ["stars", "description", "solution", "linked_score", "passengerId"],
         "type": "object",
         "properties": {
           "stars": { "title": "Stars", "exclusiveMinimum": 0, "type": "integer", "example": 4 },
@@ -1326,7 +1033,7 @@
           },
           "solution": { "title": "Solution", "type": "string", "example": "Love yourself" },
           "linked_score": { "title": "Linked Score", "type": "integer", "example": "4" },
-          "passenger_id": { "title": "Passenger Id", "type": "integer", "example": 1 }
+          "passengerId": { "title": "Passenger Id", "type": "integer", "example": 1 }
         }
       },
       "ReviewRead": {
@@ -1363,21 +1070,34 @@
       },
       "ReviewedUser": {
         "title": "ReviewedUser",
-        "required": ["Review", "date"],
+        "required": [
+          "date",
+          "stars",
+          "description",
+          "solution",
+          "linked_score",
+          "id",
+          "passenger"
+        ],
         "type": "object",
         "properties": {
-          "Review": { "$ref": "#/components/schemas/ReviewRead" },
-          "date": { "title": "Date", "type": "string", "format": "date-time" }
+          "id": { "title": "id", "type": "ingeger", "exclusiveMinimum": 0 },
+          "date": { "title": "Date", "type": "string", "format": "date-time" },
+          "stars": { "title": "Stars", "exclusiveMinimum": 0, "type": "integer" },
+          "description": { "title": "Description", "type": "string" },
+          "solution": { "title": "Solution", "type": "string" },
+          "linked_score": { "title": "Linked Score", "type": "integer" },
+          "passenger": { "$ref": "#/components/schemas/PassengerRead" }
         }
       },
       "ReviewedUserCreate": {
         "title": "ReviewedUserCreate",
-        "required": ["ride_id", "user_id", "review_id", "date"],
+        "required": ["rideId", "userId", "reviewId", "date"],
         "type": "object",
         "properties": {
-          "ride_id": { "title": "Ride Id", "type": "integer", "example": 1 },
-          "user_id": { "title": "User Id", "type": "integer", "example": 1 },
-          "review_id": { "title": "Review Id", "type": "integer", "example": 1 },
+          "rideId": { "title": "Ride Id", "type": "integer", "example": 1 },
+          "userId": { "title": "User Id", "type": "integer", "example": 1 },
+          "reviewId": { "title": "Review Id", "type": "integer", "example": 1 },
           "date": { "title": "Date", "type": "string", "format": "date-time" }
         }
       },
@@ -1394,7 +1114,7 @@
           "perseverance",
           "integrity",
           "enthusiasm",
-          "passenger_id"
+          "passengerId"
         ],
         "type": "object",
         "properties": {
@@ -1448,7 +1168,7 @@
             "type": "integer",
             "example": 1
           },
-          "passenger_id": {
+          "passengerId": {
             "title": "Passenger Id",
             "exclusiveMinimum": 0,
             "type": "integer",
@@ -1541,7 +1261,7 @@
           "perseverance",
           "integrity",
           "enthusiasm",
-          "passenger_id"
+          "passengerId"
         ],
         "type": "object",
         "properties": {
@@ -1595,7 +1315,7 @@
             "type": "integer",
             "example": 1
           },
-          "passenger_id": {
+          "passengerId": {
             "title": "Passenger Id",
             "exclusiveMinimum": 0,
             "type": "integer",
@@ -1605,7 +1325,7 @@
       },
       "Token": {
         "title": "Token",
-        "required": ["refresh_token", "token_type", "access_token"],
+        "required": ["refresh_token", "access_token"],
         "type": "object",
         "properties": {
           "refresh_token": {
@@ -1613,7 +1333,6 @@
             "type": "string",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNjcwMzU4MDE4fQ.0R8VMKXA6XAg6gCKYVIFl3u6m1mvwMGxqzLeBEc3pQY"
           },
-          "token_type": { "title": "Token Type", "type": "string", "example": "Bearer" },
           "access_token": {
             "title": "Access Token",
             "type": "string",
@@ -1645,36 +1364,7 @@
           "old_password": { "title": "Old Password", "type": "string" },
           "confirm_password": { "title": "Confirm Password", "type": "string" }
         }
-      },
-      "ValidationError": {
-        "title": "ValidationError",
-        "required": ["loc", "msg", "type"],
-        "type": "object",
-        "properties": {
-          "loc": {
-            "title": "Location",
-            "type": "array",
-            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] }
-          },
-          "msg": { "title": "Message", "type": "string" },
-          "type": { "title": "Error Type", "type": "string" }
-        }
-      }
-    },
-    "securitySchemes": {
-      "OAuth2PasswordBearer": {
-        "type": "oauth2",
-        "flows": { "password": { "scopes": {}, "tokenUrl": "/api/auth/token" } }
       }
     }
-  },
-  "tags": [
-    { "name": "Auth", "description": "All authentication logic, and User management" },
-    { "name": "Characters", "description": "REST API calls for passengers, reviews, and rides" },
-    {
-      "name": "PassageHandling",
-      "description": "All REST API calls that have to do with passages"
-    },
-    { "name": "Factory", "description": "Factory function to create mock data" }
-  ]
+  }
 }

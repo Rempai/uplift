@@ -12,6 +12,8 @@
   export let journal_data: Array<PassageRead>;
   export let context_data: journalAnswer;
 
+  // TODO: random journal styling bug
+
   let branch_data: Array<PassageRead> = [];
 
   const dispatch = createEventDispatcher();
@@ -91,11 +93,12 @@
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
   <div class="overflow-y-auto flex flex-col flex-wrap">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
-    <div class="mt-2 flex justify-between items-center">
-      <span on:keypress on:click={() => gotoBranch(branch_data)}>
-        <Button class="mx-8 flex justify-between items-center" text="click here to go to branch" />
-      </span>
-    </div>
+    <span
+      on:keypress
+      on:click={() => gotoBranch(branch_data)}
+      class="w-full flex justify-center mt-3">
+      <Button text="Go to branch" class="bg-aurora-orange" />
+    </span>
     <div class="h-full" />
     {#if currentTab}
       {#each branch_data as data}
@@ -107,7 +110,7 @@
             {data.speaker}
           </p>
           <p class={data.speaker === "You" ? "bg-frost-4 p-1" : "bg-aurora-green p-1"}>
-            {@html data.passage_content}
+            {@html data.content}
           </p>
         </div>
       {/each}
