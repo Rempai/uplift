@@ -5,8 +5,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "public/*": ["./public/*"]
+      "@/*": ["./src/*"]
     },
     "useDefineForClassFields": true,
     "resolveJsonModule": true,

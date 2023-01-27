@@ -9,8 +9,8 @@
   import AdminNav from "@/components/AdminNav.svelte";
   import Modal from "@/components/Modal.svelte";
 
-  import RealAnalysis1 from "public/real-analysis1.png";
-  import RealAnalysis2 from "public/real-analysis2.png";
+  import RealAnalysis1 from "/real-analysis1.png";
+  import RealAnalysis2 from "/real-analysis2.png";
 
   checkAccount();
 

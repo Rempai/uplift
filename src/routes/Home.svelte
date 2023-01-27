@@ -4,11 +4,11 @@
   import Button from "@/components/Button.svelte";
   import Footer from "@/components/Footer.svelte";
 
-  import Logo from "public/logo.png";
-  import UpliftCar from "public/uplift-car.png";
-  import UpliftMoney from "public/uplift-money.png";
-  import UpliftTraining from "public/uplift-training.png";
-  import UpliftBuitenkamer from "public/uplift-buitenkamer.png";
+  import Logo from "/logo.png";
+  import UpliftCar from "/uplift-car.png";
+  import UpliftMoney from "/uplift-money.png";
+  import UpliftTraining from "/uplift-training.png";
+  import UpliftBuitenkamer from "/uplift-buitenkamer.png";
 </script>
 
 <header
