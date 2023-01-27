@@ -2,8 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ingeger } from './ingeger';
-import type { PassengerRead } from './PassengerRead';
+import type { ingeger } from "./ingeger";
+import type { PassengerRead } from "./PassengerRead";
 
 export type ReviewedUser = {
   id: ingeger;
@@ -14,4 +14,3 @@ export type ReviewedUser = {
   linked_score: number;
   passenger: PassengerRead;
 };
-

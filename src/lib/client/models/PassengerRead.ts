@@ -7,4 +7,3 @@ export type PassengerRead = {
   icon: string;
   id: number;
 };
-

@@ -15,4 +15,3 @@ export type PassageRead = {
   ride: any;
   attribute: any;
 };
-

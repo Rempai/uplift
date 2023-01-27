@@ -9,4 +9,3 @@ export type ReviewCreate = {
   linked_score: number;
   passengerId: number;
 };
-

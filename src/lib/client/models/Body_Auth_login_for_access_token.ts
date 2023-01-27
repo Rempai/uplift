@@ -10,4 +10,3 @@ export type Body_Auth_login_for_access_token = {
   client_id?: string;
   client_secret?: string;
 };
-
