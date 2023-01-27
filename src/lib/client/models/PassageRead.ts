@@ -4,14 +4,15 @@
 
 export type PassageRead = {
   passage_name: string;
-  passage_content: string;
+  content: string;
   branch_name: string;
   continue_button?: boolean;
   speaker: string;
   trunk?: boolean;
-  attribute_id: number;
-  ride_id: number;
+  attributeId: number;
+  rideId: number;
   id: number;
   ride: any;
   attribute: any;
 };
+

@@ -8,3 +8,4 @@ export type ReviewUpdate = {
   solution: string;
   linked_score: number;
 };
+

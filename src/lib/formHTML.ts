@@ -45,8 +45,8 @@ export const rideHTML = `
   <input required type="number" name="integrity" placeholder="5" />
   <label for="enthusiasm">Enthusiasm</label>
   <input required type="number" name="enthusiasm" placeholder="5" />
-  <label for="passenger_id">passenger_id</label>
-  <input required type="number" name="passenger_id" placeholder="1" />
+  <label for="passengerId">passengerId</label>
+  <input required type="number" name="passengerId" placeholder="1" />
 `;
 
 export const reviewHTML = `
@@ -54,8 +54,8 @@ export const reviewHTML = `
   <input required type="number" name="stars" placeholder="3" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum"></textarea>
-  <label for="passenger_id">Passenger id</label>
-  <input required type="number" name="passenger_id" placeholder="1" />
+  <label for="passengerId">Passenger id</label>
+  <input required type="number" name="passengerId" placeholder="1" />
 `;
 
 export const passageHTML = `
@@ -71,10 +71,10 @@ export const passageHTML = `
   <input type="checkbox" name="continue_button" />
   <label for="trunk">Trunk</label>
   <input type="checkbox" name="trunk" />
-  <label for="ride_id">Ride id</label>
-  <input required type="number" name="ride_id" placeholder="1" />
-  <label for="attribute_id">Attributes id</label>
-  <input required type="number" name="attribute_id" placeholder="1" />
+  <label for="rideId">Ride id</label>
+  <input required type="number" name="rideId" placeholder="1" />
+  <label for="attributeId">Attributes id</label>
+  <input required type="number" name="attributeId" placeholder="1" />
 `;
 
 export const attributeHTML = `
@@ -142,8 +142,8 @@ export function rideEditHTML(data: RideRead): string {
   <input required type="number" name="integrity" placeholder="5" value="${data.integrity}" />
   <label for="enthusiasm">Enthusiasm</label>
   <input required type="number" name="enthusiasm" placeholder="5" value="${data.enthusiasm}" />
-  <label for="passenger_id">passenger id</label>
-  <input required type="number" name="passenger_id" placeholder="1" value="${data.passenger.id}" />
+  <label for="passengerId">passenger id</label>
+  <input required type="number" name="passengerId" placeholder="1" value="${data.passenger.id}" />
   `;
 }
 
@@ -153,8 +153,8 @@ export function reviewEditHTML(data: ReviewCreate): string {
   <input required type="number" name="stars" placeholder="3" value="${data.stars}" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum">${data.description}</textarea>
-  <label for="passenger_id">Passenger_id</label>
-  <input required type="number" name="passenger_id" placeholder="1" value="${data.passenger_id}" />
+  <label for="passengerId">passengerId</label>
+  <input required type="number" name="passengerId" placeholder="1" value="${data.passengerId}" />
   `;
 }
 
@@ -172,10 +172,10 @@ export function passageEditHTML(data: PassageRead): string {
   <input type="checkbox" name="continue_button" checked="${data.continue_button}" />
   <label for="trunk">Trunk</label>
   <input type="checkbox" name="trunk" checked="${data.trunk}" />
-  <label for="attribute_id">Attributes id</label>
-  <input required type="number" name="attribute_id" placeholder="1" value="${data.attribute_id}" />
-  <label for="ride_id">Ride id</label>
-  <input required type="number" name="ride_id" placeholder="1" value="${data.ride_id}" />
+  <label for="attributeId">Attributes id</label>
+  <input required type="number" name="attributeId" placeholder="1" value="${data.attributeId}" />
+  <label for="rideId">Ride id</label>
+  <input required type="number" name="rideId" placeholder="1" value="${data.rideId}" />
   `;
 }
 

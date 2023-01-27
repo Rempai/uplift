@@ -13,5 +13,6 @@ export type RideCreate = {
   perseverance: number;
   integrity: number;
   enthusiasm: number;
-  passenger_id: number;
+  passengerId: number;
 };
+

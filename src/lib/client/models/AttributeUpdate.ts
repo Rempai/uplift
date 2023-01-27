@@ -7,3 +7,4 @@ export type AttributeUpdate = {
   font_size: string;
   font_family: string;
 };
+

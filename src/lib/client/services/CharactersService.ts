@@ -1,23 +1,24 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PassengerCreate } from "../models/PassengerCreate";
-import type { PassengerRead } from "../models/PassengerRead";
-import type { PassengerUpdate } from "../models/PassengerUpdate";
-import type { ReviewCreate } from "../models/ReviewCreate";
-import type { ReviewedUser } from "../models/ReviewedUser";
-import type { ReviewedUserCreate } from "../models/ReviewedUserCreate";
-import type { ReviewRead } from "../models/ReviewRead";
-import type { ReviewUpdate } from "../models/ReviewUpdate";
-import type { RideCreate } from "../models/RideCreate";
-import type { RideRead } from "../models/RideRead";
-import type { RideUpdate } from "../models/RideUpdate";
+import type { PassengerCreate } from '../models/PassengerCreate';
+import type { PassengerRead } from '../models/PassengerRead';
+import type { PassengerUpdate } from '../models/PassengerUpdate';
+import type { ReviewCreate } from '../models/ReviewCreate';
+import type { ReviewedUser } from '../models/ReviewedUser';
+import type { ReviewedUserCreate } from '../models/ReviewedUserCreate';
+import type { ReviewRead } from '../models/ReviewRead';
+import type { ReviewUpdate } from '../models/ReviewUpdate';
+import type { RideCreate } from '../models/RideCreate';
+import type { RideRead } from '../models/RideRead';
+import type { RideUpdate } from '../models/RideUpdate';
 
-import type { CancelablePromise } from "../core/CancelablePromise";
-import { OpenAPI } from "../core/OpenAPI";
-import { request as __request } from "../core/request";
+import type { CancelablePromise } from '../core/CancelablePromise';
+import { OpenAPI } from '../core/OpenAPI';
+import { request as __request } from '../core/request';
 
 export class CharactersService {
+
   /**
    * Get Passengers
    * @returns PassengerRead Successful Response
@@ -25,8 +26,8 @@ export class CharactersService {
    */
   public static getPassengers(): CancelablePromise<Array<PassengerRead>> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/character/passengers/",
+      method: 'GET',
+      url: '/api/character/passengers/',
     });
   }
 
@@ -36,15 +37,14 @@ export class CharactersService {
    * @returns PassengerRead Successful Response
    * @throws ApiError
    */
-  public static getPassengerById(id: number): CancelablePromise<PassengerRead> {
+  public static getPassengerById(
+    id: number,
+  ): CancelablePromise<PassengerRead> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/character/passenger/{id}/",
+      method: 'GET',
+      url: '/api/character/passenger/{id}/',
       path: {
-        id: id,
-      },
-      errors: {
-        422: `Validation Error`,
+        'id': id,
       },
     });
   }
@@ -52,18 +52,17 @@ export class CharactersService {
   /**
    * Delete Passenger
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deletePassenger(id: number): CancelablePromise<void> {
+  public static deletePassenger(
+    id: number,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "DELETE",
-      url: "/api/character/passenger/{id}/",
+      method: 'DELETE',
+      url: '/api/character/passenger/{id}/',
       path: {
-        id: id,
-      },
-      errors: {
-        422: `Validation Error`,
+        'id': id,
       },
     });
   }
@@ -77,19 +76,16 @@ export class CharactersService {
    */
   public static updatePassenger(
     id: number,
-    requestBody: PassengerUpdate
+    requestBody: PassengerUpdate,
   ): CancelablePromise<PassengerUpdate> {
     return __request(OpenAPI, {
-      method: "PATCH",
-      url: "/api/character/passenger/{id}/",
+      method: 'PATCH',
+      url: '/api/character/passenger/{id}/',
       path: {
-        id: id,
+        'id': id,
       },
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
 
@@ -99,15 +95,14 @@ export class CharactersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postPassenger(requestBody: PassengerCreate): CancelablePromise<any> {
+  public static postPassenger(
+    requestBody: PassengerCreate,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/character/passenger/",
+      method: 'POST',
+      url: '/api/character/passenger/',
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
 
@@ -117,15 +112,14 @@ export class CharactersService {
    * @returns RideRead Successful Response
    * @throws ApiError
    */
-  public static getRides(userId?: number): CancelablePromise<Array<RideRead>> {
+  public static getRides(
+    userId?: number,
+  ): CancelablePromise<Array<RideRead>> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/character/rides/",
+      method: 'GET',
+      url: '/api/character/rides/',
       query: {
-        user_id: userId,
-      },
-      errors: {
-        422: `Validation Error`,
+        'user_id': userId,
       },
     });
   }
@@ -136,15 +130,14 @@ export class CharactersService {
    * @returns RideRead Successful Response
    * @throws ApiError
    */
-  public static getRideById(id: number): CancelablePromise<RideRead> {
+  public static getRideById(
+    id: number,
+  ): CancelablePromise<RideRead> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/character/ride/{id}/",
+      method: 'GET',
+      url: '/api/character/ride/{id}/',
       path: {
-        id: id,
-      },
-      errors: {
-        422: `Validation Error`,
+        'id': id,
       },
     });
   }
@@ -152,18 +145,17 @@ export class CharactersService {
   /**
    * Delete Ride
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deleteRide(id: number): CancelablePromise<void> {
+  public static deleteRide(
+    id: number,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "DELETE",
-      url: "/api/character/ride/{id}/",
+      method: 'DELETE',
+      url: '/api/character/ride/{id}/',
       path: {
-        id: id,
-      },
-      errors: {
-        422: `Validation Error`,
+        'id': id,
       },
     });
   }
@@ -175,18 +167,18 @@ export class CharactersService {
    * @returns RideUpdate Successful Response
    * @throws ApiError
    */
-  public static updateRide(id: number, requestBody: RideUpdate): CancelablePromise<RideUpdate> {
+  public static updateRide(
+    id: number,
+    requestBody: RideUpdate,
+  ): CancelablePromise<RideUpdate> {
     return __request(OpenAPI, {
-      method: "PATCH",
-      url: "/api/character/ride/{id}/",
+      method: 'PATCH',
+      url: '/api/character/ride/{id}/',
       path: {
-        id: id,
+        'id': id,
       },
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
 
@@ -196,15 +188,14 @@ export class CharactersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postRide(requestBody: RideCreate): CancelablePromise<any> {
+  public static postRide(
+    requestBody: RideCreate,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/character/ride/",
+      method: 'POST',
+      url: '/api/character/ride/',
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
 
@@ -217,17 +208,14 @@ export class CharactersService {
    */
   public static getReviews(
     userId?: number,
-    rideId?: number
-  ): CancelablePromise<Array<ReviewRead | ReviewedUser>> {
+    rideId?: number,
+  ): CancelablePromise<Array<(ReviewRead | ReviewedUser)>> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/character/reviews/",
+      method: 'GET',
+      url: '/api/character/reviews/',
       query: {
-        user_id: userId,
-        ride_id: rideId,
-      },
-      errors: {
-        422: `Validation Error`,
+        'user_id': userId,
+        'ride_id': rideId,
       },
     });
   }
@@ -238,15 +226,14 @@ export class CharactersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static getReviewById(id: number): CancelablePromise<any> {
+  public static getReviewById(
+    id: number,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "GET",
-      url: "/api/character/review/{id}/",
+      method: 'GET',
+      url: '/api/character/review/{id}/',
       path: {
-        id: id,
-      },
-      errors: {
-        422: `Validation Error`,
+        'id': id,
       },
     });
   }
@@ -254,18 +241,17 @@ export class CharactersService {
   /**
    * Delete Review
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deleteReview(id: number): CancelablePromise<void> {
+  public static deleteReview(
+    id: number,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "DELETE",
-      url: "/api/character/review/{id}/",
+      method: 'DELETE',
+      url: '/api/character/review/{id}/',
       path: {
-        id: id,
-      },
-      errors: {
-        422: `Validation Error`,
+        'id': id,
       },
     });
   }
@@ -279,19 +265,16 @@ export class CharactersService {
    */
   public static updateReview(
     id: number,
-    requestBody: ReviewUpdate
+    requestBody: ReviewUpdate,
   ): CancelablePromise<ReviewUpdate> {
     return __request(OpenAPI, {
-      method: "PATCH",
-      url: "/api/character/review/{id}/",
+      method: 'PATCH',
+      url: '/api/character/review/{id}/',
       path: {
-        id: id,
+        'id': id,
       },
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
 
@@ -301,15 +284,14 @@ export class CharactersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postReview(requestBody: ReviewCreate): CancelablePromise<any> {
+  public static postReview(
+    requestBody: ReviewCreate,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/character/review/",
+      method: 'POST',
+      url: '/api/character/review/',
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
 
@@ -319,15 +301,15 @@ export class CharactersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static postReviewedUser(requestBody: ReviewedUserCreate): CancelablePromise<any> {
+  public static postReviewedUser(
+    requestBody: ReviewedUserCreate,
+  ): CancelablePromise<any> {
     return __request(OpenAPI, {
-      method: "POST",
-      url: "/api/character/reviewed_user/",
+      method: 'POST',
+      url: '/api/character/reviewed_user/',
       body: requestBody,
-      mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
+      mediaType: 'application/json',
     });
   }
+
 }

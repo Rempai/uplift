@@ -28,7 +28,7 @@ export interface route {
 
 const routes: Array<route> = [
   // Read + Delete
-  { route: "/admin/user", call: "/auth/users/", service: AuthService.deleteUser },
+  { route: "/admin/user", call: "/user/users/", service: AuthService.deleteUser },
   {
     route: "/admin/passenger",
     call: "/character/passengers/",
@@ -54,7 +54,7 @@ const routes: Array<route> = [
   // Create
   {
     route: "/admin/user/create",
-    call: "/auth/users/",
+    call: "/user/users/",
     html: userHTML,
     service: AuthService.postUser,
   },
@@ -92,7 +92,7 @@ const routes: Array<route> = [
   // Update
   {
     route: "/admin/user/edit",
-    call: "/auth/user/",
+    call: "/user/user/",
     html: userEditHTML,
     service: AuthService.updateUser,
   },
@@ -183,7 +183,7 @@ export async function getData(crudRoute: string, id?: string) {
 
   let res: Response;
   if (id) {
-    res = await fetch("https://localhost:8000/api" + crudRoute + id, {
+    res = await fetch("https://localhost:8001/api" + crudRoute + id, {
       method: "GET",
       mode: "cors",
       cache: "no-cache",
@@ -193,7 +193,7 @@ export async function getData(crudRoute: string, id?: string) {
       headers: new Headers(headers),
     });
   } else {
-    res = await fetch("https://localhost:8000/api" + crudRoute, {
+    res = await fetch("https://localhost:8001/api" + crudRoute, {
       method: "GET",
       mode: "cors",
       cache: "no-cache",

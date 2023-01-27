@@ -7,5 +7,6 @@ export type ReviewCreate = {
   description: string;
   solution: string;
   linked_score: number;
-  passenger_id: number;
+  passengerId: number;
 };
+

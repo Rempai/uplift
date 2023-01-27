@@ -16,3 +16,4 @@ export type RideRead = {
   id: number;
   passenger: any;
 };
+

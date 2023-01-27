@@ -6,7 +6,7 @@
 
   import { OpenAPI } from "@/lib/client/index";
 
-  OpenAPI.BASE = "https://localhost:8000";
+  OpenAPI.BASE = "https://localhost:8001";
   OpenAPI.TOKEN = localStorage.getItem("access_token");
 
   const routes = {
