@@ -13,5 +13,5 @@ export type RideUpdate = {
   perseverance: number;
   integrity: number;
   enthusiasm: number;
-  passenger_id: number;
+  passengerId: number;
 };

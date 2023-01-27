@@ -217,9 +217,9 @@
   };
 
   const toggleModal = (review: ReviewedUser) => {
-    modalHeader = review.Review.passenger.name + "'s review";
+    modalHeader = review.passenger.name + "'s review";
     showModal = !showModal;
-    review_text = review.Review.description;
+    review_text = review.description;
   };
 
   const selectRide = async (ride: RideRead) => {
@@ -228,7 +228,7 @@
     }
 
     // @ts-ignore it is fine if it's empty lol
-    passage = await PassageHandlingService.getPassageById(ride.passenger.id).catch((err) =>
+    passage = await PassageHandlingService.getPassages(null, ride.passenger.id).catch((err) =>
       showError(err)
     );
 
@@ -332,7 +332,7 @@
   const updateJournalData = async () => {
     // Workaround for adding {user} template parsing for the journal
     let dialog_update = passage;
-    dialog_update.passage_content = await text_parsed;
+    dialog_update.content = await text_parsed;
     //prevent duplicate passages in journal
     if (journal_data.length !== 0) {
       let alreadyInJournal = false;
@@ -375,23 +375,23 @@
     let current_time = current_date.toISOString();
 
     interface connection {
-      user_id: number;
-      ride_id: number;
-      review_id: number;
+      userId: number;
+      rideId: number;
+      reviewId: number;
       date: string;
     }
 
     var reviewScore = Number(passage.branch_name.replace(/\D/g, ""));
 
     const input: connection = {
-      user_id: parsed_jwt.sub,
-      ride_id: current_ride.id,
-      review_id: reviewScore,
+      userId: parsed_jwt.sub,
+      rideId: current_ride.id,
+      reviewId: reviewScore,
       date: current_time,
     };
 
     //use dialog text.branchname to determine the review you should get 1-5
-    if (reviewer_list[0].Review.id !== reviewScore) {
+    if (reviewer_list[0].id !== reviewScore) {
       CharactersService.postReviewedUser(input).catch((err) => showError(err));
     }
 
@@ -424,7 +424,7 @@
   }
 
   $: if (passage) {
-    text_parsed = textParser(passage.passage_content);
+    text_parsed = textParser(passage.content);
     updateJournalData();
   }
 </script>
@@ -665,27 +665,27 @@
                     class="mb-6 gap-5 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                     on:keypress
                     on:click={() => toggleModal(data)}>
-                    <img class="rounded w-24 h-full" src={data.Review.passenger.icon} alt="" />
+                    <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
                     <div class="overflow-x-hidden whitespace-nowrap">
                       <p class="flex items-center">
                         <span class="w-5 mr-2 text-frost-3"><IoMdCard /></span>
-                        {data.Review.passenger.name}
+                        {data.passenger.name}
                       </p>
                       <p class="flex items-center">
                         <span class="w-5 mr-2 text-frost-3"><IoIosCalendar /></span>
                         {data.date}
                       </p>
                       <div class="inline-flex items-center">
-                        {#each Array(data.Review.stars) as _}
+                        {#each Array(data.stars) as _}
                           <span class="w-5 mr-2 text-frost-3"><FaStar /></span>
                         {/each}
-                        {#if data.Review.stars < 5}
-                          {#each Array(5 - data.Review.stars) as _}
+                        {#if data.stars < 5}
+                          {#each Array(5 - data.stars) as _}
                             <span class="w-5 mr-2 text-frost-3"><IoMdStarOutline /></span>
                           {/each}
                         {/if}
                       </div>
-                      <p>{data.Review.description}</p>
+                      <p>{data.description}</p>
                     </div>
                   </div>
                 {/each}

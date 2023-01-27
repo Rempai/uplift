@@ -16,18 +16,20 @@ export class PassageHandlingService {
   /**
    * Get Passages
    * @param passageName
+   * @param passengerId
    * @returns PassageRead Successful Response
    * @throws ApiError
    */
-  public static getPassages(passageName?: string): CancelablePromise<Array<PassageRead>> {
+  public static getPassages(
+    passageName?: string,
+    passengerId?: string
+  ): CancelablePromise<Array<PassageRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/passage_handler/passages/",
       query: {
         passage_name: passageName,
-      },
-      errors: {
-        422: `Validation Error`,
+        passenger_id: passengerId,
       },
     });
   }
@@ -45,27 +47,21 @@ export class PassageHandlingService {
       path: {
         id: id,
       },
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
   /**
    * Delete Passage
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deletePassage(id: number): CancelablePromise<void> {
+  public static deletePassage(id: number): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/passage_handler/passage/{id}/",
       path: {
         id: id,
-      },
-      errors: {
-        422: `Validation Error`,
       },
     });
   }
@@ -89,9 +85,6 @@ export class PassageHandlingService {
       },
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -107,9 +100,6 @@ export class PassageHandlingService {
       url: "/api/passage_handler/passage/",
       formData: formData,
       mediaType: "multipart/form-data",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -138,27 +128,21 @@ export class PassageHandlingService {
       path: {
         id: id,
       },
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
   /**
    * Delete Attribute
    * @param id
-   * @returns void
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static deleteAttribute(id: number): CancelablePromise<void> {
+  public static deleteAttribute(id: number): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/passage_handler/attribute/{id}/",
       path: {
         id: id,
-      },
-      errors: {
-        422: `Validation Error`,
       },
     });
   }
@@ -182,9 +166,6 @@ export class PassageHandlingService {
       },
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 
@@ -200,9 +181,6 @@ export class PassageHandlingService {
       url: "/api/passage_handler/attribute/",
       body: requestBody,
       mediaType: "application/json",
-      errors: {
-        422: `Validation Error`,
-      },
     });
   }
 }

@@ -12,7 +12,6 @@ export type { AttributeRead } from "./models/AttributeRead";
 export type { AttributeUpdate } from "./models/AttributeUpdate";
 export type { Body_Auth_login_for_access_token } from "./models/Body_Auth_login_for_access_token";
 export type { Body_PassageHandling_post_passage } from "./models/Body_PassageHandling_post_passage";
-export type { HTTPValidationError } from "./models/HTTPValidationError";
 export type { PassageRead } from "./models/PassageRead";
 export type { PassageUpdate } from "./models/PassageUpdate";
 export type { PassengerCreate } from "./models/PassengerCreate";
@@ -31,7 +30,6 @@ export type { RideUpdate } from "./models/RideUpdate";
 export type { Token } from "./models/Token";
 export type { UserRead } from "./models/UserRead";
 export type { UserUpdate } from "./models/UserUpdate";
-export type { ValidationError } from "./models/ValidationError";
 
 export { AuthService } from "./services/AuthService";
 export { CharactersService } from "./services/CharactersService";

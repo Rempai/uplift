@@ -1,7 +1,7 @@
 import { get } from "https";
 import { createWriteStream, readFileSync } from "fs";
 
-const url = "https://127.0.0.1:8000/openapi.json";
+const url = "https://127.0.0.1:8001/openapi.json";
 const dest = "./openapi.json";
 const options = {
   cert: readFileSync("./cert.pem"),

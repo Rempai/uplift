@@ -3,9 +3,9 @@
 /* eslint-disable */
 
 export type Body_PassageHandling_post_passage = {
-  passage_content: Blob;
+  content: Blob;
   passage_name: any;
   continue_button?: any;
   trunk?: any;
-  attribute_id: any;
+  attributeId: any;
 };
