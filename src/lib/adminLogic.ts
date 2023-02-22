@@ -92,7 +92,7 @@ const routes: Array<route> = [
   // Update
   {
     route: "/admin/user/edit",
-    call: "/user/user/",
+    call: "/user/",
     html: userEditHTML,
     service: AuthService.updateUser,
   },

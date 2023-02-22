@@ -37,7 +37,7 @@
 </script>
 
 <div
-  class="w-96 h-3/4 bg-night-1 relative z-[20] rounded overflow-hidden top-1/2
+  class="w-[20em] h-3/4 bg-night-1 relative z-[20] rounded overflow-hidden top-1/2
             translate-y-[-50%] shadow flex flex-col">
   <div class="text-2xl font-bold pt-2 pl-2 pb-2 bg-night-2">
     <div class="mx-4 flex justify-between items-center">

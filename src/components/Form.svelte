@@ -13,10 +13,10 @@
 
   export let handleSubmit;
 
-  export function submitAndRefresh(target) {
+  const submitAndRefresh = (target) => {
     handleSubmit(target);
     $validation = $validation;
-  }
+  };
 
   const dispatch = createEventDispatcher();
 </script>

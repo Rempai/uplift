@@ -2,11 +2,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ingeger } from "./ingeger";
 import type { PassengerRead } from "./PassengerRead";
 
 export type ReviewedUser = {
-  id: ingeger;
+  id: number;
   date: string;
   stars: number;
   description: string;

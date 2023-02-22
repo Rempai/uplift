@@ -117,9 +117,9 @@
     {/if}
   </div>
   <div class="border border-night-1" />
-  <div class="overflow-y-auto flex flex-col flex-wrap w-[30em] pb-4">
+  <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap pb-4">
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
-      <div slot="forms">
+      <div slot="forms" class="mr-12">
         <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="main_problem">Main Problem</label>
         <input
           disabled

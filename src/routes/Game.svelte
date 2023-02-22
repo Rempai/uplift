@@ -131,7 +131,7 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    // @ts-ignore you want formdata dumbass
+    // @ts-ignore idk why this isn't correct
     await AuthService.loginForAccessToken(value)
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
@@ -140,7 +140,7 @@
       })
       .catch(async (err) => {
         showError(await validationErrorCheck(err, false));
-        $validation = $validation; //Only runs when an error happens
+        $validation = $validation;
       });
   }
 
@@ -149,7 +149,8 @@
     const value = Object.fromEntries(form_data.entries());
 
     await validateData("Register", value as Register, true).then(async () => {
-      await AuthService.registerUser(target)
+      // @ts-ignore you need this
+      await AuthService.registerUser(value)
         .then((res) => {
           localStorage.setItem("access_token", res.access_token);
           localStorage.setItem("refresh_token", res.refresh_token);
@@ -170,6 +171,7 @@
     loader = false;
     login = false;
     register = false;
+    showPhoneButton = false;
     page = 0;
 
     // @ts-ignore it is fine if it's empty lol
@@ -190,7 +192,6 @@
   };
 
   const journalToggle = () => {
-    phoneToggle();
     journal = !journal;
     dialog = false;
   };
@@ -539,7 +540,7 @@
       </div>
     {/if}
     {#if journal}
-      <div in:fade>
+      <div in:fade class="w-9/12">
         <Journal
           {journal_data}
           {context_data}
@@ -559,6 +560,7 @@
           <p class="text-center text-3xl text-frost-1">Login</p>
           <Form
             handleSubmit={submitLogin}
+            enctype="multipart/form-data"
             login={true}
             backButton={true}
             on:back={() => {

@@ -66,7 +66,6 @@
     } else if (node.hasChildNodes()) {
       let list = [];
       for (let child of node.childNodes) {
-        // @ts-ignore
         getAllTextNodes(child).forEach((textNode) => list.push(textNode));
       }
       return list;

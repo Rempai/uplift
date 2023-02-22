@@ -3,7 +3,7 @@
   import { location, push } from "svelte-spa-router";
 
   import { checkAccount } from "@/lib/adminLogic";
-  import { AuthService, FactoryService } from "@/lib/client";
+  import { FactoryService } from "@/lib/client";
 
   import Button from "@/components/Button.svelte";
   import AdminNav from "@/components/AdminNav.svelte";
@@ -14,16 +14,7 @@
 
   checkAccount();
 
-  let log = "";
-  let showLog = false;
   let showModal = false;
-
-  const get_log = async () => {
-    if (!log) {
-      log = await AuthService.getLogs();
-    }
-    showLog = true;
-  };
 
   const reset_db = async () => {
     await FactoryService.factory().then(() => {
@@ -65,31 +56,9 @@
     <div class="card w-full">
       <div class="flex justify-between items-center">
         <h2>Logs</h2>
-        {#if showLog}
-          <span on:keypress on:click={() => (showLog = false)}>
-            <Button
-              text="disable logs"
-              class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
-          </span>
-        {:else}
-          <span on:keypress on:click={get_log}>
-            <Button
-              text="get logs"
-              class="bg-transparent px-3 py-6 !bg-aurora-yellow hover:bg-aurora-yellow" />
-          </span>
-        {/if}
       </div>
       <hr class="mb-3" />
-      <div class="overflow-y-auto bg-night-1 rounded p-4 h-screen">
-        {#if showLog}
-          <p class="w-20">{log}</p>
-        {:else}
-          <p>
-            Logs will only be shown when you press `get_logs`, there could be <i>sensitive data</i>
-            in the logs.
-          </p>
-        {/if}
-      </div>
+      <div class="overflow-y-auto bg-night-1 rounded p-4 h-screen" />
     </div>
     <div class="flex flex-col gap-4 w-full">
       <div class="card">

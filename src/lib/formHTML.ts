@@ -62,7 +62,7 @@ export const passageHTML = `
   <label for="passage_name">Passage Name</label>
   <input required type="text" name="passage_name" placeholder="Paolo trunk" />
   <label for="passage_content">Passage Content</label>
-  <input required type="file" name="passage_content" />
+  <textarea required name="passage_content" placeholder="Lorem ipsum"></textarea>
   <label for="branch_name">Branch Name</label>
   <input type="text" name="branch_name" />
   <label for="speaker">Speaker</label>
@@ -163,7 +163,7 @@ export function passageEditHTML(data: PassageRead): string {
   <label for="passage_name">Passage Name</label>
   <input required type="text" name="passage_name" placeholder="PaoloTrunk1" value="${data.passage_name}" />
   <label for="passage_content">Passage Content</label>
-  <textarea required name="passage_content">${data.passage_content}</textarea>
+  <textarea required name="passage_content">${data.content}</textarea>
   <label for="branch_name">Branch Name</label>
   <input required type="text" name="branch_name" placeholder="PaoloTrunk" value="${data.branch_name}" />
   <label for="speaker">Speaker</label>
