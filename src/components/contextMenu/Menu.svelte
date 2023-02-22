@@ -8,14 +8,14 @@
   export let y;
 
   // whenever x and y is changed, restrict box to be within bounds
-  $: (() => {
-    if (!menuEl) return;
+  $: if ((x, y))
+    () => {
+      if (!menuEl) return;
 
-    const rect = menuEl.getBoundingClientRect();
-    x = Math.min(window.innerWidth - rect.width, x);
-    if (y > window.innerHeight - rect.height) y -= rect.height;
-    // @ts-ignore
-  })(x, y);
+      const rect = menuEl.getBoundingClientRect();
+      x = Math.min(window.innerWidth - rect.width, x);
+      if (y > window.innerHeight - rect.height) y -= rect.height;
+    };
 
   const dispatch = createEventDispatcher();
 
