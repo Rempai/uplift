@@ -11,10 +11,8 @@
   import vbscriptHtml from "svelte-highlight/languages/vbscript-html";
   import onedark from "svelte-highlight/styles/atom-one-dark";
 
-  export let enctype = "application/x-www-form-urlencoded";
-
   export let crudRoute: string;
-  export let formHTML: string | CallableFunction;
+  export let formHTML: CallableFunction;
   export let service: CallableFunction;
   export let preview = false;
   export let code = "";
@@ -56,10 +54,9 @@
 
   const checkHTML = async () => {
     let get_data = await getData(crudRoute, id);
-    // @ts-ignore
     data = formHTML(get_data);
 
-    if (get_data.passage_content) code = get_data.passage_content;
+    if (get_data.content) code = get_data.content;
   };
 
   $: if (typeof formHTML === "function") {
@@ -74,7 +71,7 @@
 <main class={preview ? "flex justify-around flex-wrap g-4 admin-space" : "block admin-space"}>
   <div class="card w-fit">
     <h1 class="capitalize">Edit {page}</h1>
-    <Form handleSubmit={updateForm} backButton={true} on:back={() => history.back()} {enctype}>
+    <Form handleSubmit={updateForm} backButton={true} on:back={() => history.back()}>
       <div slot="forms">
         {#if typeof formHTML === "string"}
           {@html formHTML}
