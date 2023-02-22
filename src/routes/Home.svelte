@@ -19,7 +19,7 @@
       <h1>Uplift</h1>
       <p class="text-frost-1">Getting you where you should be</p>
       <span on:keypress on:click={() => push("/game")}>
-        <Button text="Start Uplift" class="md:!px-10" />
+        <Button text="Start Uplift" class="bg-frost-4 md:!px-10" />
       </span>
       <Button href="#about-uplift" text="Read more" class="bg-aurora-orange md:!px-10" />
     </div>

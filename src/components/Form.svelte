@@ -59,7 +59,7 @@
         {/each}
       </ul>
     </div>
-    <Button type="submit" text="submit" class="mt-4" />
+    <Button type="submit" text="submit" class="mt-4 bg-frost-4" />
   </form>
   {#if backButton}
     <span on:keypress on:click={() => dispatch("back")} class="mt-4">
