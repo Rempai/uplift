@@ -1,6 +1,6 @@
 <script lang="ts">
   export let info = false;
-  export let message;
+  export let message: string | boolean;
 
   let classes = `hover:brightness-110 rounded py-2 px-3 w-48 absolute top-10 right-10 z-[99] cursor-pointer shadow`;
 
@@ -9,9 +9,15 @@
   } else {
     classes = classes + ` bg-aurora-red`;
   }
+
+  $: if (message) {
+    setTimeout(() => {
+      message = "";
+    }, 5000);
+  }
 </script>
 
-{#if message}
+{#if message !== ""}
   <div on:keypress class={classes} on:click={() => (message = "")}>
     <p class="break-words">{message}</p>
   </div>
