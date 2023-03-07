@@ -593,7 +593,7 @@
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">
             <span on:keypress on:click={triggerRegister}>
-              <Button class="bg-frost-1" text="Continue" />
+              <Button class="bg-frost-4" text="Continue" />
             </span>
             <span on:keypress on:click={skipAndLogin}>
               <Button class="bg-frost-1" text="Skip and login" />
