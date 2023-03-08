@@ -6,7 +6,7 @@
 
   import { OpenAPI } from "@/lib/client/index";
 
-  OpenAPI.BASE = "https://uplift.deno.dev";
+  OpenAPI.BASE = "https://136.244.99.192";
   OpenAPI.TOKEN = localStorage.getItem("access_token");
 
   const routes = {
