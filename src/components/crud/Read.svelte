@@ -152,7 +152,7 @@
     <div class="card-header">
       <h1 class="capitalize">{crudName} management</h1>
       <span on:keypress on:click={() => push(loc)}>
-        <Button href="#{loc}" text="new {crudName}" class="!px-2">
+        <Button href="#{loc}" text="new {crudName}" class="!px-2 bg-frost-4">
           <div slot="icon" class="w-6 ml-4 text-night-1 flex items-center">
             <MdAddCircleOutline />
           </div>

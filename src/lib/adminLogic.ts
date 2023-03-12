@@ -16,7 +16,7 @@ import {
   userHTML,
 } from "@/lib/formHTML";
 
-import { AuthService, CharactersService, PassageHandlingService } from "@/lib/client";
+import { AuthService, CharactersService, OpenAPI, PassageHandlingService } from "@/lib/client";
 
 export interface route {
   route: string;
@@ -183,7 +183,7 @@ export async function getData(crudRoute: string, id?: string) {
 
   let res: Response;
   if (id) {
-    res = await fetch("https://localhost:8001/api" + crudRoute + id, {
+    res = await fetch(OpenAPI.BASE + "/api" + crudRoute + id, {
       method: "GET",
       mode: "cors",
       cache: "no-cache",
@@ -193,7 +193,7 @@ export async function getData(crudRoute: string, id?: string) {
       headers: new Headers(headers),
     });
   } else {
-    res = await fetch("https://localhost:8001/api" + crudRoute, {
+    res = await fetch(OpenAPI.BASE + "/api" + crudRoute, {
       method: "GET",
       mode: "cors",
       cache: "no-cache",
