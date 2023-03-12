@@ -6,7 +6,7 @@
 
   import { OpenAPI } from "@/lib/client/index";
 
-  OpenAPI.BASE = "https://136.244.99.192";
+  OpenAPI.BASE = "https://uplift.appelsapje.net";
   OpenAPI.TOKEN = localStorage.getItem("access_token");
 
   const routes = {
