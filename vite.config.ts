@@ -1,16 +1,20 @@
-import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import { defineConfig } from "vite";
 
-import mkcert from "vite-plugin-mkcert";
 import path from "path";
+import fs from "fs";
 
 export default defineConfig({
-  plugins: [svelte(), mkcert()],
+  plugins: [svelte()],
   base: "/id-2223-s1/moed/uplift/",
   root: "./",
   publicDir: "public",
   server: {
     host: "127.0.0.1",
+    https: {
+      key: fs.readFileSync("./key.pem"),
+      cert: fs.readFileSync("./cert.pem"),
+    },
   },
   resolve: {
     alias: {
