@@ -91,7 +91,7 @@
 
 <div
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
-  <div class="overflow-y-auto flex flex-col flex-wrap">
+  <div class="overflow-x-auto flex flex-col flex-wrap">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
     <span
       on:keypress
@@ -100,6 +100,7 @@
       <Button text="Go to branch" class="bg-aurora-orange" />
     </span>
     <div class="h-full" />
+    <div class="overflow-y-auto">
     {#if currentTab}
       {#each branch_data as data}
         <div
@@ -115,11 +116,12 @@
         </div>
       {/each}
     {/if}
+    </div>
   </div>
   <div class="border border-night-1" />
   <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap pb-4">
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
-      <div slot="forms" class="mr-12">
+      <div slot="forms" class="width-full">
         <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="main_problem">Main Problem</label>
         <input
           disabled
