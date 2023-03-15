@@ -2,13 +2,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { PassengerRead } from "./PassengerRead";
+
 export type RideRead = {
   id: number;
-  passenger: {
-    id: number;
-    name: string;
-    icon: string;
-  };
+  passenger: PassengerRead;
   from_location: string;
   to_location: string;
   time: number;

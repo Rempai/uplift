@@ -4,9 +4,10 @@
 import type { AttributeCreate } from "../models/AttributeCreate";
 import type { AttributeRead } from "../models/AttributeRead";
 import type { AttributeUpdate } from "../models/AttributeUpdate";
-import type { Body_PassageHandling_post_passage } from "../models/Body_PassageHandling_post_passage";
+import type { PassageCreate } from "../models/PassageCreate";
 import type { PassageRead } from "../models/PassageRead";
 import type { PassageUpdate } from "../models/PassageUpdate";
+import type { Response } from "../models/Response";
 
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
@@ -31,6 +32,9 @@ export class PassageHandlingService {
         passage_name: passageName,
         passenger_id: passengerId,
       },
+      errors: {
+        500: `Internal Server Error`,
+      },
     });
   }
 
@@ -47,21 +51,31 @@ export class PassageHandlingService {
       path: {
         id: id,
       },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Delete Passage
    * @param id
-   * @returns any Successful Response
+   * @returns Response Successful Response
    * @throws ApiError
    */
-  public static deletePassage(id: number): CancelablePromise<any> {
+  public static deletePassage(id: number): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/passage_handler/passage/{id}/",
       path: {
         id: id,
+      },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }
@@ -85,21 +99,31 @@ export class PassageHandlingService {
       },
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Post Passage
-   * @param formData
-   * @returns any Successful Response
+   * @param requestBody
+   * @returns any Created Resource
    * @throws ApiError
    */
-  public static postPassage(formData: Body_PassageHandling_post_passage): CancelablePromise<any> {
+  public static postPassage(requestBody: PassageCreate): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/passage_handler/passage/",
-      formData: formData,
-      mediaType: "multipart/form-data",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        401: `Unautorized`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
@@ -112,6 +136,9 @@ export class PassageHandlingService {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/passage_handler/attributes/",
+      errors: {
+        500: `Internal Server Error`,
+      },
     });
   }
 
@@ -128,21 +155,31 @@ export class PassageHandlingService {
       path: {
         id: id,
       },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Delete Attribute
    * @param id
-   * @returns any Successful Response
+   * @returns Response Successful Response
    * @throws ApiError
    */
-  public static deleteAttribute(id: number): CancelablePromise<any> {
+  public static deleteAttribute(id: number): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/passage_handler/attribute/{id}/",
       path: {
         id: id,
+      },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }
@@ -166,13 +203,19 @@ export class PassageHandlingService {
       },
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Post Attribute
    * @param requestBody
-   * @returns any Successful Response
+   * @returns any Created Resource
    * @throws ApiError
    */
   public static postAttribute(requestBody: AttributeCreate): CancelablePromise<any> {
@@ -181,6 +224,10 @@ export class PassageHandlingService {
       url: "/api/passage_handler/attribute/",
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        401: `Unautorized`,
+        500: `Internal Server Error`,
+      },
     });
   }
 }

@@ -3,11 +3,17 @@
 /* eslint-disable */
 
 export type UserUpdate = {
-  username: string;
-  role: string;
-  disabled?: boolean;
-  id?: number;
-  password?: string;
   old_password?: string;
+  new_password?: string;
   confirm_password?: string;
+  username?: string;
+  role?: UserUpdate.role;
+  is_active?: boolean;
 };
+
+export namespace UserUpdate {
+  export enum role {
+    ADMIN = "Admin",
+    USER = "User",
+  }
+}

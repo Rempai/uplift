@@ -4,8 +4,8 @@
 import type { PassengerCreate } from "../models/PassengerCreate";
 import type { PassengerRead } from "../models/PassengerRead";
 import type { PassengerUpdate } from "../models/PassengerUpdate";
+import type { Response } from "../models/Response";
 import type { ReviewCreate } from "../models/ReviewCreate";
-import type { ReviewedUser } from "../models/ReviewedUser";
 import type { ReviewedUserCreate } from "../models/ReviewedUserCreate";
 import type { ReviewRead } from "../models/ReviewRead";
 import type { ReviewUpdate } from "../models/ReviewUpdate";
@@ -27,6 +27,9 @@ export class CharactersService {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/passengers/",
+      errors: {
+        500: `Internal Server Error`,
+      },
     });
   }
 
@@ -43,21 +46,31 @@ export class CharactersService {
       path: {
         id: id,
       },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Delete Passenger
    * @param id
-   * @returns any Successful Response
+   * @returns Response Successful Response
    * @throws ApiError
    */
-  public static deletePassenger(id: number): CancelablePromise<any> {
+  public static deletePassenger(id: number): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/character/passenger/{id}/",
       path: {
         id: id,
+      },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }
@@ -81,13 +94,19 @@ export class CharactersService {
       },
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Post Passenger
    * @param requestBody
-   * @returns any Successful Response
+   * @returns any Created Resource
    * @throws ApiError
    */
   public static postPassenger(requestBody: PassengerCreate): CancelablePromise<any> {
@@ -96,6 +115,10 @@ export class CharactersService {
       url: "/api/character/passenger/",
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        401: `Unautorized`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
@@ -105,12 +128,15 @@ export class CharactersService {
    * @returns RideRead Successful Response
    * @throws ApiError
    */
-  public static getRides(userId?: number): CancelablePromise<Array<RideRead>> {
+  public static getRides(userId?: string): CancelablePromise<Array<RideRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/rides/",
       query: {
-        user_id: userId,
+        userId: userId,
+      },
+      errors: {
+        500: `Internal Server Error`,
       },
     });
   }
@@ -128,21 +154,31 @@ export class CharactersService {
       path: {
         id: id,
       },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Delete Ride
    * @param id
-   * @returns any Successful Response
+   * @returns Response Successful Response
    * @throws ApiError
    */
-  public static deleteRide(id: number): CancelablePromise<any> {
+  public static deleteRide(id: number): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/character/ride/{id}/",
       path: {
         id: id,
+      },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }
@@ -163,13 +199,19 @@ export class CharactersService {
       },
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Post Ride
    * @param requestBody
-   * @returns any Successful Response
+   * @returns any Created Resource
    * @throws ApiError
    */
   public static postRide(requestBody: RideCreate): CancelablePromise<any> {
@@ -178,26 +220,33 @@ export class CharactersService {
       url: "/api/character/ride/",
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        401: `Unautorized`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Get Reviews
    * @param userId
-   * @param rideId
-   * @returns any Successful Response
+   * @param reviewId
+   * @returns ReviewRead Successful Response
    * @throws ApiError
    */
   public static getReviews(
     userId?: number,
-    rideId?: number
-  ): CancelablePromise<Array<ReviewRead | ReviewedUser>> {
+    reviewId?: number
+  ): CancelablePromise<Array<ReviewRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/reviews/",
       query: {
-        user_id: userId,
-        ride_id: rideId,
+        userId: userId,
+        reviewId: reviewId,
+      },
+      errors: {
+        500: `Internal Server Error`,
       },
     });
   }
@@ -205,15 +254,20 @@ export class CharactersService {
   /**
    * Get Review By Id
    * @param id
-   * @returns any Successful Response
+   * @returns ReviewRead Successful Response
    * @throws ApiError
    */
-  public static getReviewById(id: number): CancelablePromise<any> {
+  public static getReviewById(id: number): CancelablePromise<ReviewRead> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/review/{id}/",
       path: {
         id: id,
+      },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }
@@ -221,15 +275,20 @@ export class CharactersService {
   /**
    * Delete Review
    * @param id
-   * @returns any Successful Response
+   * @returns Response Successful Response
    * @throws ApiError
    */
-  public static deleteReview(id: number): CancelablePromise<any> {
+  public static deleteReview(id: number): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/character/review/{id}/",
       path: {
         id: id,
+      },
+      errors: {
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
       },
     });
   }
@@ -253,13 +312,19 @@ export class CharactersService {
       },
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unautorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
    * Post Review
    * @param requestBody
-   * @returns any Successful Response
+   * @returns any Created Resource
    * @throws ApiError
    */
   public static postReview(requestBody: ReviewCreate): CancelablePromise<any> {
@@ -268,13 +333,17 @@ export class CharactersService {
       url: "/api/character/review/",
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        401: `Unautorized`,
+        500: `Internal Server Error`,
+      },
     });
   }
 
   /**
-   * Post Reviewed User
+   * Post ReviewedUser
    * @param requestBody
-   * @returns any Successful Response
+   * @returns any Created Resource
    * @throws ApiError
    */
   public static postReviewedUser(requestBody: ReviewedUserCreate): CancelablePromise<any> {
@@ -283,6 +352,10 @@ export class CharactersService {
       url: "/api/character/reviewed_user/",
       body: requestBody,
       mediaType: "application/json",
+      errors: {
+        401: `Unautorized`,
+        500: `Internal Server Error`,
+      },
     });
   }
 }

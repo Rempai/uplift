@@ -2,27 +2,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { RideRead } from "./RideRead";
+
 export type ReviewRead = {
   id: number;
-  ride: {
-    id: number;
-    passenger: {
-      id: number;
-      name: string;
-      icon: string;
-    };
-    from_location: string;
-    to_location: string;
-    time: number;
-    main_problem: string;
-    parties_involved: string;
-    main_cause: string;
-    bravery: number;
-    perseverance: number;
-    integrity: number;
-    enthusiasm: number;
-    passengerId: number;
-  };
+  ride: RideRead;
   stars: number;
   description: string;
   solution: string;
