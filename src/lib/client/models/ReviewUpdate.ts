@@ -3,8 +3,9 @@
 /* eslint-disable */
 
 export type ReviewUpdate = {
-  stars: number;
-  description: string;
-  solution: string;
-  linked_score: number;
+  stars?: number;
+  description?: string;
+  solution?: string;
+  linked_score?: number;
+  rideId?: number;
 };

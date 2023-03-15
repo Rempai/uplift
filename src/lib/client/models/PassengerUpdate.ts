@@ -3,6 +3,6 @@
 /* eslint-disable */
 
 export type PassengerUpdate = {
-  name: string;
-  icon: string;
+  name?: string;
+  icon?: string;
 };

@@ -3,6 +3,12 @@
 /* eslint-disable */
 
 export type RideRead = {
+  id: number;
+  passenger: {
+    id: number;
+    name: string;
+    icon: string;
+  };
   from_location: string;
   to_location: string;
   time: number;
@@ -13,6 +19,5 @@ export type RideRead = {
   perseverance: number;
   integrity: number;
   enthusiasm: number;
-  id: number;
-  passenger: any;
+  passengerId: number;
 };
