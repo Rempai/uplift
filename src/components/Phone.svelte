@@ -2,10 +2,10 @@
   import { createEventDispatcher } from "svelte";
   import { fade } from "svelte/transition";
 
-  import IoMdCloseCircleOutline from "svelte-icons/io/IoMdCloseCircleOutline.svelte";
-  import GiRoad from "svelte-icons/gi/GiRoad.svelte";
-  import IoMdStarOutline from "svelte-icons/io/IoMdStarOutline.svelte";
-  import TiHomeOutline from "svelte-icons/ti/TiHomeOutline.svelte";
+  import IoIosCloseCircleOutline from "~icons/ion/close-circle-outline";
+  import GiRoad from "~icons/game-icons/road";
+  import IoIosStarOutline from "~icons/ion/star-outline";
+  import IoIosHomeOutline from "~icons/ion/home-outline";
 
   import ButtonA from "@/components/Button.svelte";
   import ButtonB from "@/components/Button.svelte";
@@ -42,8 +42,8 @@
   <div class="text-2xl font-bold pt-2 pl-2 pb-2 bg-night-2">
     <div class="mx-4 flex justify-between items-center">
       <p>{menuName}</p>
-      <button on:click={dispatchClose} class="h-10 text-frost-3">
-        <IoMdCloseCircleOutline />
+      <button on:click={dispatchClose} >
+        <IoIosCloseCircleOutline font-size ="1.8em" />
       </button>
     </div>
   </div>
@@ -65,19 +65,19 @@
       on:keypress
       on:click={() => forward(0)}
       class="cursor-pointer flex justify-center items-center w-full h-full hover:bg-frost-4 bg-night-3">
-      <button class="bg-transparent py-3 w-10 text-frost-3"><GiRoad /></button>
+      <button class="bg-transparent py-3 w-10 text-frost-3"><GiRoad font-size = "2em" /></button>
     </span>
     <span
       on:keypress
       on:click={() => forward(-1)}
       class="cursor-pointer flex justify-center items-center w-full h-full hover:bg-frost-4 bg-night-3">
-      <button class="bg-transparent py-3 w-10 text-frost-3"><TiHomeOutline /></button>
+      <button class="bg-transparent py-3 w-10 text-frost-3"><IoIosHomeOutline font-size = "2em"/></button>
     </span>
     <span
       on:keypress
       on:click={() => forward(2)}
       class="cursor-pointer flex justify-center items-center w-full h-full hover:bg-frost-4 bg-night-3">
-      <button class="bg-transparent py-3 w-10 text-frost-3"><IoMdStarOutline /></button>
+      <button class="bg-transparent py-3 w-10 text-frost-3"><IoIosStarOutline font-size="2em" /></button>
     </span>
   </div>
 </div>

@@ -3,15 +3,15 @@
 
   import AdminNavLink from "@/components/AdminNavLink.svelte";
 
-  import IoIosLogOut from "svelte-icons/io/IoIosLogOut.svelte";
-  import TiHomeOutline from "svelte-icons/ti/TiHomeOutline.svelte";
-  import GoDatabase from "svelte-icons/go/GoDatabase.svelte";
-  import FaRegUserCircle from "svelte-icons/fa/FaRegUserCircle.svelte";
-  import MdPersonOutline from "svelte-icons/md/MdPersonOutline.svelte";
-  import GiRoad from "svelte-icons/gi/GiRoad.svelte";
-  import IoIosStarOutline from "svelte-icons/io/IoIosStarOutline.svelte";
-  import FaRegFileAlt from "svelte-icons/fa/FaRegFileAlt.svelte";
-  import IoIosAttach from "svelte-icons/io/IoIosAttach.svelte";
+  import IoIosLogOut from "~icons/ion/log-out-outline";
+  import IoIosHomeOutline from "~icons/ion/home-outline";
+  import IoIosServer from "~icons/ion/server-outline";
+  import IoIosPersonCircleOutline from "~icons/ion/person-circle-outline";
+  import IoIosPersonOutline from "~icons/ion/person-sharp";
+  import IoIosCarOutline from "~icons/ion/car-outline";
+  import IoIosStarOutline from "~icons/ion/star-outline";
+  import IoIosDocOutline from "~icons/ion/document-text-outline";
+  import IoIosAttach from "~icons/ion/attach-outline";
 
   import Logo from "/logo.png";
 
@@ -29,40 +29,40 @@
   </div>
   <span on:keypress on:click={logout}>
     <AdminNavLink name="Logout" link="/">
-      <IoIosLogOut />
+      <IoIosLogOut class="-p-1" font-size="2em" />
     </AdminNavLink>
   </span>
   <AdminNavLink name="Homepage" link="/admin">
-    <TiHomeOutline />
+    <IoIosHomeOutline font-size="1.8em" />
   </AdminNavLink>
   <AdminNavLink name="Database" link="/admin/database">
-    <GoDatabase />
+    <IoIosServer font-size="2em" />
   </AdminNavLink>
   <details open={true} class="cursor-pointer">
     <summary>User management</summary>
     <AdminNavLink name="User" link="/admin/user">
-      <FaRegUserCircle />
+      <IoIosPersonCircleOutline class="pr-1" font-size="2.2em" />
     </AdminNavLink>
   </details>
   <details open={true} class="cursor-pointer">
     <summary class="mr-2">Character management</summary>
     <AdminNavLink name="Passenger" link="/admin/passenger">
-      <MdPersonOutline />
+      <IoIosPersonOutline font-size="1.8em" />
     </AdminNavLink>
     <AdminNavLink name="Ride" link="/admin/ride">
-      <GiRoad />
+      <IoIosCarOutline class="pr-0.8" font-size="2em" />
     </AdminNavLink>
     <AdminNavLink name="Review" link="/admin/review">
-      <IoIosStarOutline />
+      <IoIosStarOutline font-size="1.9em" />
     </AdminNavLink>
   </details>
   <details open={true} class="cursor-pointer">
     <summary>Story management</summary>
     <AdminNavLink name="Passage" link="/admin/passage">
-      <FaRegFileAlt />
+      <IoIosDocOutline class="pl-0.5" font-size="1.8em" />
     </AdminNavLink>
     <AdminNavLink name="Attribute" link="/admin/attribute">
-      <IoIosAttach />
+      <IoIosAttach font-size="2em" />
     </AdminNavLink>
   </details>
 </nav>
