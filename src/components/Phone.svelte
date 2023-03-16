@@ -42,8 +42,8 @@
   <div class="text-2xl font-bold pt-2 pl-2 pb-2 bg-night-2">
     <div class="mx-4 flex justify-between items-center">
       <p>{menuName}</p>
-      <button on:click={dispatchClose} >
-        <IoIosCloseCircleOutline font-size ="1.8em" />
+      <button on:click={dispatchClose}>
+        <IoIosCloseCircleOutline font-size="1.8em" />
       </button>
     </div>
   </div>
@@ -65,19 +65,21 @@
       on:keypress
       on:click={() => forward(0)}
       class="cursor-pointer flex justify-center items-center w-full h-full hover:bg-frost-4 bg-night-3">
-      <button class="bg-transparent py-3 w-10 text-frost-3"><GiRoad font-size = "2em" /></button>
+      <button class="bg-transparent py-3 w-10 text-frost-3"><GiRoad font-size="2em" /></button>
     </span>
     <span
       on:keypress
       on:click={() => forward(-1)}
       class="cursor-pointer flex justify-center items-center w-full h-full hover:bg-frost-4 bg-night-3">
-      <button class="bg-transparent py-3 w-10 text-frost-3"><IoIosHomeOutline font-size = "2em"/></button>
+      <button class="bg-transparent py-3 w-10 text-frost-3"
+        ><IoIosHomeOutline font-size="2em" /></button>
     </span>
     <span
       on:keypress
       on:click={() => forward(2)}
       class="cursor-pointer flex justify-center items-center w-full h-full hover:bg-frost-4 bg-night-3">
-      <button class="bg-transparent py-3 w-10 text-frost-3"><IoIosStarOutline font-size="2em" /></button>
+      <button class="bg-transparent py-3 w-10 text-frost-3"
+        ><IoIosStarOutline font-size="2em" /></button>
     </span>
   </div>
 </div>

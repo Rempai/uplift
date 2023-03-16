@@ -552,7 +552,7 @@
       <button
         class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
         on:click={phoneToggle}>
-       <IoIosPhonePortSharp font-size=2.5em class="text-night-3" />
+        <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
       </button>
     {:else if login}
       <Phone on:close={phoneToggle} on:item={handleClick} menuName="Login">
@@ -619,17 +619,16 @@
                         <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
                         <div>
                           <p class="flex gap-2">
-                           <IoIosCard font-size="1.5em" />{data.passenger
-                              .name}
+                            <IoIosCard font-size="1.5em" />{data.passenger.name}
                           </p>
                           <p class="flex gap-2">
                             <IoIosLocationOutline font-size="1.5em" />{data.from_location}
                           </p>
                           <p class="flex gap-2">
-                           <FaRoute font-size="1.5em" />{data.to_location}
+                            <FaRoute font-size="1.5em" />{data.to_location}
                           </p>
                           <p class="flex gap-2">
-                           <TiTime font-size="1.5em" />{data.time} minutes
+                            <TiTime font-size="1.5em" />{data.time} minutes
                           </p>
                         </div>
                       </div>
@@ -672,7 +671,8 @@
                         {data.passenger.name}
                       </p>
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoIosCalendar font-size="2em" /></span>
+                        <span class="w-5 mr-2 text-frost-3"
+                          ><IoIosCalendar font-size="2em" /></span>
                         {data.date}
                       </p>
                       <div class="inline-flex items-center">
@@ -681,7 +681,7 @@
                         {/each}
                         {#if data.stars < 5}
                           {#each Array(5 - data.stars) as _}
-                            <span class="w-5 mr-2 text-frost-3"><IoIosStarOutline  /></span>
+                            <span class="w-5 mr-2 text-frost-3"><IoIosStarOutline /></span>
                           {/each}
                         {/if}
                       </div>

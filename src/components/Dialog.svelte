@@ -113,7 +113,7 @@
               on:click={() => dispatch("next")}>
               <Button text="Continue" class="bg-transparent">
                 <div slot="icon" class="w-6 ml-3 text-snow-1">
-                  <MdChevronRight font-size = "2em" />
+                  <MdChevronRight font-size="2em" />
                 </div>
               </Button>
             </span>
