@@ -3,7 +3,6 @@ import { defineConfig } from "vite";
 
 import Icons from "unplugin-icons/vite";
 
-
 import path from "path";
 import fs from "fs";
 
