@@ -3,6 +3,7 @@
   "display": "Svelte",
   "_version": "3.0.0",
   "compilerOptions": {
+    "target": "ESNext",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
