@@ -18,9 +18,9 @@
 
   import { DataHandler, Search, Pagination, RowCount, RowsPerPage } from "@vincjo/datatables";
 
-  import FaRegEdit from "svelte-icons/fa/FaRegEdit.svelte";
-  import FaRegTrashAlt from "svelte-icons/fa/FaRegTrashAlt.svelte";
-  import MdAddCircleOutline from "svelte-icons/md/MdAddCircleOutline.svelte";
+  import FaRegEdit from "~icons/fa-regular/edit";
+  import FaRegTrashAlt from "~icons/fa-regular/trash-alt";
+  import MdAddCircleOutline from "~icons/mdi/circle-outline";
 
   export let crudRoute: string;
 
@@ -154,7 +154,7 @@
       <span on:keypress on:click={() => push(loc)}>
         <Button href="#{loc}" text="new {crudName}" class="!px-2 bg-frost-4">
           <div slot="icon" class="w-6 ml-4 text-night-1 flex items-center">
-            <MdAddCircleOutline />
+            <MdAddCircleOutline font-size= "2em" />
           </div>
         </Button>
       </span>
@@ -221,14 +221,14 @@
                       <span on:keypress on:click={() => push(locEdit(row.id))}>
                         <Button href="#{$location}/edit/{row.id}" text="" class="bg-aurora-yellow">
                           <div slot="icon" class="w-5 h-8 flex items-center text-night-1">
-                            <FaRegEdit />
+                            <FaRegEdit font-size = "2em"/>
                           </div>
                         </Button>
                       </span>
                       <span on:keypress on:click={() => deleteConfirm(row)}>
                         <Button text="" class="bg-aurora-red">
                           <div slot="icon" class="w-4 h-8 flex items-center text-night-1">
-                            <FaRegTrashAlt />
+                            <FaRegTrashAlt font-size = "2em"/>
                           </div>
                         </Button>
                       </span>
