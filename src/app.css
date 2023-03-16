@@ -50,4 +50,8 @@ html {
   mark {
     @apply bg-aurora-orange cursor-pointer;
   }
+
+  svg {
+    @apply text-frost-4;
+  }
 }
