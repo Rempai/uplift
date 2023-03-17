@@ -128,7 +128,7 @@ export class CharactersService {
    * @returns RideRead Successful Response
    * @throws ApiError
    */
-  public static getRides(userId?: string): CancelablePromise<Array<RideRead>> {
+  public static getRides(userId?: number): CancelablePromise<Array<RideRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/rides/",
@@ -230,20 +230,20 @@ export class CharactersService {
   /**
    * Get Reviews
    * @param userId
-   * @param reviewId
+   * @param rideId
    * @returns ReviewRead Successful Response
    * @throws ApiError
    */
   public static getReviews(
     userId?: number,
-    reviewId?: number
+    rideId?: number
   ): CancelablePromise<Array<ReviewRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/reviews/",
       query: {
         userId: userId,
-        reviewId: reviewId,
+        rideId: rideId,
       },
       errors: {
         500: `Internal Server Error`,

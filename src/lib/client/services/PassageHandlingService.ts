@@ -23,7 +23,7 @@ export class PassageHandlingService {
    */
   public static getPassages(
     passageName?: string,
-    passengerId?: string
+    passengerId?: number
   ): CancelablePromise<Array<PassageRead>> {
     return __request(OpenAPI, {
       method: "GET",
