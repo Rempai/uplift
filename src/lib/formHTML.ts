@@ -1,10 +1,10 @@
 import type {
-  AttributeRead,
-  PassageRead,
-  PassengerRead,
-  ReviewCreate,
-  RideRead,
-  UserRead,
+  AttributeUpdate,
+  PassageUpdate,
+  PassengerUpdate,
+  ReviewUpdate,
+  RideUpdate,
+  UserUpdate,
 } from "@/lib/client";
 
 export const userHTML = `
@@ -86,7 +86,7 @@ export const attributeHTML = `
   <input required type="text" name="font_family" placeholder="Arial" />
 `;
 
-export function userEditHTML(data: UserRead): string {
+export function userEditHTML(data: UserUpdate): string {
   const getOption = data.role;
   let option: string;
 
@@ -94,7 +94,7 @@ export function userEditHTML(data: UserRead): string {
   <label for="username">Username</label>
   <input type="text" name="username" placeholder="Username" value="${data.username}" />
   <label for="disabled">Disabled</label>
-  <input type="checkbox" name="disabled" checked="${data.disabled}" />
+  <input type="checkbox" name="disabled" checked="${data.is_active}" />
   <label for="role">Role</label>
   `;
 
@@ -117,7 +117,7 @@ export function userEditHTML(data: UserRead): string {
   return str + option;
 }
 
-export function passengerEditHTML(data: PassengerRead): string {
+export function passengerEditHTML(data: PassengerUpdate): string {
   return `
   <label for="name">Name</label>
   <input required type="text" name="name" placeholder="Name" value="${data.name}" />
@@ -126,7 +126,7 @@ export function passengerEditHTML(data: PassengerRead): string {
   `;
 }
 
-export function rideEditHTML(data: RideRead): string {
+export function rideEditHTML(data: RideUpdate): string {
   return `
   <label for="from_location">from_location</label>
   <input required type="text" name="from_location" placeholder="Brooklyn" value="${data.from_location}" />
@@ -143,22 +143,22 @@ export function rideEditHTML(data: RideRead): string {
   <label for="enthusiasm">Enthusiasm</label>
   <input required type="number" name="enthusiasm" placeholder="5" value="${data.enthusiasm}" />
   <label for="passengerId">passenger id</label>
-  <input required type="number" name="passengerId" placeholder="1" value="${data.passenger.id}" />
+  <input required type="number" name="passengerId" placeholder="1" value="${data.passengerId}" />
   `;
 }
 
-export function reviewEditHTML(data: ReviewCreate): string {
+export function reviewEditHTML(data: ReviewUpdate): string {
   return `
   <label for="stars">Stars</label>
   <input required type="number" name="stars" placeholder="3" value="${data.stars}" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum">${data.description}</textarea>
   <label for="passengerId">passengerId</label>
-  <input required type="number" name="passengerId" placeholder="1" value="${data.passengerId}" />
+  <input required type="number" name="passengerId" placeholder="1" value="${data.rideId}" />
   `;
 }
 
-export function passageEditHTML(data: PassageRead): string {
+export function passageEditHTML(data: PassageUpdate): string {
   return `
   <label for="passage_name">Passage Name</label>
   <input required type="text" name="passage_name" placeholder="PaoloTrunk1" value="${data.passage_name}" />
@@ -179,7 +179,7 @@ export function passageEditHTML(data: PassageRead): string {
   `;
 }
 
-export function attributeEditHTML(data: AttributeRead): string {
+export function attributeEditHTML(data: AttributeUpdate): string {
   return `
   <label for="color">Color</label>
   <input type="text" name="color" placeholder="red" value="${data.color}" />
