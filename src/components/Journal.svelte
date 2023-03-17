@@ -40,25 +40,9 @@
         }
 
         let item = tabItems.find((e) => e.value === tab);
-        switch (tab) {
-          case 2:
-            if (!obj.trunk && item.value === 2) branch_data.push(obj);
-            break;
-          case 3:
-            if (!obj.trunk && item.value === 3) branch_data.push(obj);
-            break;
-          case 4:
-            if (!obj.trunk && item.value === 4) branch_data.push(obj);
-            break;
-          case 5:
-            if (!obj.trunk && item.value === 5) branch_data.push(obj);
-            break;
-          case 6:
-            if (!obj.trunk && item.value === 6) branch_data.push(obj);
-            break;
-          case 7:
-            if (!obj.trunk && item.value === 7) branch_data.push(obj);
-            break;
+        const validTabs = [2, 3, 4, 5, 6, 7];
+        if (validTabs.includes(tab) && !obj.trunk && item.value === tab) {
+          branch_data.push(obj);
         }
       }
     });
