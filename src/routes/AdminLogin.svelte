@@ -46,13 +46,11 @@
   class="w-full h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center">
   <div class="flex flex-col items-center w-fit p-6 md:px-48 rounded bg-night-2/80 shadow">
     <h1>Login</h1>
-    <span class="submit">
-      <Form login={true} {handleSubmit} />
-    </span>
+    <Form login={true} {handleSubmit} />
     <hr class="my-6 w-10/12" />
     <Button
       on:click={() => push("/")}
       text="Go to homepage"
-      class="bg-transparent !border-aurora-red hover:bg-aurora-red" />
+      class="!border-aurora-red hover:bg-aurora-red" />
   </div>
 </main>
