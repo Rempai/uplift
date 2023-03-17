@@ -33,11 +33,11 @@ export class AuthService {
    * @returns Token Successful Response
    * @throws ApiError
    */
-  public static login(formData: Login): CancelablePromise<Token> {
+  public static login(formData: URLSearchParams): CancelablePromise<Token> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/auth/login/",
-      formData: formData,
+      body: formData.toString(),
       mediaType: "application/x-www-form-urlencoded",
       errors: {
         400: `Bad Request`,
