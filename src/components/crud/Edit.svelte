@@ -12,12 +12,12 @@
   import onedark from "svelte-highlight/styles/atom-one-dark";
 
   export let crudRoute: string;
-  export let formHTML: CallableFunction;
+  export let formHTML: string | CallableFunction;
   export let service: CallableFunction;
   export let preview = false;
   export let code = "";
 
-  let data;
+  let data: string;
   let page: string;
   let id: string;
 
@@ -54,12 +54,14 @@
 
   const checkHTML = async () => {
     let get_data = await getData(crudRoute, id);
-    data = formHTML(get_data);
+    if (formHTML instanceof Function) {
+      data = formHTML(get_data);
+    }
 
     if (get_data.content) code = get_data.content;
   };
 
-  $: if (typeof formHTML === "function") {
+  $: if (formHTML instanceof Function) {
     checkHTML();
   }
 </script>
