@@ -24,23 +24,15 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    await validateData(crudRoute, value, true).then(async () => {
-      if (formData) {
-        await service(target)
-          .then(() => push("/admin/" + page))
-          .catch((err: string) => {
-            validationErrorCheck(err, true);
-            $validation = $validation;
-          });
-      } else {
-        await service(value)
-          .then(() => push("/admin/" + page))
-          .catch((err: string) => {
-            validationErrorCheck(err, true);
-            $validation = $validation;
-          });
-      }
-    });
+    try {
+      await validateData(crudRoute, value, true);
+      const targetValue = formData ? target : value;
+      await service(targetValue);
+      push("/admin/" + page);
+    } catch (error) {
+      validationErrorCheck(error, true);
+      $validation = $validation;
+    }
   };
 </script>
 
