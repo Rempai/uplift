@@ -28,49 +28,49 @@
     <p>Uplift Admin</p>
   </div>
   <div class="flex flex-col items-stretch">
-  <span on:keypress on:click={logout}>
-    <AdminNavLink name="Logout" link="/">
-      <IoIosLogOut font-size="1.6em" />
+    <span on:keypress on:click={logout}>
+      <AdminNavLink name="Logout" link="/">
+        <IoIosLogOut font-size="1.6em" />
+      </AdminNavLink>
+    </span>
+    <AdminNavLink name="Homepage" link="/admin">
+      <IoIosHomeOutline font-size="1.4em" />
     </AdminNavLink>
-  </span>
-  <AdminNavLink name="Homepage" link="/admin">
-    <IoIosHomeOutline font-size="1.4em" />
-  </AdminNavLink>
-  <AdminNavLink name="Database" link="/admin/database">
-    <IoIosServer font-size="1.4em" />
-  </AdminNavLink>
-</div>
+    <AdminNavLink name="Database" link="/admin/database">
+      <IoIosServer font-size="1.4em" />
+    </AdminNavLink>
+  </div>
   <details open={true} class="cursor-pointer">
     <summary>User management</summary>
     <div class="flex flex-col">
-    <AdminNavLink name="User" link="/admin/user">
-      <IoIosPersonCircleOutline class="pr-1" font-size="2em" />
-    </AdminNavLink>
-</div>
-</details>
+      <AdminNavLink name="User" link="/admin/user">
+        <IoIosPersonCircleOutline class="pr-1" font-size="2em" />
+      </AdminNavLink>
+    </div>
+  </details>
   <details open={true} class="cursor-pointer">
     <summary class="mr-2">Character management</summary>
     <div class="flex flex-col items-start">
-    <AdminNavLink name="Passenger" link="/admin/passenger">
-      <MdPersonOutline font-size="1.6em" />
-    </AdminNavLink>
-    <AdminNavLink name="Ride" link="/admin/ride">
-      <GiRoad font-size="1.6em" />
-    </AdminNavLink>
-    <AdminNavLink name="Review" link="/admin/review">
-      <IoIosStarOutline font-size="1.5em" />
-    </AdminNavLink>
+      <AdminNavLink name="Passenger" link="/admin/passenger">
+        <MdPersonOutline font-size="1.6em" />
+      </AdminNavLink>
+      <AdminNavLink name="Ride" link="/admin/ride">
+        <GiRoad font-size="1.6em" />
+      </AdminNavLink>
+      <AdminNavLink name="Review" link="/admin/review">
+        <IoIosStarOutline font-size="1.5em" />
+      </AdminNavLink>
     </div>
   </details>
   <details open={true} class="cursor-pointer">
     <summary>Story management</summary>
     <div class="flex flex-col items-start">
-    <AdminNavLink name="Passage" link="/admin/passage">
-      <IoIosDocOutline font-size="1.4em" />
-    </AdminNavLink>
-    <AdminNavLink name="Attribute" link="/admin/attribute">
-      <IoIosAttach font-size="1.6em" />
-    </AdminNavLink>
+      <AdminNavLink name="Passage" link="/admin/passage">
+        <IoIosDocOutline font-size="1.4em" />
+      </AdminNavLink>
+      <AdminNavLink name="Attribute" link="/admin/attribute">
+        <IoIosAttach font-size="1.6em" />
+      </AdminNavLink>
     </div>
   </details>
 </nav>
