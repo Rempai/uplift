@@ -84,7 +84,7 @@
       <Button text="Go to branch" class="bg-aurora-orange" />
     </span>
     <div class="h-full" />
-    <div class="overflow-y-auto">
+    <div class="overflow-y-auto overflow-x-hidden">
       {#if currentTab}
         {#each branch_data as data}
           <div
@@ -141,7 +141,7 @@
           <table class="w-full">
             <thead>
               <tr>
-                <th class="bg-aurora-purple" />
+                <th class="bg-gray-400" />
                 <th class="text-center bg-frost-1" colspan="2">Underused</th>
                 <th class="text-center bg-frost-1">Balanced</th>
                 <th class="text-center bg-frost-1" colspan="2">Overused</th>
