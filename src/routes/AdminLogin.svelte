@@ -12,11 +12,8 @@
 
   $validation.length = 0;
   const handleSubmit = async ({ target }) => {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
-
-    // @ts-ignore you want formdata dumbass
-    await AuthService.loginForAccessToken(value)
+    const urlSearchParams = new URLSearchParams(new FormData(target) as any);
+    await AuthService.login(urlSearchParams)
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
@@ -25,6 +22,10 @@
         validationErrorCheck(err, false);
         $validation = $validation;
       });
+
+    if (localStorage.getItem("access_token") === null) {
+      return;
+    }
 
     let parsed_jwt = await parseJwt(localStorage.getItem("access_token"));
 
