@@ -22,6 +22,7 @@ export type { Register } from "./models/Register";
 export type { Response } from "./models/Response";
 export type { ReviewCreate } from "./models/ReviewCreate";
 export type { ReviewedUserCreate } from "./models/ReviewedUserCreate";
+export type { ReviewedUserRead } from "./models/ReviewedUserRead";
 export type { ReviewRead } from "./models/ReviewRead";
 export type { ReviewUpdate } from "./models/ReviewUpdate";
 export type { RideCreate } from "./models/RideCreate";
