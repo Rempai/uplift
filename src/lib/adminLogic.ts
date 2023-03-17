@@ -16,38 +16,61 @@ import {
   userHTML,
 } from "@/lib/formHTML";
 
-import { AuthService, CharactersService, OpenAPI, PassageHandlingService } from "@/lib/client";
+import { CharactersService, OpenAPI, PassageHandlingService, UserService } from "@/lib/client";
+
+import FaRegUserCircle from "svelte-icons/fa/FaRegUserCircle.svelte";
+import MdPersonOutline from "svelte-icons/md/MdPersonOutline.svelte";
+import GiRoad from "svelte-icons/gi/GiRoad.svelte";
+import IoIosStarOutline from "svelte-icons/io/IoIosStarOutline.svelte";
+import FaRegFileAlt from "svelte-icons/fa/FaRegFileAlt.svelte";
+import IoIosAttach from "svelte-icons/io/IoIosAttach.svelte";
 
 export interface route {
   route: string;
   call?: string;
+  // TODO: change this to new iconset
+  icon?: any;
   html?: string | CallableFunction;
   service?: CallableFunction;
   preview?: boolean;
 }
 
-const routes: Array<route> = [
+export const routes: Array<route> = [
   // Read + Delete
-  { route: "/admin/user", call: "/user/users/", service: AuthService.deleteUser },
+  {
+    route: "/admin/user",
+    call: "/user/users/",
+    icon: FaRegUserCircle,
+    service: UserService.deleteUser,
+  },
   {
     route: "/admin/passenger",
     call: "/character/passengers/",
+    icon: MdPersonOutline,
     service: CharactersService.deletePassenger,
   },
-  { route: "/admin/ride", call: "/character/rides/", service: CharactersService.deleteRide },
+  {
+    route: "/admin/ride",
+    call: "/character/rides/",
+    icon: GiRoad,
+    service: CharactersService.deleteRide,
+  },
   {
     route: "/admin/review",
     call: "/character/reviews/",
+    icon: IoIosStarOutline,
     service: CharactersService.deleteReview,
   },
   {
     route: "/admin/passage",
     call: "/passage_handler/passages/",
+    icon: FaRegFileAlt,
     service: PassageHandlingService.deletePassage,
   },
   {
     route: "/admin/attribute",
     call: "/passage_handler/attributes/",
+    icon: IoIosAttach,
     service: PassageHandlingService.deleteAttribute,
   },
 
@@ -56,7 +79,7 @@ const routes: Array<route> = [
     route: "/admin/user/create",
     call: "/user/users/",
     html: userHTML,
-    service: AuthService.postUser,
+    service: UserService.postUser,
   },
   {
     route: "/admin/passenger/create",
@@ -94,7 +117,7 @@ const routes: Array<route> = [
     route: "/admin/user/edit",
     call: "/user/",
     html: userEditHTML,
-    service: AuthService.updateUser,
+    service: UserService.updateUser,
   },
   {
     route: "/admin/passenger/edit",
@@ -164,10 +187,6 @@ export function checkRoute(location: string): route {
     }
   });
 
-  // if (!new_route) {
-  //   replace("/admin");
-  // }
-
   return {
     route: route,
     html: html,
@@ -178,31 +197,18 @@ export function checkRoute(location: string): route {
 
 export async function getData(crudRoute: string, id?: string) {
   const token = localStorage.getItem("access_token");
-  const headers = {};
-  headers["Authorization"] = `Bearer ${token}`;
+  const headers = { Authorization: `Bearer ${token}` };
 
-  let res: Response;
-  if (id) {
-    res = await fetch(OpenAPI.BASE + "/api" + crudRoute + id, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      headers: new Headers(headers),
-    });
-  } else {
-    res = await fetch(OpenAPI.BASE + "/api" + crudRoute, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "include",
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      headers: new Headers(headers),
-    });
-  }
+  const url = id ? `/api${crudRoute}${id}` : `/api${crudRoute}`;
+  const res = await fetch(OpenAPI.BASE + url, {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "include",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    headers,
+  });
 
   return await res.json();
 }

@@ -13,9 +13,10 @@
     CharactersService,
     OpenAPI,
     PassageHandlingService,
+    UserService,
     type PassageRead,
     type Register,
-    type ReviewedUser,
+    type ReviewedUserRead,
     type RideRead,
   } from "@/lib/client";
 
@@ -108,7 +109,7 @@
   let notificationMessage = "";
 
   let rider_list: Array<RideRead>;
-  let reviewer_list: Array<ReviewedUser>;
+  let reviewer_list: Array<ReviewedUserRead>;
 
   let dialog = false;
   let passage: PassageRead;
@@ -128,11 +129,9 @@
   let parsed_jwt: jwtObject;
 
   async function submitLogin({ target }) {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
+    const urlSearchParams = new URLSearchParams(new FormData(target) as any);
 
-    // @ts-ignore idk why this isn't correct
-    await AuthService.loginForAccessToken(value)
+    await AuthService.login(urlSearchParams)
       .then((res) => {
         localStorage.setItem("access_token", res.access_token);
         localStorage.setItem("refresh_token", res.refresh_token);
@@ -147,10 +146,14 @@
   async function submitRegister({ target }) {
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
+    const register: Register = {
+      username: value.username as string,
+      password: value.password as string,
+      repeat_password: value.repeat_password as string,
+    };
 
     await validateData("Register", value as Register, true).then(async () => {
-      // @ts-ignore you need this
-      await AuthService.registerUser(value)
+      await AuthService.register(register)
         .then((res) => {
           localStorage.setItem("access_token", res.access_token);
           localStorage.setItem("refresh_token", res.refresh_token);
@@ -158,7 +161,7 @@
         })
         .catch(async (err) => {
           showError(await validationErrorCheck(err, false));
-          $validation = $validation; //Only runs when an error happens
+          $validation = $validation;
         });
     });
   }
@@ -174,13 +177,15 @@
     showPhoneButton = false;
     page = 0;
 
-    // @ts-ignore it is fine if it's empty lol
-    rider_list = await CharactersService.getRides().catch((err) => showError(err));
+    await CharactersService.getRides()
+      .then((res) => (rider_list = res))
+      .catch((err) => showError(err));
 
-    // @ts-ignore it is fine if it's empty lol
-    reviewer_list = await CharactersService.getReviews(parsed_jwt.sub).catch((err) =>
-      showError(err)
-    );
+    await CharactersService.getReviews(parsed_jwt.sub)
+      // TODO: fix
+      // @ts-ignore
+      .then((res) => (reviewer_list = res))
+      .catch((err) => showError(err));
   };
 
   const phoneToggle = () => {
@@ -217,10 +222,10 @@
     register = true;
   };
 
-  const toggleModal = (review: ReviewedUser) => {
-    modalHeader = review.passenger.name + "'s review";
+  const toggleModal = (review: ReviewedUserRead) => {
+    modalHeader = review.review.ride.passenger.name + "'s review";
     showModal = !showModal;
-    review_text = review.description;
+    review_text = review.review.description;
   };
 
   const selectRide = async (ride: RideRead) => {
@@ -228,10 +233,11 @@
       return;
     }
 
-    // @ts-ignore it is fine if it's empty lol
-    passage = await PassageHandlingService.getPassages(null, ride.passenger.id).catch((err) =>
-      showError(err)
-    );
+    await PassageHandlingService.getPassages(undefined, ride.passenger.id)
+      // TODO: fix this
+      // @ts-ignore
+      .then((res) => (passage = res))
+      .catch((err) => showError(err));
 
     current_ride = ride;
     dialog = true;
@@ -264,8 +270,7 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    // @ts-ignore eh this is what you need again
-    AuthService.updateUser(parsed_jwt.sub, value)
+    UserService.updateUser(parsed_jwt.sub, value)
       .then(() => {
         settingsPlane = "";
         journal = false;
@@ -275,7 +280,7 @@
   };
 
   const deleteUser = async () => {
-    AuthService.deleteUser(parsed_jwt.sub)
+    UserService.deleteUser(parsed_jwt.sub)
       .then(() => {
         localStorage.clear();
       })
@@ -309,13 +314,10 @@
 
   const nextPassage = (name: string) => {
     PassageHandlingService.getPassages(name)
+      // TODO: fix this
       .then((res) => {
-        // @ts-ignore dw this is werid shit on the backend
+        // @ts-ignore
         passage = res;
-
-        if (!passage.passage_name) {
-          passage = passage[0];
-        }
       })
       .catch((err) => showError(err));
   };
@@ -323,7 +325,7 @@
   const textParser = async (text: string) => {
     if (text) {
       if (text.match("{user}")) {
-        let user = await AuthService.getMe();
+        let user = await UserService.getMe();
         text = text.replace("{user}", user.username);
       }
     }
@@ -405,16 +407,18 @@
   onMount(() => {
     if (!localStorage.getItem("access_token")) {
       if (localStorage.getItem("refresh_token")) {
-        // @ts-ignore this is exactly what you want lmao
-        AuthService.refresh(localStorage.getItem("refresh_token"))
-          .then(() => startGame())
+        AuthService.refresh()
+          .then((res) => {
+            localStorage.setItem("access_token", res.access_token);
+            startGame();
+          })
           .catch(() => (welcome = true));
       } else {
         showPhoneButton = false;
         welcome = true;
       }
     } else {
-      AuthService.getMe()
+      UserService.getMe()
         .then(() => startGame())
         .catch(() => (welcome = true));
     }
@@ -667,27 +671,30 @@
                     class="mb-6 gap-5 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                     on:keypress
                     on:click={() => toggleModal(data)}>
-                    <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                    <img
+                      class="rounded w-24 h-full"
+                      src={data.review.ride.passenger.icon}
+                      alt="" />
                     <div class="overflow-x-hidden whitespace-nowrap">
                       <p class="flex items-center">
                         <span class="w-5 mr-2 text-frost-3"><IoMdCard /></span>
-                        {data.passenger.name}
+                        {data.review.ride.passenger.name}
                       </p>
                       <p class="flex items-center">
                         <span class="w-5 mr-2 text-frost-3"><IoIosCalendar /></span>
                         {data.date}
                       </p>
                       <div class="inline-flex items-center">
-                        {#each Array(data.stars) as _}
+                        {#each Array(data.review.stars) as _}
                           <span class="w-5 mr-2 text-frost-3"><FaStar /></span>
                         {/each}
-                        {#if data.stars < 5}
-                          {#each Array(5 - data.stars) as _}
+                        {#if data.review.stars < 5}
+                          {#each Array(5 - data.review.stars) as _}
                             <span class="w-5 mr-2 text-frost-3"><IoMdStarOutline /></span>
                           {/each}
                         {/if}
                       </div>
-                      <p>{data.description}</p>
+                      <p>{data.review.description}</p>
                     </div>
                   </div>
                 {/each}
