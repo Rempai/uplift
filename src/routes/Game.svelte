@@ -5,6 +5,8 @@
   import { passage_name, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validateData, validationErrorCheck } from "@/lib/validation";
+  import { radios } from "@/lib/game";
+  import { loginForAccessToken, registerForAccessToken } from "@/lib/authProcesses";
 
   import type { report, journalAnswer } from "@/main";
 
@@ -19,15 +21,6 @@
     type RideRead,
   } from "@/lib/client";
 
-  import IoMdCard from "svelte-icons/io/IoMdCard.svelte";
-  import TiLocationOutline from "svelte-icons/ti/TiLocationOutline.svelte";
-  import IoMdStarOutline from "svelte-icons/io/IoMdStarOutline.svelte";
-  import TiTime from "svelte-icons/ti/TiTime.svelte";
-  import FaRoute from "svelte-icons/fa/FaRoute.svelte";
-  import IoIosCalendar from "svelte-icons/io/IoIosCalendar.svelte";
-  import FaStar from "svelte-icons/fa/FaStar.svelte";
-  import GiSmartphone from "svelte-icons/gi/GiSmartphone.svelte";
-
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
   import Phone from "@/components/Phone.svelte";
@@ -39,53 +32,19 @@
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
 
+  import IoMdCard from "svelte-icons/io/IoMdCard.svelte";
+  import TiLocationOutline from "svelte-icons/ti/TiLocationOutline.svelte";
+  import IoMdStarOutline from "svelte-icons/io/IoMdStarOutline.svelte";
+  import TiTime from "svelte-icons/ti/TiTime.svelte";
+  import FaRoute from "svelte-icons/fa/FaRoute.svelte";
+  import IoIosCalendar from "svelte-icons/io/IoIosCalendar.svelte";
+  import FaStar from "svelte-icons/fa/FaStar.svelte";
+  import GiSmartphone from "svelte-icons/gi/GiSmartphone.svelte";
+
   import Logo from "/logo.png";
   import Background from "/background.webm";
   import Ambient from "/ambient.mp3";
 
-  let radios = [
-    {
-      id: 0,
-      name: "Choose Radio",
-    },
-    {
-      id: 1,
-      name: "BBC",
-      source: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one",
-    },
-    {
-      id: 2,
-      name: "SkyRadio",
-      source: "https://25353.live.streamtheworld.com/SKYRADIO.mp3",
-    },
-    {
-      id: 3,
-      name: "ClassicFM",
-      source: "https://jfm1.hostingradio.ru:14536/gcstream.mp3",
-    },
-    {
-      id: 4,
-      name: "Cool Song",
-      source:
-        "https://mp3.vevosongs.com/wp-content/uploads/2022/09/Rick_Astley_-_Never_Gonna_Give_You_Up.mp3",
-    },
-    {
-      id: 5,
-      name: "Crossroads Country Radio",
-      source: "https://server-24.stream-server.nl/stream/CrossroadsCountryRadio/stream",
-    },
-    {
-      id: 6,
-      name: "Arabnights Radio",
-      source: "http://arabnights-prod.live-streams.nl:8020/live",
-    },
-    {
-      id: 7,
-      name: "85.2 FM",
-      source:
-        "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Still+alive+(Radio+loop)&filename=mt/MTE5NDI3NjUzMTE5NDQ4_dln0fNzdWkI.mp3",
-    },
-  ];
   let radio_select: number;
   let ambientNoise = false;
 
@@ -127,40 +86,24 @@
 
   let parsed_jwt: jwtObject;
 
-  async function submitLogin({ target }) {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
-
-    // @ts-ignore idk why this isn't correct
-    await AuthService.loginForAccessToken(value)
-      .then((res) => {
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-        startGame();
-      })
-      .catch(async (err) => {
-        showError(await validationErrorCheck(err, false));
-        $validation = $validation;
-      });
-  }
+  const loginAndStartGame = async ({ target }) => {
+    const loginSuccessful = await loginForAccessToken(target);
+    if (loginSuccessful) {
+      startGame();
+    } else {
+      showError(await validationErrorCheck(err, false));
+      $validation = $validation;
+    }
+  };
 
   async function submitRegister({ target }) {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
-
-    await validateData("Register", value as Register, true).then(async () => {
-      // @ts-ignore you need this
-      await AuthService.registerUser(value)
-        .then((res) => {
-          localStorage.setItem("access_token", res.access_token);
-          localStorage.setItem("refresh_token", res.refresh_token);
-          startGame();
-        })
-        .catch(async (err) => {
-          showError(await validationErrorCheck(err, false));
-          $validation = $validation; //Only runs when an error happens
-        });
-    });
+    const registerSuccesful = await registerForAccessToken(target);
+    if (registerSuccesful) {
+      startGame();
+    } else {
+      showError(await validationErrorCheck(err, false));
+      $validation = $validation; //Only runs when an error happens
+    }
   }
 
   const startGame = async () => {
@@ -366,6 +309,7 @@
 
   const finishRide = async (event: CustomEvent) => {
     solution = event.detail;
+    // TODO: this won't work for other rides
     nextPassage("Paolo" + solution + "You" + 1);
     resolution = false;
     dialog = true;
@@ -559,7 +503,7 @@
         <div slot="content" class="px-4 mt-3">
           <p class="text-center text-3xl text-frost-1">Login</p>
           <Form
-            handleSubmit={submitLogin}
+            handleSubmit={loginAndStartGame}
             enctype="multipart/form-data"
             login={true}
             backButton={true}

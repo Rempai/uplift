@@ -4,6 +4,7 @@
   import { parseJwt } from "@/lib/jwtParser";
   import { validation } from "@/lib/stores";
   import { validationErrorCheck } from "@/lib/validation";
+  import { loginForAccessToken } from "@/lib/authProcesses";
 
   import { AuthService } from "@/lib/client";
 
@@ -11,30 +12,21 @@
   import Button from "@/components/Button.svelte";
 
   $validation.length = 0;
-  const handleSubmit = async ({ target }) => {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
 
-    // @ts-ignore you want formdata dumbass
-    await AuthService.loginForAccessToken(value)
-      .then((res) => {
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-      })
-      .catch((err) => {
-        validationErrorCheck(err, false);
-        $validation = $validation;
-      });
+  async function handleSubmit({ target }) {
+    const loginSuccessful = await loginForAccessToken(target);
 
-    let parsed_jwt = await parseJwt(localStorage.getItem("access_token"));
+    if (loginSuccessful) {
+      let parsed_jwt = await parseJwt(localStorage.getItem("access_token"));
 
-    if (parsed_jwt.role === "Admin") {
-      push("/admin");
-    } else {
-      // TODO: show error that user is not admin
-      push("/");
+      if (parsed_jwt.role === "Admin") {
+        push("/admin");
+      } else {
+        // TODO: show error that user is not admin
+        push("/");
+      }
     }
-  };
+  }
 </script>
 
 <svelte:head>
