@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type PassengerUpdate = {
-  name?: string;
-  icon?: string;
+export type Response = {
+  message: string;
+  status: number;
 };

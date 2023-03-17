@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 export type AttributeUpdate = {
-  color: string;
-  font_size: string;
-  font_family: string;
+  color?: string;
+  font_size?: string;
+  font_family?: string;
 };
