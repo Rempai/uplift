@@ -1,5 +1,5 @@
 <script lang="ts">
-  type buttonType = "button" | "submit";
+  type buttonType = "button" | "submit" | "reset";
 
   export let text = "Button";
   export let type: buttonType = "button";

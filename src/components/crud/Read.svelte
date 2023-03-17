@@ -6,7 +6,7 @@
   import { parseJwt } from "@/lib/jwtParser";
   import { getData } from "@/lib/adminLogic";
 
-  import { AuthService } from "@/lib/client";
+  import { UserService } from "@/lib/client";
 
   import Button from "@/components/Button.svelte";
   import Modal from "@/components/Modal.svelte";
@@ -44,7 +44,7 @@
   let handler;
   let rows;
 
-  let columns_keys: Array<string>;
+  let columns_keys: Array<string> = [];
 
   let loc = $location + "/create";
 
@@ -80,24 +80,25 @@
       let parsed_token = await parseJwt(localStorage.getItem("access_token"));
 
       if (selected_data.data.id == parsed_token.sub) {
-        AuthService.deleteUser(selected_data.data.id)
+        UserService.deleteUser(selected_data.data.id)
           .then(() => {
             localStorage.clear();
             push("/admin/login");
           })
           .catch((err) => console.log(err));
       } else {
-        await AuthService.deleteUser(selected_data.data.id).catch((err) => console.log(err));
+        await UserService.deleteUser(selected_data.data.id).catch((err) => console.log(err));
       }
     } else {
       await service(selected_data.data.id).catch((err) => console.log(err));
     }
 
     showModal = false;
+    // TODO: filter/reduce instead of reloading
+    // also, fix brokey
     window.location.reload();
   };
 
-  // TODO: fix this route for production
   const checkIcon = (data) => {
     data = data.toString();
     return data.endsWith(".png" || ".jpg");
@@ -108,10 +109,23 @@
     return data;
   };
 
-  const add_obj = (obj, name: string) => {
-    if (obj) {
-      for (let x in obj) columns_keys.push(name + "_" + x);
-      columns_keys = columns_keys.filter((item: string) => item !== name);
+  const add_nested_objects = (
+    data: object,
+    prefix: string | null = null,
+    nested_keys = columns_keys
+  ) => {
+    for (let key in data) {
+      const value = data[key];
+      const new_prefix = prefix ? `${prefix}_${key}` : key;
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        if (nested_keys.includes(key)) {
+          add_nested_objects(value, null, nested_keys);
+        } else {
+          add_nested_objects(value, new_prefix, nested_keys);
+        }
+      } else {
+        columns_keys.push(new_prefix);
+      }
     }
   };
 
@@ -120,12 +134,7 @@
 
     handler = new DataHandler(data, { rowsPerPage: 10 });
     rows = handler.getRows();
-
-    columns_keys = Object.keys($rows[0]);
-
-    add_obj($rows[0].passenger, "passenger");
-    add_obj($rows[0].ride, "ride");
-    add_obj($rows[0].attribute, "attribute");
+    add_nested_objects($rows[0]);
 
     loading = false;
   });

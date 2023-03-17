@@ -8,9 +8,10 @@
 
   let path: string;
 
-  const link_class = ` text-start flex items-center gap-2 w-full text-storm-3 rounded-l pl-3 py-2 mt-2 hover:bg-night-1`;
+  const link_class = ` capitalize text-start flex items-center gap-2 w-full text-storm-3 rounded-l pl-3 py-2 mt-2 hover:bg-night-1`;
 
   $: path = stripPath($location);
+  $: name = name.replace(/\/admin\//g, "");
 </script>
 
 <button

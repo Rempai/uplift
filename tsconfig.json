@@ -9,6 +9,7 @@
       "@/*": ["./src/*"]
     },
     "useDefineForClassFields": true,
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": true,
