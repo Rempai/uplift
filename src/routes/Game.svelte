@@ -20,14 +20,14 @@
     type RideRead,
   } from "@/lib/client";
 
-  import IoMdCard from "svelte-icons/io/IoMdCard.svelte";
-  import TiLocationOutline from "svelte-icons/ti/TiLocationOutline.svelte";
-  import IoMdStarOutline from "svelte-icons/io/IoMdStarOutline.svelte";
-  import TiTime from "svelte-icons/ti/TiTime.svelte";
-  import FaRoute from "svelte-icons/fa/FaRoute.svelte";
-  import IoIosCalendar from "svelte-icons/io/IoIosCalendar.svelte";
-  import FaStar from "svelte-icons/fa/FaStar.svelte";
-  import GiSmartphone from "svelte-icons/gi/GiSmartphone.svelte";
+  import IoIosCard from "~icons/ion/card-outline";
+  import IoIosLocationOutline from "~icons/ion/location-outline";
+  import IoIosStarOutline from "~icons/ion/star-outline";
+  import TiTime from "~icons/typcn/time";
+  import FaRoute from "~icons/fa6-solid/route";
+  import IoIosCalendar from "~icons/ion/calendar";
+  import FaStar from "~icons/fa6-regular/star";
+  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
 
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
@@ -556,7 +556,7 @@
       <button
         class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
         on:click={phoneToggle}>
-        <span class="text-night-2"><GiSmartphone /></span>
+        <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
       </button>
     {:else if login}
       <Phone on:close={phoneToggle} on:item={handleClick} menuName="Login">
@@ -617,25 +617,22 @@
                   {#await rider_list then rider}
                     {#each rider as data}
                       <div
-                        class="mb-6 gap-5 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+                        class="mb-6 gap-2 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                         on:keypress
                         on:click={() => selectRide(data)}>
                         <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
                         <div>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><IoMdCard /></span>{data.passenger
-                              .name}
+                          <p class="flex gap-2">
+                            <IoIosCard font-size="1.5em" />{data.passenger.name}
                           </p>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><TiLocationOutline /></span
-                            >{data.from_location}
+                          <p class="flex gap-2">
+                            <IoIosLocationOutline font-size="1.5em" />{data.from_location}
                           </p>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><FaRoute /></span
-                            >{data.to_location}
+                          <p class="flex gap-2">
+                            <FaRoute font-size="1.5em" />{data.to_location}
                           </p>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><TiTime /></span>{data.time} minutes
+                          <p class="flex gap-2">
+                            <TiTime font-size="1.5em" />{data.time} minutes
                           </p>
                         </div>
                       </div>
@@ -677,20 +674,21 @@
                       alt="" />
                     <div class="overflow-x-hidden whitespace-nowrap">
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoMdCard /></span>
+                        <span class="w-5 mr-2 text-frost-3"><IoIosCard font-size="1.5 em" /></span>
                         {data.review.ride.passenger.name}
                       </p>
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoIosCalendar /></span>
+                        <span class="w-5 mr-2 text-frost-3"
+                          ><IoIosCalendar font-size="2em" /></span>
                         {data.date}
                       </p>
                       <div class="inline-flex items-center">
                         {#each Array(data.review.stars) as _}
-                          <span class="w-5 mr-2 text-frost-3"><FaStar /></span>
+                          <span class="w-5 mr-2 text-frost-3"><FaStar font-size="2em" /></span>
                         {/each}
                         {#if data.review.stars < 5}
                           {#each Array(5 - data.review.stars) as _}
-                            <span class="w-5 mr-2 text-frost-3"><IoMdStarOutline /></span>
+                            <span class="w-5 mr-2 text-frost-3"><IoIosStarOutline /></span>
                           {/each}
                         {/if}
                       </div>

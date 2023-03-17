@@ -3,7 +3,7 @@
 
   import { passage_name } from "@/lib/stores";
 
-  import FaChevronRight from "svelte-icons/fa/FaChevronRight.svelte";
+  import MdChevronRight from "~icons/mdi/chevron-right";
 
   import Button from "@/components/Button.svelte";
 
@@ -113,7 +113,7 @@
               on:click={() => dispatch("next")}>
               <Button text="Continue" class="bg-transparent">
                 <div slot="icon" class="w-6 ml-3 text-snow-1">
-                  <FaChevronRight />
+                  <MdChevronRight font-size="2em" />
                 </div>
               </Button>
             </span>

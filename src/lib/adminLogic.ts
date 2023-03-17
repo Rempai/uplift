@@ -18,18 +18,18 @@ import {
 
 import { CharactersService, OpenAPI, PassageHandlingService, UserService } from "@/lib/client";
 
-import FaRegUserCircle from "svelte-icons/fa/FaRegUserCircle.svelte";
-import MdPersonOutline from "svelte-icons/md/MdPersonOutline.svelte";
-import GiRoad from "svelte-icons/gi/GiRoad.svelte";
-import IoIosStarOutline from "svelte-icons/io/IoIosStarOutline.svelte";
-import FaRegFileAlt from "svelte-icons/fa/FaRegFileAlt.svelte";
-import IoIosAttach from "svelte-icons/io/IoIosAttach.svelte";
+import IoIosPersonCircleOutline from "~icons/heroicons/user-circle";
+import MdPersonOutline from "~icons/healthicons/person-outline";
+import GiRoad from "~icons/game-icons/road";
+import IoIosStarOutline from "~icons/ion/star-outline";
+import IoIosDocOutline from "~icons/ion/document-text-outline";
+import IoIosAttach from "~icons/ion/attach-outline";
 
 export interface route {
   route: string;
   call?: string;
-  // TODO: change this to new iconset
   icon?: any;
+  iconSize?: string;
   html?: string | CallableFunction;
   service?: CallableFunction;
   preview?: boolean;
@@ -40,37 +40,43 @@ export const routes: Array<route> = [
   {
     route: "/admin/user",
     call: "/user/users/",
-    icon: FaRegUserCircle,
+    icon: IoIosPersonCircleOutline,
+    iconSize: "2em",
     service: UserService.deleteUser,
   },
   {
     route: "/admin/passenger",
     call: "/character/passengers/",
     icon: MdPersonOutline,
+    iconSize: "1.6em",
     service: CharactersService.deletePassenger,
   },
   {
     route: "/admin/ride",
     call: "/character/rides/",
     icon: GiRoad,
+    iconSize: "1.6em",
     service: CharactersService.deleteRide,
   },
   {
     route: "/admin/review",
     call: "/character/reviews/",
     icon: IoIosStarOutline,
+    iconSize: "1.5em",
     service: CharactersService.deleteReview,
   },
   {
     route: "/admin/passage",
     call: "/passage_handler/passages/",
-    icon: FaRegFileAlt,
+    icon: IoIosDocOutline,
+    iconSize: "1.4em",
     service: PassageHandlingService.deletePassage,
   },
   {
     route: "/admin/attribute",
     call: "/passage_handler/attributes/",
     icon: IoIosAttach,
+    iconSize: "1.6em",
     service: PassageHandlingService.deleteAttribute,
   },
 

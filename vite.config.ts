@@ -1,11 +1,23 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vite";
 
+import Icons from "unplugin-icons/vite";
+
 import path from "path";
 import fs from "fs";
 
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [
+    svelte(),
+    Icons({
+      compiler: "svelte",
+      autoInstall: true,
+      iconCustomizer(collection, icon, props) {
+        props.width = "1em";
+        props.height = "1em";
+      },
+    }),
+  ],
   base: "/id-2223-s1/moed/uplift/",
   root: "./",
   publicDir: "public",
