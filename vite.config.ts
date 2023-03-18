@@ -18,7 +18,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: "/id-2223-s1/moed/uplift/",
+  base: "/id-2223-s2/uplift/",
   root: "./",
   publicDir: "public",
   server: {
