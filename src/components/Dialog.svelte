@@ -112,8 +112,8 @@
               on:keypress
               on:click={() => dispatch("next")}>
               <Button text="Continue" class="bg-transparent">
-                <div slot="icon" class="w-6 ml-3 text-snow-1">
-                  <MdChevronRight font-size="2em" />
+                <div slot="icon" class="w-6 ml-3">
+                  <MdChevronRight font-size="2em" class="text-storm-1" />
                 </div>
               </Button>
             </span>
