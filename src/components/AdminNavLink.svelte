@@ -8,7 +8,7 @@
 
   let path: string;
 
-  const link_class = ` capitalize text-start flex items-center gap-2 w-full text-storm-3 rounded-l pl-3 py-2 mt-2 hover:bg-night-1`;
+  const link_class = ` capitalize flex items-center gap-2 w-full text-storm-3 rounded-l pl-3 py-2 mt-2 hover:bg-night-1`;
 
   $: path = stripPath($location);
   $: name = name.replace(/\/admin\//g, "");
@@ -17,7 +17,7 @@
 <button
   on:click={() => push(link)}
   class={path === link ? `bg-night-1 ${link_class}` : `${link_class}`}>
-  <div class="text-frost-4 w-6 mr-2">
+  <div class="text-frost-4 w-6 mr-2 flex justify-center">
     <slot />
   </div>
   <p>{name}</p>
