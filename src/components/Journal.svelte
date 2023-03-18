@@ -12,8 +12,6 @@
   export let journal_data: Array<PassageRead>;
   export let context_data: journalAnswer;
 
-  // TODO: random journal styling bug
-
   let branch_data: Array<PassageRead> = [];
 
   const dispatch = createEventDispatcher();

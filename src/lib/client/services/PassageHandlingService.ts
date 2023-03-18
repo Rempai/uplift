@@ -18,12 +18,14 @@ export class PassageHandlingService {
    * Get Passages
    * @param passageName
    * @param passengerId
+   * @param all
    * @returns PassageRead Successful Response
    * @throws ApiError
    */
   public static getPassages(
     passageName?: string,
-    passengerId?: number
+    passengerId?: number,
+    all?: string
   ): CancelablePromise<Array<PassageRead>> {
     return __request(OpenAPI, {
       method: "GET",
@@ -31,6 +33,7 @@ export class PassageHandlingService {
       query: {
         passage_name: passageName,
         passenger_id: passengerId,
+        all: all,
       },
       errors: {
         500: `Internal Server Error`,

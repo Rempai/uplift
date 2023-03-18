@@ -16,18 +16,9 @@
     UserService,
     type PassageRead,
     type Register,
-    type ReviewedUserRead,
+    type ReviewRead,
     type RideRead,
   } from "@/lib/client";
-
-  import IoIosCard from "~icons/ion/card-outline";
-  import IoIosLocationOutline from "~icons/ion/location-outline";
-  import IoIosStarOutline from "~icons/ion/star-outline";
-  import TiTime from "~icons/typcn/time";
-  import FaRoute from "~icons/fa6-solid/route";
-  import IoIosCalendar from "~icons/ion/calendar";
-  import FaStar from "~icons/fa6-regular/star";
-  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
 
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
@@ -39,6 +30,15 @@
   import Journal from "@/components/Journal.svelte";
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
+
+  import IoIosCard from "~icons/ion/card-outline";
+  import IoIosLocationOutline from "~icons/ion/location-outline";
+  import IoIosStarOutline from "~icons/ion/star-outline";
+  import TiTime from "~icons/typcn/time";
+  import FaRoute from "~icons/fa6-solid/route";
+  import IoIosCalendar from "~icons/ion/calendar";
+  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
+  import IonStar from "~icons/ion/star";
 
   import Logo from "/logo.png";
   import Background from "/background.webm";
@@ -109,7 +109,7 @@
   let notificationMessage = "";
 
   let rider_list: Array<RideRead>;
-  let reviewer_list: Array<ReviewedUserRead>;
+  let review_list: Array<ReviewRead>;
 
   let dialog = false;
   let passage: PassageRead;
@@ -182,9 +182,7 @@
       .catch((err) => showError(err));
 
     await CharactersService.getReviews(parsed_jwt.sub)
-      // TODO: fix
-      // @ts-ignore
-      .then((res) => (reviewer_list = res))
+      .then((res) => (review_list = res))
       .catch((err) => showError(err));
   };
 
@@ -222,10 +220,10 @@
     register = true;
   };
 
-  const toggleModal = (review: ReviewedUserRead) => {
-    modalHeader = review.review.ride.passenger.name + "'s review";
+  const toggleModal = (review: ReviewRead) => {
+    modalHeader = review.ride.passenger.name + "'s review";
     showModal = !showModal;
-    review_text = review.review.description;
+    review_text = review.description;
   };
 
   const selectRide = async (ride: RideRead) => {
@@ -234,9 +232,7 @@
     }
 
     await PassageHandlingService.getPassages(undefined, ride.passenger.id)
-      // TODO: fix this
-      // @ts-ignore
-      .then((res) => (passage = res))
+      .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
       .catch((err) => showError(err));
 
     current_ride = ride;
@@ -252,10 +248,10 @@
     }
   };
 
-  const showResolution = (event) => {
+  const showResolution = ({ detail }) => {
     journal = false;
     resolution = true;
-    resolution_data = event.detail;
+    resolution_data = detail;
   };
 
   const changeAccount = async (settingsName: string) => {
@@ -314,10 +310,23 @@
 
   const nextPassage = (name: string) => {
     PassageHandlingService.getPassages(name)
-      // TODO: fix this
       .then((res) => {
-        // @ts-ignore
-        passage = res;
+        // TODO: This should be done inside resolution probably.
+        // Quick hack to get reviews working for the boys
+        if (res.length === 0) {
+          CharactersService.getReviews(parsed_jwt.sub)
+            .then((res) => (review_list = res))
+            .catch((err) => showError(err));
+          dialog = false;
+          showPhoneButton = false;
+          page = 3;
+          passage = undefined;
+          ambientNoise = false;
+          const video = document.querySelector("video");
+          video.pause();
+        } else {
+          Array.isArray(res) ? ([passage] = res) : (passage = res);
+        }
       })
       .catch((err) => showError(err));
   };
@@ -373,6 +382,11 @@
     dialog = true;
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-BR", { hour12: false });
+  };
+
   const createReview = async () => {
     const current_date = new Date();
     let current_time = current_date.toISOString();
@@ -394,7 +408,7 @@
     };
 
     //use dialog text.branchname to determine the review you should get 1-5
-    if (reviewer_list[0].id !== reviewScore) {
+    if (review_list[0].id !== reviewScore) {
       CharactersService.postReviewedUser(input).catch((err) => showError(err));
     }
 
@@ -447,7 +461,7 @@
   <Notification bind:message={notificationMessage} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
-    <span on:keypress on:click={() => (showModal = !showModal)}>
+    <span on:keypress on:click={() => (showModal = !showModal)} class="w-fit">
       <Button text="close" class="bg-aurora-green" />
     </span>
   </Modal>
@@ -617,22 +631,24 @@
                   {#await rider_list then rider}
                     {#each rider as data}
                       <div
-                        class="mb-6 gap-2 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+                        class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                         on:keypress
                         on:click={() => selectRide(data)}>
                         <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
                         <div>
-                          <p class="flex gap-2">
-                            <IoIosCard font-size="1.5em" />{data.passenger.name}
+                          <p class="flex items-center">
+                            <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
                           </p>
-                          <p class="flex gap-2">
-                            <IoIosLocationOutline font-size="1.5em" />{data.from_location}
+                          <p class="flex items-center">
+                            <IoIosLocationOutline
+                              font-size="1.2em"
+                              class="mr-2" />{data.from_location}
                           </p>
-                          <p class="flex gap-2">
-                            <FaRoute font-size="1.5em" />{data.to_location}
+                          <p class="flex items-center">
+                            <FaRoute font-size="1.2em" class="mr-2" />{data.to_location}
                           </p>
-                          <p class="flex gap-2">
-                            <TiTime font-size="1.5em" />{data.time} minutes
+                          <p class="flex items-center">
+                            <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
                           </p>
                         </div>
                       </div>
@@ -661,38 +677,36 @@
       {:else if page == 3}
         <Phone on:close={phoneToggle} on:item={handleClick} menuName="Reviews">
           <div slot="content" class="px-4 mt-3">
-            {#if reviewer_list.length}
-              {#await reviewer_list then reviewer}
+            {#if review_list.length}
+              {#await review_list then reviewer}
                 {#each reviewer as data}
                   <div
-                    class="mb-6 gap-5 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+                    class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                     on:keypress
                     on:click={() => toggleModal(data)}>
-                    <img
-                      class="rounded w-24 h-full"
-                      src={data.review.ride.passenger.icon}
-                      alt="" />
+                    <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
                     <div class="overflow-x-hidden whitespace-nowrap">
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoIosCard font-size="1.5 em" /></span>
-                        {data.review.ride.passenger.name}
+                        <span class="w-5 mr-2 text-frost-3"><IoIosCard font-size="1.2em" /></span>
+                        {data.ride.passenger.name}
                       </p>
                       <p class="flex items-center">
                         <span class="w-5 mr-2 text-frost-3"
-                          ><IoIosCalendar font-size="2em" /></span>
-                        {data.date}
+                          ><IoIosCalendar font-size="1.2em" /></span>
+                        {formatDate(data.date)}
                       </p>
                       <div class="inline-flex items-center">
-                        {#each Array(data.review.stars) as _}
-                          <span class="w-5 mr-2 text-frost-3"><FaStar font-size="2em" /></span>
+                        {#each Array(data.stars) as _}
+                          <span class="w-5 mr-2 text-frost-3"><IonStar font-size="1.2em" /></span>
                         {/each}
-                        {#if data.review.stars < 5}
-                          {#each Array(5 - data.review.stars) as _}
-                            <span class="w-5 mr-2 text-frost-3"><IoIosStarOutline /></span>
+                        {#if data.stars < 5}
+                          {#each Array(5 - data.stars) as _}
+                            <span class="w-5 mr-2 text-frost-3"
+                              ><IoIosStarOutline font-size="1.2em" /></span>
                           {/each}
                         {/if}
                       </div>
-                      <p>{data.review.description}</p>
+                      <p>{data.description}</p>
                     </div>
                   </div>
                 {/each}

@@ -230,14 +230,14 @@
                       <span on:keypress on:click={() => push(locEdit(row.id))}>
                         <Button href="#{$location}/edit/{row.id}" text="" class="bg-aurora-yellow">
                           <div slot="icon" class="w-5 h-8 flex items-center text-night-1">
-                            <FaRegEdit class="text-night-4" font-size="2em" />
+                            <FaRegEdit class="text-night-1" font-size="2em" />
                           </div>
                         </Button>
                       </span>
                       <span on:keypress on:click={() => deleteConfirm(row)}>
                         <Button text="" class="bg-aurora-red">
                           <div slot="icon" class="w-4 h-8 flex items-center text-night-1">
-                            <FaRegTrashAlt class="text-night-4" font-size="2em" />
+                            <FaRegTrashAlt class="text-night-1" font-size="2em" />
                           </div>
                         </Button>
                       </span>
