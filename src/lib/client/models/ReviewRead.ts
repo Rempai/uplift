@@ -6,6 +6,7 @@ import type { RideRead } from "./RideRead";
 
 export type ReviewRead = {
   id: number;
+  date: string;
   ride: RideRead;
   stars: number;
   description: string;
