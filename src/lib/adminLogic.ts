@@ -29,7 +29,6 @@ export interface route {
   route: string;
   call?: string;
   icon?: any;
-  iconSize?: string;
   html?: string | CallableFunction;
   service?: CallableFunction;
   preview?: boolean;
@@ -41,42 +40,36 @@ export const routes: Array<route> = [
     route: "/admin/user",
     call: "/user/users/",
     icon: IoIosPersonCircleOutline,
-    iconSize: "2em",
     service: UserService.deleteUser,
   },
   {
     route: "/admin/passenger",
     call: "/character/passengers/",
     icon: MdPersonOutline,
-    iconSize: "1.6em",
     service: CharactersService.deletePassenger,
   },
   {
     route: "/admin/ride",
     call: "/character/rides/",
     icon: GiRoad,
-    iconSize: "1.6em",
     service: CharactersService.deleteRide,
   },
   {
     route: "/admin/review",
     call: "/character/reviews/",
     icon: IoIosStarOutline,
-    iconSize: "1.5em",
     service: CharactersService.deleteReview,
   },
   {
     route: "/admin/passage",
     call: "/passage_handler/passages/",
     icon: IoIosDocOutline,
-    iconSize: "1.4em",
     service: PassageHandlingService.deletePassage,
   },
   {
     route: "/admin/attribute",
     call: "/passage_handler/attributes/",
     icon: IoIosAttach,
-    iconSize: "1.6em",
     service: PassageHandlingService.deleteAttribute,
   },
 
