@@ -461,9 +461,7 @@
   <Notification bind:message={notificationMessage} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
-    <span on:keypress on:click={() => (showModal = !showModal)} class="w-fit">
-      <Button text="close" class="bg-aurora-green" />
-    </span>
+    <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
   </Modal>
   <video
     class="fixed h-screen w-screen object-fill rounded"
@@ -493,21 +491,17 @@
               <b>Are you sure you want to delete your account? All progression will be lost.</b>
             </p>
             <div class="flex justify-center mt-5 gap-3">
-              <span on:keypress on:click={deleteUser}>
-                <Button
-                  text="Delete"
-                  class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
-              </span>
-              <span
-                on:keypress
-                on:click={() => {
+              <Button
+                onClick={deleteUser}
+                text="Delete"
+                class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
+              <Button
+                onClick={() => {
                   phoneToggle();
                   settingsPlane = "";
-                }}>
-                <Button
-                  text="Cancel"
-                  class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
-              </span>
+                }}
+                text="Cancel"
+                class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
             </div>
           {:else}
             <Form
@@ -610,12 +604,8 @@
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">
-            <span on:keypress on:click={triggerRegister}>
-              <Button class="bg-frost-4" text="Continue" />
-            </span>
-            <span on:keypress on:click={skipAndLogin}>
-              <Button class="bg-frost-1" text="Skip and login" />
-            </span>
+            <Button onClick={triggerRegister} class="bg-frost-4" text="Continue" />
+            <Button onClick={skipAndLogin} class="bg-frost-1" text="Skip and login" />
           </div>
         </div>
       </Phone>
@@ -726,15 +716,12 @@
           <div slot="content" class="px-4 mt-3 flex justify-around">
             <div class="flex flex-col items-center gap-5">
               {#if typeof passage == "object"}
-                <span on:keypress on:click={dialogToggle} class="w-full">
-                  <Button text="Toggle Dialog" class="bg-frost-1 w-full" />
-                </span>
-                <span on:keypress on:click={journalToggle} class="w-full">
-                  <Button text="Toggle Journal" class="bg-frost-2 w-full" />
-                </span>
-                <span on:keypress on:click={ambientToggle} class="w-full">
-                  <Button text="Toggle Ambient Noise" class="bg-frost-4 w-full" />
-                </span>
+                <Button onClick={dialogToggle} text="Toggle Dialog" class="bg-frost-1 w-full" />
+                <Button onClick={journalToggle} text="Toggle Journal" class="bg-frost-2 w-full" />
+                <Button
+                  onClick={ambientToggle}
+                  text="Toggle Ambient Noise"
+                  class="bg-frost-4 w-full" />
               {:else}
                 <p class="text-center w-full">
                   Dashboard features are only enabled when you are in a ride.
@@ -752,11 +739,10 @@
               {/each}
             </select>
             {#if radio_select}
-              <span on:keypress on:click={() => (radio_select = 0)}>
-                <Button
-                  text="Stop"
-                  class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
-              </span>
+              <Button
+                onClick={() => (radio_select = 0)}
+                text="Stop"
+                class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
             {/if}
           </div>
         </Phone>
@@ -765,28 +751,29 @@
           <div slot="content" class="px-4 mt-3">
             <p class="text-center text-3xl text-frost-1">Account</p>
             <div class="flex flex-col items-center gap-5 mt-6 mx-12">
-              <span class="w-full" on:keypress on:click={() => changeAccount("username")}>
-                <Button text="Username" class="bg-aurora-purple w-full" />
-              </span>
-              <span class="w-full" on:keypress on:click={() => changeAccount("password")}>
-                <Button text="Password" class="bg-aurora-orange w-full" />
-              </span>
-              <span
-                class="w-full"
-                on:keypress
-                on:click={() => {
+              <Button
+                onClick={() => changeAccount("username")}
+                text="Username"
+                class="bg-aurora-purple w-full" />
+              <Button
+                onClick={() => changeAccount("password")}
+                text="Password"
+                class="bg-aurora-orange w-full" />
+              <Button
+                onClick={() => {
                   localStorage.clear();
                   showPhoneButton = false;
                   welcome = true;
                   dialog = false;
                   journal = false;
                   settingsPlane = "";
-                }}>
-                <Button text="Logout" class="bg-aurora-green w-full" />
-              </span>
-              <span class="w-full" on:keypress on:click={() => changeAccount("delete")}>
-                <Button text="Delete account" class="bg-aurora-red w-full" />
-              </span>
+                }}
+                text="Logout"
+                class="bg-aurora-green w-full" />
+              <Button
+                onClick={() => changeAccount("delete")}
+                text="Delete account"
+                class="bg-aurora-red w-full" />
             </div>
           </div>
         </Phone>

@@ -75,12 +75,10 @@
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
   <div class="overflow-x-auto flex flex-col flex-wrap basis-11/12">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
-    <span
-      on:keypress
-      on:click={() => gotoBranch(branch_data)}
-      class="w-full flex justify-center mt-3">
-      <Button text="Go to branch" class="bg-aurora-orange" />
-    </span>
+    <Button
+      onClick={() => gotoBranch(branch_data)}
+      text="Go to branch"
+      class="w-full flex justify-center mt-3 bg-aurora-orange" />
     <div class="h-full" />
     <div class="overflow-y-auto overflow-x-hidden">
       {#if currentTab}

@@ -62,9 +62,7 @@
     <Button type="submit" text="submit" class="mt-4 bg-frost-4" />
   </form>
   {#if backButton}
-    <span on:keypress on:click={() => dispatch("back")} class="mt-4">
-      <Button text="go back" class="bg-aurora-red" />
-    </span>
+    <Button onClick={() => dispatch("back")} text="go back" class="mt-4 bg-aurora-red" />
   {/if}
 </div>
 
