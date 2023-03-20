@@ -160,7 +160,11 @@
           startGame();
         })
         .catch(async (err) => {
-          showError(await validationErrorCheck(err, false));
+          if (err.body && err.body.message) {
+            showError(err.body.message);
+          } else {
+            showError(await validationErrorCheck(err, false));
+          }
           $validation = $validation;
         });
     });
