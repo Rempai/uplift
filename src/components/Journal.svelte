@@ -47,7 +47,10 @@
   };
 
   const gotoBranch = async () => {
-    dispatch("gotoTab", branch_data.find((e) => e.branch_name === tabItems[currentTab - 1].label));
+    dispatch(
+      "gotoTab",
+      branch_data.find((e) => e.branch_name === tabItems[currentTab - 1].label)
+    );
   };
 
   function addInputToFormData(formData, key, value) {
