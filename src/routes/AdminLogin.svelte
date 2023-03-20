@@ -49,7 +49,7 @@
     <Form login={true} {handleSubmit} />
     <hr class="my-6 w-10/12" />
     <Button
-      on:click={() => push("/")}
+      onClick={() => push("/")}
       text="Go to homepage"
       class="!border-aurora-red hover:bg-aurora-red" />
   </div>
