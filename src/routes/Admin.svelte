@@ -36,14 +36,14 @@
   <p>If you want to reset the database to factory data, click `Reset Database`.</p>
   <p><b>Note: All current data will be lost.</b></p>
   <div class="flex gap-4 mt-3">
-    <span on:keypress on:click={reset_db}>
-      <Button
-        text="Reset Database"
-        class="bg-transparent !border-aurora-red hover:bg-aurora-red" />
-    </span>
-    <span on:keypress on:click={() => history.back()}>
-      <Button text="Go back" class="bg-transparent !border-aurora-green hover:bg-aurora-green" />
-    </span>
+    <Button
+      onClick={reset_db}
+      text="Reset Database"
+      class="bg-transparent !border-aurora-red hover:bg-aurora-red" />
+    <Button
+      onClick={() => history.back()}
+      text="Go back"
+      class="bg-transparent !border-aurora-green hover:bg-aurora-green" />
   </div>
 </Modal>
 

@@ -8,10 +8,6 @@
 
 <p class="text-center mb-4">Oops, this route doesn't exist!</p>
 <div class="flex items-center gap-3 flex-col">
-  <span on:keypress on:click={() => pop()}>
-    <Button class="bg-aurora-red" text="Go Back" />
-  </span>
-  <span on:keypress on:click={() => push("/")}>
-    <Button class="bg-frost-4" text="Homepage" />
-  </span>
+  <Button onClick={() => pop()} class="bg-aurora-red" text="Go Back" />
+  <Button onClick={() => push("/")} class="bg-frost-4" text="Homepage" />
 </div>
