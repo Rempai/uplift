@@ -38,7 +38,7 @@
     <div class="mx-4 flex justify-between items-center">
       <p>{menuName}</p>
       <button on:click={dispatchClose}>
-        <IoIosCloseCircleOutline font-size="1.8em" class="text-frost-1" />
+        <IoIosCloseCircleOutline font-size="1.8em" class="text-aurora-orange" />
       </button>
     </div>
   </div>
@@ -48,9 +48,11 @@
     {:else}
       <div class="flex flex-col items-center gap-5 w-full mt-6">
         {#each buttons as button, i}
-          <span on:keypress on:click={() => forward(i)}>
-            <svelte:component this={Button} text={button.text} class={button.class} />
-          </span>
+          <svelte:component
+            this={Button}
+            onClick={() => forward(i)}
+            text={button.text}
+            class={button.class} />
         {/each}
       </div>
     {/if}

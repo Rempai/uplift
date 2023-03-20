@@ -103,9 +103,7 @@
     {#await visibleSolution then solution}
       {#each solution as solution}
         <div class="flex flex-col gap-1 w-screen mt-3">
-          <span on:keypress on:click={() => finishRide(solution)}>
-            <Button text={solution} class="bg-frost-4" />
-          </span>
+          <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4" />
         </div>
       {/each}
     {/await}
