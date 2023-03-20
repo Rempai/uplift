@@ -18,6 +18,7 @@
     type Register,
     type ReviewRead,
     type RideRead,
+    type ReviewedUserCreate,
   } from "@/lib/client";
 
   import Dialog from "@/components/Dialog.svelte";
@@ -388,16 +389,9 @@
     const current_date = new Date();
     let current_time = current_date.toISOString();
 
-    interface connection {
-      userId: number;
-      rideId: number;
-      reviewId: number;
-      date: string;
-    }
-
     var reviewScore = Number(passage.branch_name.replace(/\D/g, ""));
 
-    const input: connection = {
+    const input: ReviewedUserCreate = {
       userId: parsed_jwt.sub,
       reviewId: reviewScore,
       date: current_time,
