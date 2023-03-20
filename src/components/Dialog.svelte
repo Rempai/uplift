@@ -108,10 +108,8 @@
           {#if continue_button}
             <span
               style="background-color: {dialogColor}"
-              class="rounded absolute bottom-4 right-4"
-              on:keypress
-              on:click={() => dispatch("next")}>
-              <Button text="Continue" class="bg-transparent">
+              class="rounded absolute bottom-4 right-4">
+              <Button onClick={() => dispatch("next")} text="Continue">
                 <div slot="icon" class="w-6 ml-3">
                   <MdChevronRight font-size="2em" class="text-storm-1" />
                 </div>
