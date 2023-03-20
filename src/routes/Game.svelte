@@ -5,8 +5,8 @@
   import { passage_name, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validateData, validationErrorCheck } from "@/lib/validation";
-  import { radios } from "@/lib/game";
   import { loginForAccessToken, registerForAccessToken } from "@/lib/authProcesses";
+  import { radios } from "@/lib/game";
 
   import type { report, journalAnswer } from "@/main";
 
@@ -15,9 +15,9 @@
     CharactersService,
     OpenAPI,
     PassageHandlingService,
+    UserService,
     type PassageRead,
     type Register,
-    type ReviewedUser,
     type RideRead,
   } from "@/lib/client";
 
@@ -86,24 +86,51 @@
 
   let parsed_jwt: jwtObject;
 
-  const loginAndStartGame = async ({ target }) => {
-    const loginSuccessful = await loginForAccessToken(target);
-    if (loginSuccessful) {
+  // async function submitLogin({ target }) {
+  //   const urlSearchParams = new URLSearchParams(new FormData(target) as any);
+
+  //   await AuthService.login(urlSearchParams)
+  //     .then((res) => {
+  //       localStorage.setItem("access_token", res.access_token);
+  //       localStorage.setItem("refresh_token", res.refresh_token);
+  //       startGame();
+  //     })
+  //     .catch(async (err) => {
+  //       showError(await validationErrorCheck(err, false));
+  //       $validation = $validation;
+  //     });
+  // }
+
+  async function submitLogin({ target }) {
+    const login = await loginForAccessToken(target);
+    if (login) {
       startGame();
     } else {
-      showError(await validationErrorCheck(err, false));
-      $validation = $validation;
+      showError(await validationErrorCheck(login, false));
     }
-  };
+  }
 
   async function submitRegister({ target }) {
-    const registerSuccesful = await registerForAccessToken(target);
-    if (registerSuccesful) {
-      startGame();
-    } else {
-      showError(await validationErrorCheck(err, false));
-      $validation = $validation; //Only runs when an error happens
-    }
+    const form_data = new FormData(target);
+    const value = Object.fromEntries(form_data.entries());
+    const register: Register = {
+      username: value.username as string,
+      password: value.password as string,
+      repeat_password: value.repeat_password as string,
+    };
+
+    await validateData("Register", value as Register, true).then(async () => {
+      await AuthService.register(register)
+        .then((res) => {
+          localStorage.setItem("access_token", res.access_token);
+          localStorage.setItem("refresh_token", res.refresh_token);
+          startGame();
+        })
+        .catch(async (err) => {
+          showError(await validationErrorCheck(err, false));
+          $validation = $validation;
+        });
+    });
   }
 
   const startGame = async () => {
@@ -117,13 +144,13 @@
     showPhoneButton = false;
     page = 0;
 
-    // @ts-ignore it is fine if it's empty lol
-    rider_list = await CharactersService.getRides().catch((err) => showError(err));
+    await CharactersService.getRides()
+      .then((res) => (rider_list = res))
+      .catch((err) => showError(err));
 
-    // @ts-ignore it is fine if it's empty lol
-    reviewer_list = await CharactersService.getReviews(parsed_jwt.sub).catch((err) =>
-      showError(err)
-    );
+    await CharactersService.getReviews(parsed_jwt.sub)
+      .then((res) => (reviewer_list = res))
+      .catch((err) => showError(err));
   };
 
   const phoneToggle = () => {
@@ -171,10 +198,9 @@
       return;
     }
 
-    // @ts-ignore it is fine if it's empty lol
-    passage = await PassageHandlingService.getPassages(null, ride.passenger.id).catch((err) =>
-      showError(err)
-    );
+    await PassageHandlingService.getPassages(undefined, ride.passenger.id)
+      .then((res) => (passage = res))
+      .catch((err) => showError(err));
 
     current_ride = ride;
     dialog = true;
@@ -207,8 +233,7 @@
     const form_data = new FormData(target);
     const value = Object.fromEntries(form_data.entries());
 
-    // @ts-ignore eh this is what you need again
-    AuthService.updateUser(parsed_jwt.sub, value)
+    UserService.updateUser(parsed_jwt.sub, value)
       .then(() => {
         settingsPlane = "";
         journal = false;
@@ -218,7 +243,7 @@
   };
 
   const deleteUser = async () => {
-    AuthService.deleteUser(parsed_jwt.sub)
+    UserService.deleteUser(parsed_jwt.sub)
       .then(() => {
         localStorage.clear();
       })
@@ -253,12 +278,7 @@
   const nextPassage = (name: string) => {
     PassageHandlingService.getPassages(name)
       .then((res) => {
-        // @ts-ignore dw this is werid shit on the backend
         passage = res;
-
-        if (!passage.passage_name) {
-          passage = passage[0];
-        }
       })
       .catch((err) => showError(err));
   };
@@ -266,7 +286,7 @@
   const textParser = async (text: string) => {
     if (text) {
       if (text.match("{user}")) {
-        let user = await AuthService.getMe();
+        let user = await UserService.getMe();
         text = text.replace("{user}", user.username);
       }
     }
@@ -349,16 +369,18 @@
   onMount(() => {
     if (!localStorage.getItem("access_token")) {
       if (localStorage.getItem("refresh_token")) {
-        // @ts-ignore this is exactly what you want lmao
-        AuthService.refresh(localStorage.getItem("refresh_token"))
-          .then(() => startGame())
+        AuthService.refresh()
+          .then((res) => {
+            localStorage.setItem("access_token", res.access_token);
+            startGame();
+          })
           .catch(() => (welcome = true));
       } else {
         showPhoneButton = false;
         welcome = true;
       }
     } else {
-      AuthService.getMe()
+      UserService.getMe()
         .then(() => startGame())
         .catch(() => (welcome = true));
     }
@@ -503,7 +525,7 @@
         <div slot="content" class="px-4 mt-3">
           <p class="text-center text-3xl text-frost-1">Login</p>
           <Form
-            handleSubmit={loginAndStartGame}
+            handleSubmit={submitLogin}
             enctype="multipart/form-data"
             login={true}
             backButton={true}

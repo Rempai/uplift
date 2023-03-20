@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 export type ReviewedUserCreate = {
-  rideId: number;
-  userId: number;
-  reviewId: number;
   date: string;
+  userId: number;
+  rideId: number;
+  reviewId: number;
 };

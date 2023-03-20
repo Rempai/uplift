@@ -1,17 +1,13 @@
 <script lang="ts">
   import { push } from "svelte-spa-router";
 
+  import { routes, type route } from "@/lib/adminLogic";
+
   import AdminNavLink from "@/components/AdminNavLink.svelte";
 
   import IoIosLogOut from "svelte-icons/io/IoIosLogOut.svelte";
   import TiHomeOutline from "svelte-icons/ti/TiHomeOutline.svelte";
   import GoDatabase from "svelte-icons/go/GoDatabase.svelte";
-  import FaRegUserCircle from "svelte-icons/fa/FaRegUserCircle.svelte";
-  import MdPersonOutline from "svelte-icons/md/MdPersonOutline.svelte";
-  import GiRoad from "svelte-icons/gi/GiRoad.svelte";
-  import IoIosStarOutline from "svelte-icons/io/IoIosStarOutline.svelte";
-  import FaRegFileAlt from "svelte-icons/fa/FaRegFileAlt.svelte";
-  import IoIosAttach from "svelte-icons/io/IoIosAttach.svelte";
 
   import Logo from "/logo.png";
 
@@ -19,58 +15,63 @@
     localStorage.clear();
     push("/");
   };
+
+  const groupRoutesByCategory = (routes: route[]) => {
+    const categories: { [key: string]: route[] } = {};
+
+    routes.forEach((route) => {
+      const category = route.call?.split("/")[1];
+
+      if (category) {
+        if (!categories[category]) {
+          categories[category] = [];
+        }
+
+        categories[category].push(route);
+      }
+    });
+
+    return categories;
+  };
 </script>
 
 <nav
-  class="shadow bg-night-2 flex flex-col gap-2 fixed h-full left-0 top-0 overflow-x-hidden overflow-y-auto w-48 pl-2">
+  class="shadow bg-night-2 flex flex-col gap-2 fixed h-full left-0 top-0 overflow-x-hidden overflow-y-auto pl-2">
   <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l">
     <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
     <p>Uplift Admin</p>
   </div>
+  <AdminNavLink name="Homepage" link="/admin">
+    <TiHomeOutline />
+  </AdminNavLink>
   <span on:keypress on:click={logout}>
     <AdminNavLink name="Logout" link="/">
       <IoIosLogOut />
     </AdminNavLink>
   </span>
-  <AdminNavLink name="Homepage" link="/admin">
-    <TiHomeOutline />
-  </AdminNavLink>
   <AdminNavLink name="Database" link="/admin/database">
     <GoDatabase />
   </AdminNavLink>
-  <details open={true} class="cursor-pointer">
-    <summary>User management</summary>
-    <AdminNavLink name="User" link="/admin/user">
-      <FaRegUserCircle />
-    </AdminNavLink>
-  </details>
-  <details open={true} class="cursor-pointer">
-    <summary class="mr-2">Character management</summary>
-    <AdminNavLink name="Passenger" link="/admin/passenger">
-      <MdPersonOutline />
-    </AdminNavLink>
-    <AdminNavLink name="Ride" link="/admin/ride">
-      <GiRoad />
-    </AdminNavLink>
-    <AdminNavLink name="Review" link="/admin/review">
-      <IoIosStarOutline />
-    </AdminNavLink>
-  </details>
-  <details open={true} class="cursor-pointer">
-    <summary>Story management</summary>
-    <AdminNavLink name="Passage" link="/admin/passage">
-      <FaRegFileAlt />
-    </AdminNavLink>
-    <AdminNavLink name="Attribute" link="/admin/attribute">
-      <IoIosAttach />
-    </AdminNavLink>
-  </details>
+  {#each Object.entries(groupRoutesByCategory(routes)) as [category, routesInCategory]}
+    {#if routesInCategory.length > 0}
+      <details open={true} class="cursor-pointer">
+        <summary class="capitalize pr-4">{category} management</summary>
+        {#each routesInCategory as route}
+          {#if route.icon}
+            <AdminNavLink name={route.route} link={route.route}>
+              <svelte:component this={route.icon} />
+            </AdminNavLink>
+          {/if}
+        {/each}
+      </details>
+    {/if}
+  {/each}
 </nav>
 
 <style>
   @media (min-width: 768px) {
     :global(.admin-space) {
-      margin: 2rem 2rem 2rem 15rem;
+      margin: 2rem 2rem 2rem 20rem;
     }
   }
 

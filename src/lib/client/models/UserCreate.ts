@@ -2,14 +2,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserRead = {
-  id: number;
+export type UserCreate = {
+  password: string;
   username: string;
-  role: UserRead.role;
-  is_active: boolean;
+  role?: UserCreate.role;
+  is_active?: boolean;
 };
 
-export namespace UserRead {
+export namespace UserCreate {
   export enum role {
     ADMIN = "Admin",
     USER = "User",

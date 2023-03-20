@@ -14,7 +14,7 @@
   const dispatch = createEventDispatcher();
 
   let correct_answer_list: RideRead;
-  let solution: ReviewRead;
+  let solution: ReviewRead[];
   let visibleSolution: Array<string> = [];
 
   let score = 0;
@@ -30,10 +30,9 @@
   };
 
   const getSolution = async (score: number) => {
-    // @ts-ignore type is not void
-    solution = await CharactersService.getReviews(null, current_ride.id).catch((err) =>
-      console.log(err)
-    );
+    await CharactersService.getReviews(null, current_ride.id)
+      .then((res) => (solution = res))
+      .catch((err) => console.log(err));
 
     for (const [iterate] of Object.entries(solution)) {
       const setup = solution[iterate];
@@ -69,8 +68,9 @@
   };
 
   const checkAnswer = async (data: report, id: number) => {
-    // @ts-ignore type is not void
-    correct_answer_list = await CharactersService.getRideById(id).catch((err) => console.log(err));
+    await CharactersService.getRideById(id)
+      .then((res) => (correct_answer_list = res))
+      .catch((err) => console.log(err));
 
     for (const [property] of Object.entries(data)) {
       property; // Type is string
