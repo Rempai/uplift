@@ -18,6 +18,7 @@
     type Register,
     type ReviewRead,
     type RideRead,
+    type ReviewedUserCreate,
   } from "@/lib/client";
 
   import Dialog from "@/components/Dialog.svelte";
@@ -321,9 +322,6 @@
           CharactersService.getReviews(parsed_jwt.sub)
             .then((res) => (review_list = res))
             .catch((err) => showError(err));
-          dialog = false;
-          showPhoneButton = false;
-          page = 3;
           passage = undefined;
           ambientNoise = false;
           const video = document.querySelector("video");
@@ -395,26 +393,15 @@
     const current_date = new Date();
     let current_time = current_date.toISOString();
 
-    interface connection {
-      userId: number;
-      rideId: number;
-      reviewId: number;
-      date: string;
-    }
-
     var reviewScore = Number(passage.branch_name.replace(/\D/g, ""));
 
-    const input: connection = {
+    const input: ReviewedUserCreate = {
       userId: parsed_jwt.sub,
-      rideId: current_ride.id,
       reviewId: reviewScore,
       date: current_time,
     };
 
-    //use dialog text.branchname to determine the review you should get 1-5
-    if (review_list[0].id !== reviewScore) {
-      CharactersService.postReviewedUser(input).catch((err) => showError(err));
-    }
+    await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsed_jwt.sub).catch((err) => showError(err));
 
