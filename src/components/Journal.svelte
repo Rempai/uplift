@@ -46,8 +46,11 @@
     });
   };
 
-  const gotoBranch = async (branch_data) => {
-    dispatch("gotoTab", branch_data[0]);
+  const gotoBranch = async () => {
+    dispatch(
+      "gotoTab",
+      branch_data.find((e) => e.branch_name === tabItems[currentTab - 1].label)
+    );
   };
 
   function addInputToFormData(formData, key, value) {
@@ -76,7 +79,7 @@
   <div class="overflow-x-auto flex flex-col flex-wrap basis-11/12">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
     <Button
-      onClick={() => gotoBranch(branch_data)}
+      onClick={gotoBranch}
       text="Go to branch"
       class="w-full flex justify-center mt-3 bg-aurora-orange" />
     <div class="h-full" />
