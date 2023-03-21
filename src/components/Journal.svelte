@@ -38,7 +38,8 @@
         }
 
         let item = tabItems.find((e) => e.value === tab);
-        const validTabs = [2, 3, 4, 5, 6, 7];
+        // TODO: fix this
+        const validTabs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
         if (validTabs.includes(tab) && !obj.trunk && item.value === tab) {
           branch_data.push(obj);
         }

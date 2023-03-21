@@ -386,7 +386,7 @@
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString("en-BR", { hour12: false });
+    return date.toLocaleString("en-BR", { dateStyle: "short", timeStyle: "short", hour12: false });
   };
 
   const createReview = async () => {
