@@ -96,10 +96,16 @@
     getData();
   }
 
-  let ResolutionColors = ["bg-aurora-red", "bg-aurora-orange", "bg-aurora-yellow", "bg-aurora-green", "bg-aurora-purple"]
+  let ResolutionColors = [
+    "bg-aurora-red",
+    "bg-aurora-orange",
+    "bg-aurora-yellow",
+    "bg-aurora-green",
+    "bg-aurora-purple",
+  ];
 
   function randomnumber() {
-    return ResolutionColors[Math.floor(Math.random() * ResolutionColors.length)]
+    return ResolutionColors[Math.floor(Math.random() * ResolutionColors.length)];
   }
 </script>
 
@@ -109,7 +115,7 @@
     {#await visibleSolution then solution}
       {#each solution as solution}
         <div class="flex flex-col gap-1 mt-6">
-          <Button onClick={() => finishRide(solution)} text={solution} class="{randomnumber()}" />
+          <Button onClick={() => finishRide(solution)} text={solution} class={randomnumber()} />
         </div>
       {/each}
     {/await}
