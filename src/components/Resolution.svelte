@@ -95,6 +95,13 @@
   $: if (resolution) {
     getData();
   }
+
+  let colors = ["bg-aurora-red", "bg-aurora-orange", "bg-aurora-yellow", "bg-aurora-green", "bg-aurora-purple"]
+
+  function randomnumber() {
+    let color = colors[Math.floor(Math.random() * colors.length)]
+    return color
+  }
 </script>
 
 <Modal modalHeader="Resolution" showModal={resolution}>
@@ -102,8 +109,8 @@
     <p class="text-3xl text-frost-1">What should Paolo do?</p>
     {#await visibleSolution then solution}
       {#each solution as solution}
-        <div class="flex flex-col gap-1 w-full mt-6">
-          <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4 !px-42" />
+        <div class="flex flex-col gap-1 mt-6">
+          <Button onClick={() => finishRide(solution)} text={solution} class="{randomnumber()} w-fit" />
         </div>
       {/each}
     {/await}
