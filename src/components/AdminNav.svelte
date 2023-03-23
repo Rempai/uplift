@@ -5,9 +5,9 @@
 
   import AdminNavLink from "@/components/AdminNavLink.svelte";
 
-  import IoIosLogOut from "svelte-icons/io/IoIosLogOut.svelte";
-  import TiHomeOutline from "svelte-icons/ti/TiHomeOutline.svelte";
-  import GoDatabase from "svelte-icons/go/GoDatabase.svelte";
+  import IoIosLogOut from "~icons/ion/log-out-outline";
+  import IoIosHomeOutline from "~icons/ion/home-outline";
+  import IoIosServer from "~icons/ion/server-outline";
 
   import Logo from "/logo.png";
 
@@ -20,7 +20,10 @@
     const categories: { [key: string]: route[] } = {};
 
     routes.forEach((route) => {
-      const category = route.call?.split("/")[1];
+      let category = route.call?.split("/")[1];
+      if (category === "passage_handler") {
+        category = "passage";
+      }
 
       if (category) {
         if (!categories[category]) {
@@ -41,29 +44,33 @@
     <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
     <p>Uplift Admin</p>
   </div>
-  <AdminNavLink name="Homepage" link="/admin">
-    <TiHomeOutline />
-  </AdminNavLink>
-  <span on:keypress on:click={logout}>
-    <AdminNavLink name="Logout" link="/">
-      <IoIosLogOut />
+  <div class="flex flex-col">
+    <AdminNavLink name="Homepage" link="/admin">
+      <IoIosHomeOutline font-size="1.5em" />
     </AdminNavLink>
-  </span>
-  <AdminNavLink name="Database" link="/admin/database">
-    <GoDatabase />
-  </AdminNavLink>
+    <span on:keypress on:click={logout}>
+      <AdminNavLink name="Logout" link="/">
+        <IoIosLogOut font-size="1.5em" />
+      </AdminNavLink>
+    </span>
+    <AdminNavLink name="Database" link="/admin/database">
+      <IoIosServer font-size="1.5em" />
+    </AdminNavLink>
+  </div>
   {#each Object.entries(groupRoutesByCategory(routes)) as [category, routesInCategory]}
     {#if routesInCategory.length > 0}
-      <details open={true} class="cursor-pointer">
-        <summary class="capitalize pr-4">{category} management</summary>
-        {#each routesInCategory as route}
-          {#if route.icon}
-            <AdminNavLink name={route.route} link={route.route}>
-              <svelte:component this={route.icon} />
-            </AdminNavLink>
-          {/if}
-        {/each}
-      </details>
+      <div class="flex flex-col">
+        <details open={true} class="cursor-pointer">
+          <summary class="capitalize pr-4">{category} management</summary>
+          {#each routesInCategory as route}
+            {#if route.icon}
+              <AdminNavLink name={route.route} link={route.route}>
+                <svelte:component this={route.icon} font-size="1.5em" />
+              </AdminNavLink>
+            {/if}
+          {/each}
+        </details>
+      </div>
     {/if}
   {/each}
 </nav>
@@ -71,7 +78,7 @@
 <style>
   @media (min-width: 768px) {
     :global(.admin-space) {
-      margin: 2rem 2rem 2rem 20rem;
+      margin: 2rem 2rem 2rem 15rem;
     }
   }
 
@@ -80,6 +87,10 @@
     padding: 0 2em 1em;
     border-radius: 10px;
     box-shadow: 3px 3px 5px 0px rgba(0, 0, 0, 0.5);
+  }
+
+  :global(.admin-space form) {
+    align-items: start;
   }
 
   :global(.admin-space .card .card-header) {

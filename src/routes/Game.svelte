@@ -20,7 +20,9 @@
     UserService,
     type PassageRead,
     type Register,
+    type ReviewRead,
     type RideRead,
+    type ReviewedUserCreate,
   } from "@/lib/client";
 
   import Dialog from "@/components/Dialog.svelte";
@@ -70,7 +72,7 @@
   let errors: Array<string> = [];
 
   let rider_list: Array<RideRead>;
-  let reviewer_list: Array<ReviewedUser>;
+  let review_list: Array<ReviewRead>;
 
   let dialog = false;
   let passage: PassageRead;
@@ -128,7 +130,7 @@
       .catch((err) => showError(err));
 
     await CharactersService.getReviews(parsed_jwt.sub)
-      .then((res) => (reviewer_list = res))
+      .then((res) => (review_list = res))
       .catch((err) => showError(err));
   };
 
@@ -166,8 +168,8 @@
     register = true;
   };
 
-  const toggleModal = (review: ReviewedUser) => {
-    modalHeader = review.passenger.name + "'s review";
+  const toggleModal = (review: ReviewRead) => {
+    modalHeader = review.ride.passenger.name + "'s review";
     showModal = !showModal;
     review_text = review.description;
   };
@@ -178,7 +180,7 @@
     }
 
     await PassageHandlingService.getPassages(undefined, ride.passenger.id)
-      .then((res) => (passage = res))
+      .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
       .catch((err) => showError(err));
 
     current_ride = ride;
@@ -192,10 +194,10 @@
     errors = [...errors, err];
   };
 
-  const showResolution = (event) => {
+  const showResolution = ({ detail }) => {
     journal = false;
     resolution = true;
-    resolution_data = event.detail;
+    resolution_data = detail;
   };
 
   const changeAccount = async (settingsName: string) => {
@@ -253,7 +255,19 @@
   const nextPassage = (name: string) => {
     PassageHandlingService.getPassages(name)
       .then((res) => {
-        passage = res;
+        // TODO: This should be done inside resolution probably.
+        // Quick hack to get reviews working for the boys
+        if (res.length === 0) {
+          CharactersService.getReviews(parsed_jwt.sub)
+            .then((res) => (review_list = res))
+            .catch((err) => showError(err));
+          passage = undefined;
+          ambientNoise = false;
+          const video = document.querySelector("video");
+          video.pause();
+        } else {
+          Array.isArray(res) ? ([passage] = res) : (passage = res);
+        }
       })
       .catch((err) => showError(err));
   };
@@ -310,30 +324,24 @@
     dialog = true;
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-BR", { dateStyle: "short", timeStyle: "short", hour12: false });
+  };
+
   const createReview = async () => {
     const current_date = new Date();
     let current_time = current_date.toISOString();
 
-    interface connection {
-      userId: number;
-      rideId: number;
-      reviewId: number;
-      date: string;
-    }
-
     var reviewScore = Number(passage.branch_name.replace(/\D/g, ""));
 
-    const input: connection = {
+    const input: ReviewedUserCreate = {
       userId: parsed_jwt.sub,
-      rideId: current_ride.id,
       reviewId: reviewScore,
       date: current_time,
     };
 
-    //use dialog text.branchname to determine the review you should get 1-5
-    if (reviewer_list[0].id !== reviewScore) {
-      CharactersService.postReviewedUser(input).catch((err) => showError(err));
-    }
+    await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsed_jwt.sub).catch((err) => showError(err));
 
@@ -382,9 +390,7 @@
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
-    <span on:keypress on:click={() => (showModal = !showModal)}>
-      <Button text="close" class="bg-aurora-green" />
-    </span>
+    <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
   </Modal>
   <video
     class="fixed h-screen w-screen object-fill rounded"
@@ -414,21 +420,17 @@
               <b>Are you sure you want to delete your account? All progression will be lost.</b>
             </p>
             <div class="flex justify-center mt-5 gap-3">
-              <span on:keypress on:click={deleteUser}>
-                <Button
-                  text="Delete"
-                  class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
-              </span>
-              <span
-                on:keypress
-                on:click={() => {
+              <Button
+                onClick={deleteUser}
+                text="Delete"
+                class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
+              <Button
+                onClick={() => {
                   phoneToggle();
                   settingsPlane = "";
-                }}>
-                <Button
-                  text="Cancel"
-                  class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
-              </span>
+                }}
+                text="Cancel"
+                class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
             </div>
           {:else}
             <Form
@@ -491,7 +493,7 @@
       <button
         class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
         on:click={phoneToggle}>
-        <span class="text-night-2"><GiSmartphone /></span>
+        <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
       </button>
     {:else if login}
       <Phone on:close={phoneToggle} on:item={handleClick} menuName="Login">
@@ -531,12 +533,8 @@
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">
-            <span on:keypress on:click={triggerRegister}>
-              <Button class="bg-frost-4" text="Register" />
-            </span>
-            <span on:keypress on:click={skipAndLogin}>
-              <Button class="bg-frost-1" text="Login" />
-            </span>
+            <Button onClick={triggerRegister} class="bg-frost-4" text="Continue" />
+            <Button onClick={skipAndLogin} class="bg-frost-1" text="Skip and login" />
           </div>
         </div>
       </Phone>
@@ -552,25 +550,24 @@
                   {#await rider_list then rider}
                     {#each rider as data}
                       <div
-                        class="mb-6 gap-5 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+                        class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                         on:keypress
                         on:click={() => selectRide(data)}>
                         <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
                         <div>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><IoMdCard /></span>{data.passenger
-                              .name}
+                          <p class="flex items-center">
+                            <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
                           </p>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><TiLocationOutline /></span
-                            >{data.from_location}
+                          <p class="flex items-center">
+                            <IoIosLocationOutline
+                              font-size="1.2em"
+                              class="mr-2" />{data.from_location}
                           </p>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><FaRoute /></span
-                            >{data.to_location}
+                          <p class="flex items-center">
+                            <FaRoute font-size="1.2em" class="mr-2" />{data.to_location}
                           </p>
-                          <p class="flex">
-                            <span class="w-5 mr-2 text-frost-3"><TiTime /></span>{data.time} minutes
+                          <p class="flex items-center">
+                            <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
                           </p>
                         </div>
                       </div>
@@ -599,30 +596,32 @@
       {:else if page == 3}
         <Phone on:close={phoneToggle} on:item={handleClick} menuName="Reviews">
           <div slot="content" class="px-4 mt-3">
-            {#if reviewer_list.length}
-              {#await reviewer_list then reviewer}
+            {#if review_list.length}
+              {#await review_list then reviewer}
                 {#each reviewer as data}
                   <div
-                    class="mb-6 gap-5 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+                    class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                     on:keypress
                     on:click={() => toggleModal(data)}>
-                    <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                    <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
                     <div class="overflow-x-hidden whitespace-nowrap">
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoMdCard /></span>
-                        {data.passenger.name}
+                        <span class="w-5 mr-2 text-frost-3"><IoIosCard font-size="1.2em" /></span>
+                        {data.ride.passenger.name}
                       </p>
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoIosCalendar /></span>
-                        {data.date}
+                        <span class="w-5 mr-2 text-frost-3"
+                          ><IoIosCalendar font-size="1.2em" /></span>
+                        {formatDate(data.date)}
                       </p>
                       <div class="inline-flex items-center">
                         {#each Array(data.stars) as _}
-                          <span class="w-5 mr-2 text-frost-3"><FaStar /></span>
+                          <span class="w-5 mr-2 text-frost-3"><IonStar font-size="1.2em" /></span>
                         {/each}
                         {#if data.stars < 5}
                           {#each Array(5 - data.stars) as _}
-                            <span class="w-5 mr-2 text-frost-3"><IoMdStarOutline /></span>
+                            <span class="w-5 mr-2 text-frost-3"
+                              ><IoIosStarOutline font-size="1.2em" /></span>
                           {/each}
                         {/if}
                       </div>
@@ -646,15 +645,12 @@
           <div slot="content" class="px-4 mt-3 flex justify-around">
             <div class="flex flex-col items-center gap-5">
               {#if typeof passage == "object"}
-                <span on:keypress on:click={dialogToggle} class="w-full">
-                  <Button text="Toggle Dialog" class="bg-frost-1 w-full" />
-                </span>
-                <span on:keypress on:click={journalToggle} class="w-full">
-                  <Button text="Toggle Journal" class="bg-frost-2 w-full" />
-                </span>
-                <span on:keypress on:click={ambientToggle} class="w-full">
-                  <Button text="Toggle Ambient Noise" class="bg-frost-4 w-full" />
-                </span>
+                <Button onClick={dialogToggle} text="Toggle Dialog" class="bg-frost-1 w-full" />
+                <Button onClick={journalToggle} text="Toggle Journal" class="bg-frost-2 w-full" />
+                <Button
+                  onClick={ambientToggle}
+                  text="Toggle Ambient Noise"
+                  class="bg-frost-4 w-full" />
               {:else}
                 <p class="text-center w-full">
                   Dashboard features are only enabled when you are in a ride.
@@ -672,11 +668,10 @@
               {/each}
             </select>
             {#if radio_select}
-              <span on:keypress on:click={() => (radio_select = 0)}>
-                <Button
-                  text="Stop"
-                  class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
-              </span>
+              <Button
+                onClick={() => (radio_select = 0)}
+                text="Stop"
+                class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
             {/if}
           </div>
         </Phone>
@@ -685,28 +680,29 @@
           <div slot="content" class="px-4 mt-3">
             <p class="text-center text-3xl text-frost-1">Account</p>
             <div class="flex flex-col items-center gap-5 mt-6 mx-12">
-              <span class="w-full" on:keypress on:click={() => changeAccount("username")}>
-                <Button text="Username" class="bg-aurora-purple w-full" />
-              </span>
-              <span class="w-full" on:keypress on:click={() => changeAccount("password")}>
-                <Button text="Password" class="bg-aurora-orange w-full" />
-              </span>
-              <span
-                class="w-full"
-                on:keypress
-                on:click={() => {
+              <Button
+                onClick={() => changeAccount("username")}
+                text="Username"
+                class="bg-aurora-purple w-full" />
+              <Button
+                onClick={() => changeAccount("password")}
+                text="Password"
+                class="bg-aurora-orange w-full" />
+              <Button
+                onClick={() => {
                   localStorage.clear();
                   showPhoneButton = false;
                   welcome = true;
                   dialog = false;
                   journal = false;
                   settingsPlane = "";
-                }}>
-                <Button text="Logout" class="bg-aurora-green w-full" />
-              </span>
-              <span class="w-full" on:keypress on:click={() => changeAccount("delete")}>
-                <Button text="Delete account" class="bg-aurora-red w-full" />
-              </span>
+                }}
+                text="Logout"
+                class="bg-aurora-green w-full" />
+              <Button
+                onClick={() => changeAccount("delete")}
+                text="Delete account"
+                class="bg-aurora-red w-full" />
             </div>
           </div>
         </Phone>

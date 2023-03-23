@@ -18,9 +18,9 @@
 
   import { DataHandler, Search, Pagination, RowCount, RowsPerPage } from "@vincjo/datatables";
 
-  import FaRegEdit from "svelte-icons/fa/FaRegEdit.svelte";
-  import FaRegTrashAlt from "svelte-icons/fa/FaRegTrashAlt.svelte";
-  import MdAddCircleOutline from "svelte-icons/md/MdAddCircleOutline.svelte";
+  import FaRegEdit from "~icons/fa-regular/edit";
+  import FaRegTrashAlt from "~icons/fa-regular/trash-alt";
+  import MdPlusCircleOutline from "~icons/mdi/plus-circle-outline";
 
   export let crudRoute: string;
 
@@ -149,24 +149,22 @@
     <p>Are you sure you want to delete {selected_data.name}?</p>
     <p><b>This action is irreversable.</b></p>
     <div class="flex gap-3">
-      <span on:keypress on:click={deleteRow}>
-        <Button text="Delete" class="bg-aurora-red" />
-      </span>
-      <span on:keypress on:click={toggleModal}>
-        <Button text="Cancel" class="bg-aurora-green" />
-      </span>
+      <Button onClick={deleteRow} text="Delete" class="bg-aurora-red" />
+      <Button onClick={toggleModal} text="Cancel" class="bg-aurora-green" />
     </div>
   </Modal>
   <div class="card">
     <div class="card-header">
       <h1 class="capitalize">{crudName} management</h1>
-      <span on:keypress on:click={() => push(loc)}>
-        <Button href="#{loc}" text="new {crudName}" class="!px-2 bg-frost-4">
-          <div slot="icon" class="w-6 ml-4 text-night-1 flex items-center">
-            <MdAddCircleOutline />
-          </div>
-        </Button>
-      </span>
+      <Button
+        onClick={() => push(loc)}
+        href="#{loc}"
+        text="new {crudName}"
+        class="!px-2 bg-frost-4">
+        <div slot="icon" class="w-6 ml-4 text-night-1">
+          <MdPlusCircleOutline font-size="1em" class="!text-night-1" />
+        </div>
+      </Button>
     </div>
     <Loader {loading} />
     {#if rows}
@@ -227,20 +225,20 @@
                   {/each}
                   <td class="py-2 border border-dotted border-storm-1">
                     <div class="flex justify-around">
-                      <span on:keypress on:click={() => push(locEdit(row.id))}>
-                        <Button href="#{$location}/edit/{row.id}" text="" class="bg-aurora-yellow">
-                          <div slot="icon" class="w-5 h-8 flex items-center text-night-1">
-                            <FaRegEdit />
-                          </div>
-                        </Button>
-                      </span>
-                      <span on:keypress on:click={() => deleteConfirm(row)}>
-                        <Button text="" class="bg-aurora-red">
-                          <div slot="icon" class="w-4 h-8 flex items-center text-night-1">
-                            <FaRegTrashAlt />
-                          </div>
-                        </Button>
-                      </span>
+                      <Button
+                        onClick={() => push(locEdit(row.id))}
+                        href="#{$location}/edit/{row.id}"
+                        text=""
+                        class="bg-aurora-yellow">
+                        <div slot="icon" class="w-5 h-8 flex items-center text-night-1">
+                          <FaRegEdit class="text-night-1" font-size="2em" />
+                        </div>
+                      </Button>
+                      <Button onClick={() => deleteConfirm(row)} text="" class="bg-aurora-red">
+                        <div slot="icon" class="w-4 h-8 flex items-center text-night-1">
+                          <FaRegTrashAlt class="text-night-1" font-size="2em" />
+                        </div>
+                      </Button>
                     </div>
                   </td>
                 </tr>

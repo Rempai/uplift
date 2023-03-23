@@ -3,7 +3,7 @@
 
   import { passage_name } from "@/lib/stores";
 
-  import FaChevronRight from "svelte-icons/fa/FaChevronRight.svelte";
+  import MdChevronRight from "~icons/mdi/chevron-right";
 
   import Button from "@/components/Button.svelte";
 
@@ -108,12 +108,10 @@
           {#if continue_button}
             <span
               style="background-color: {dialogColor}"
-              class="rounded absolute bottom-4 right-4"
-              on:keypress
-              on:click={() => dispatch("next")}>
-              <Button text="Continue" class="bg-transparent">
-                <div slot="icon" class="w-6 ml-3 text-snow-1">
-                  <FaChevronRight />
+              class="rounded absolute bottom-4 right-4">
+              <Button onClick={() => dispatch("next")} text="Continue">
+                <div slot="icon" class="w-6 ml-3">
+                  <MdChevronRight font-size="2em" class="text-storm-1" />
                 </div>
               </Button>
             </span>
