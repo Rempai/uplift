@@ -84,6 +84,8 @@
   };
 
   const finishRide = async (solution: string) => {
+    visibleSolution = [];
+    score = 0;
     dispatch("finishRide", solution);
   };
 
