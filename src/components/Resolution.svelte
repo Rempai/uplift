@@ -102,7 +102,7 @@
     <p class="text-3xl text-frost-1">What should Paolo do?</p>
     {#await visibleSolution then solution}
       {#each solution as solution}
-        <div class="flex flex-col gap-1 w-screen mt-3">
+        <div class="flex flex-col gap-1 w-full mt-6">
           <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4" />
         </div>
       {/each}
