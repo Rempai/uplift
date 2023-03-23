@@ -55,7 +55,7 @@ export class PassageHandlingService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -76,7 +76,7 @@ export class PassageHandlingService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -104,7 +104,7 @@ export class PassageHandlingService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -124,7 +124,7 @@ export class PassageHandlingService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });
@@ -159,7 +159,7 @@ export class PassageHandlingService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -180,7 +180,7 @@ export class PassageHandlingService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -208,7 +208,7 @@ export class PassageHandlingService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -228,7 +228,7 @@ export class PassageHandlingService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });

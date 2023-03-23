@@ -47,7 +47,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -68,7 +68,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -96,7 +96,7 @@ export class CharactersService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -116,7 +116,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         500: `Internal Server Error`,
       },
     });
@@ -155,7 +155,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -176,7 +176,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -201,7 +201,7 @@ export class CharactersService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -221,7 +221,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         500: `Internal Server Error`,
       },
     });
@@ -265,7 +265,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -286,7 +286,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -314,7 +314,7 @@ export class CharactersService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized `,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -334,7 +334,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         500: `Internal Server Error`,
       },
     });
@@ -353,7 +353,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized `,
         500: `Internal Server Error`,
       },
     });

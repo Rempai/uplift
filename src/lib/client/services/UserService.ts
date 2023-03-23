@@ -57,7 +57,7 @@ export class UserService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -78,7 +78,7 @@ export class UserService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -103,7 +103,7 @@ export class UserService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -123,7 +123,7 @@ export class UserService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });
