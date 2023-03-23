@@ -1,16 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import type { journalAnswer } from "@/main";
-
-  import type { PassageRead } from "@/lib/client";
+  import type { PassageRead, RideRead } from "@/lib/client";
 
   import Tabs from "@/components/Tab.svelte";
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
 
   export let journal_data: Array<PassageRead>;
-  export let context_data: journalAnswer;
+  export let resolution_data: RideRead;
 
   // TODO: random journal styling bug
 
@@ -75,9 +73,9 @@
   const submitForm = async ({ target }) => {
     const form_data = new FormData(target);
 
-    addInputToFormData(form_data, "main_problem", context_data.marked_problem);
-    addInputToFormData(form_data, "parties_involved", context_data.marked_involved);
-    addInputToFormData(form_data, "main_cause", context_data.marked_cause);
+    addInputToFormData(form_data, "main_problem", resolution_data.main_problem);
+    addInputToFormData(form_data, "parties_involved", resolution_data.parties_involved);
+    addInputToFormData(form_data, "main_cause", resolution_data.main_cause);
 
     const value = Object.fromEntries(form_data.entries());
     dispatch("report", value);
@@ -123,7 +121,7 @@
         <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="main_problem">Main Problem</label>
         <input
           disabled
-          value={context_data.marked_problem}
+          value={resolution_data.main_problem}
           name="main_problem"
           type="text"
           placeholder="What?"
@@ -132,7 +130,7 @@
         <label class="bg-aurora-orange p-2 !mb-0" for="parties_involved">Parties Involved</label>
         <input
           disabled
-          value={context_data.marked_involved}
+          value={resolution_data.parties_involved}
           name="parties_involved"
           type="text"
           placeholder="What?"
@@ -141,7 +139,7 @@
         <label class="bg-aurora-orange p-2 !mb-0" for="main_cause">Primary Cause</label>
         <input
           disabled
-          value={context_data.marked_cause}
+          value={resolution_data.main_cause}
           name="main_cause"
           type="text"
           placeholder="What?"

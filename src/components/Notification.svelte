@@ -1,24 +1,36 @@
 <script lang="ts">
   export let info = false;
-  export let message: string | boolean;
+  export let message: string[] = [];
 
-  let classes = `hover:brightness-110 rounded py-2 px-3 w-48 absolute top-10 right-10 z-[99] cursor-pointer shadow`;
+  const containerClasses = "absolute top-10 right-10 z-50 flex flex-col items-end space-y-4";
+
+  let alertClasses = "hover:brightness-110 rounded py-2 px-3 w-48 cursor-pointer shadow";
 
   if (info) {
-    classes = classes + ` bg-frost-4`;
+    alertClasses = `${alertClasses} bg-frost-4`;
   } else {
-    classes = classes + ` bg-aurora-red`;
+    alertClasses = `${alertClasses} bg-aurora-red`;
   }
 
-  $: if (message) {
+  function removeMessage(index: number) {
+    message = [...message.slice(0, index), ...message.slice(index + 1)];
+  }
+
+  $: if (message.length > 0) {
     setTimeout(() => {
-      message = "";
+      message.splice(message.length - 1, 1);
+      message = [...message]; // trigger update
     }, 5000);
   }
 </script>
 
-{#if message !== ""}
-  <div on:keypress class={classes} on:click={() => (message = "")}>
-    <p class="break-words">{message}</p>
-  </div>
-{/if}
+<div class={containerClasses}>
+  {#each message as msg, i}
+    <button class={alertClasses} on:click={() => removeMessage(i)}>
+      <div class="flex justify-between">
+        <p class="break-words">{msg}</p>
+        <span class="">&times;</span>
+      </div>
+    </button>
+  {/each}
+</div>

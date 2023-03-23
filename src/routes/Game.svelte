@@ -4,11 +4,13 @@
 
   import { passage_name, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
+  import { radios } from "@/lib/radio";
+  import {
+    loginForAccessToken,
+    registerForAccessToken,
+    updateUserAccount,
+  } from "@/lib/authProcesses.ts";
   import { validateData, validationErrorCheck } from "@/lib/validation";
-  import { loginForAccessToken, registerForAccessToken } from "@/lib/authProcesses";
-  import { radios } from "@/lib/game";
-
-  import type { report, journalAnswer } from "@/main";
 
   import {
     AuthService,
@@ -32,14 +34,14 @@
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
 
-  import IoMdCard from "svelte-icons/io/IoMdCard.svelte";
-  import TiLocationOutline from "svelte-icons/ti/TiLocationOutline.svelte";
-  import IoMdStarOutline from "svelte-icons/io/IoMdStarOutline.svelte";
-  import TiTime from "svelte-icons/ti/TiTime.svelte";
-  import FaRoute from "svelte-icons/fa/FaRoute.svelte";
-  import IoIosCalendar from "svelte-icons/io/IoIosCalendar.svelte";
-  import FaStar from "svelte-icons/fa/FaStar.svelte";
-  import GiSmartphone from "svelte-icons/gi/GiSmartphone.svelte";
+  import IoIosCard from "~icons/ion/card-outline";
+  import IoIosLocationOutline from "~icons/ion/location-outline";
+  import IoIosStarOutline from "~icons/ion/star-outline";
+  import TiTime from "~icons/typcn/time";
+  import FaRoute from "~icons/fa6-solid/route";
+  import IoIosCalendar from "~icons/ion/calendar";
+  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
+  import IonStar from "~icons/ion/star";
 
   import Logo from "/logo.png";
   import Background from "/background.webm";
@@ -65,6 +67,7 @@
 
   // TODO: fix info and stuff (For notification colors)
   let notificationMessage = "";
+  let errors: Array<string> = [];
 
   let rider_list: Array<RideRead>;
   let reviewer_list: Array<ReviewedUser>;
@@ -76,62 +79,38 @@
   let journal = false;
   let journal_data: Array<PassageRead> = [];
 
-  let context_data: journalAnswer = { marked_problem: "", marked_involved: "", marked_cause: "" };
+  let current_ride: RideRead;
 
   let resolution = false;
-  let resolution_data: report;
+  let resolution_data: RideRead = {
+    ...current_ride,
+    main_problem: "",
+    parties_involved: "",
+    main_cause: "",
+  };
   let solution: string;
-
-  let current_ride: RideRead;
 
   let parsed_jwt: jwtObject;
 
-  // async function submitLogin({ target }) {
-  //   const urlSearchParams = new URLSearchParams(new FormData(target) as any);
-
-  //   await AuthService.login(urlSearchParams)
-  //     .then((res) => {
-  //       localStorage.setItem("access_token", res.access_token);
-  //       localStorage.setItem("refresh_token", res.refresh_token);
-  //       startGame();
-  //     })
-  //     .catch(async (err) => {
-  //       showError(await validationErrorCheck(err, false));
-  //       $validation = $validation;
-  //     });
-  // }
-
-  async function submitLogin({ target }) {
+  const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
-    if (login) {
+    if (login === true) {
       startGame();
     } else {
+      $validation = $validation;
       showError(await validationErrorCheck(login, false));
     }
-  }
+  };
 
-  async function submitRegister({ target }) {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
-    const register: Register = {
-      username: value.username as string,
-      password: value.password as string,
-      repeat_password: value.repeat_password as string,
-    };
-
-    await validateData("Register", value as Register, true).then(async () => {
-      await AuthService.register(register)
-        .then((res) => {
-          localStorage.setItem("access_token", res.access_token);
-          localStorage.setItem("refresh_token", res.refresh_token);
-          startGame();
-        })
-        .catch(async (err) => {
-          showError(await validationErrorCheck(err, false));
-          $validation = $validation;
-        });
-    });
-  }
+  const submitRegister = async ({ target }) => {
+    const register = await registerForAccessToken(target);
+    if (register === true) {
+      startGame();
+    } else {
+      $validation = $validation;
+      showError(await validationErrorCheck(register, false));
+    }
+  };
 
   const startGame = async () => {
     const token = localStorage.getItem("access_token");
@@ -210,9 +189,7 @@
   };
 
   const showError = (err: string) => {
-    if (!(err == "")) {
-      notificationMessage += err + "\n";
-    }
+    errors = [...errors, err];
   };
 
   const showResolution = (event) => {
@@ -229,17 +206,15 @@
     journal = false;
   };
 
-  const updateAccount = ({ target }) => {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
-
-    UserService.updateUser(parsed_jwt.sub, value)
-      .then(() => {
-        settingsPlane = "";
-        journal = false;
-        phoneToggle();
-      })
-      .catch((err) => showError(err));
+  const updateAccount = async ({ target }) => {
+    const update = await updateUserAccount(target, parsed_jwt.sub);
+    if (update === true) {
+      settingsPlane = "";
+      journal = false;
+      phoneToggle();
+    } else {
+      showError(update);
+    }
   };
 
   const deleteUser = async () => {
@@ -312,12 +287,12 @@
   };
 
   const updateContextData = async (event: CustomEvent) => {
-    if (event.detail.type === "marked_problem") {
-      context_data.marked_problem = event.detail.text;
-    } else if (event.detail.type === "marked_involved") {
-      context_data.marked_involved = event.detail.text;
-    } else if (event.detail.type === "marked_cause") {
-      context_data.marked_cause = event.detail.text;
+    if (event.detail.type === "main_problem") {
+      resolution_data.main_problem = event.detail.text;
+    } else if (event.detail.type === "parties_involved") {
+      resolution_data.parties_involved = event.detail.text;
+    } else if (event.detail.type === "main_cause") {
+      resolution_data.main_cause = event.detail.text;
     }
   };
 
@@ -401,12 +376,10 @@
 </svelte:head>
 
 <main>
-  {#if loader}
-    <Loader />
-  {/if}
+  <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
-  <Notification bind:message={notificationMessage} />
+  <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
     <p class="mb-3">{review_text}</p>
     <span on:keypress on:click={() => (showModal = !showModal)}>
@@ -509,7 +482,7 @@
       <div in:fade class="w-9/12">
         <Journal
           {journal_data}
-          {context_data}
+          {resolution_data}
           on:report={showResolution}
           on:gotoTab={gotoBranch} />
       </div>
@@ -559,10 +532,10 @@
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">
             <span on:keypress on:click={triggerRegister}>
-              <Button class="bg-frost-4" text="Continue" />
+              <Button class="bg-frost-4" text="Register" />
             </span>
             <span on:keypress on:click={skipAndLogin}>
-              <Button class="bg-frost-1" text="Skip and login" />
+              <Button class="bg-frost-1" text="Login" />
             </span>
           </div>
         </div>

@@ -50,13 +50,13 @@
       />
       <hr> -->
     <MenuOption
-      on:click={() => dispatchClick({ text: selectedText, type: "marked_problem" })}
+      on:click={() => dispatchClick({ text: selectedText, type: "main_problem" })}
       text="✏ Main Problem" />
     <MenuOption
-      on:click={() => dispatchClick({ text: selectedText, type: "marked_involved" })}
+      on:click={() => dispatchClick({ text: selectedText, type: "parties_involved" })}
       text="✏ Involved Party" />
     <MenuOption
-      on:click={() => dispatchClick({ text: selectedText, type: "marked_cause" })}
+      on:click={() => dispatchClick({ text: selectedText, type: "main_cause" })}
       text="✏ Primary Cause" />
   </Menu>
 {/if}
