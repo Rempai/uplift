@@ -28,16 +28,15 @@
       return;
     }
 
-    let parsed_jwt = await parseJwt(localStorage.getItem("access_token"));
+    let parsedJwt = await parseJwt(localStorage.getItem("access_token"));
 
-      if (parsed_jwt.role === "Admin") {
-        push("/admin");
-      } else {
-        // TODO: show error that user is not admin
-        push("/");
-      }
+    if (parsedJwt.role === "Admin") {
+      push("/admin");
+    } else {
+      // TODO: show error that user is not admin
+      push("/");
     }
-  }
+  };
 </script>
 
 <svelte:head>

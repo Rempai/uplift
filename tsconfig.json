@@ -15,7 +15,6 @@
     "checkJs": true,
     "preserveValueImports": true,
     "importsNotUsedAsValues": "error",
-    "target": "ESNext",
     "isolatedModules": true,
     "sourceMap": true,
     "strict": false,

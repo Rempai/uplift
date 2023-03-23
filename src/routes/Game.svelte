@@ -2,15 +2,15 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passage_name, validation } from "@/lib/stores";
+  import { passageName, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
+  import { validationErrorCheck } from "@/lib/validation";
   import { radios } from "@/lib/radio";
   import {
     loginForAccessToken,
     registerForAccessToken,
     updateUserAccount,
-  } from "@/lib/authProcesses.ts";
-  import { validateData, validationErrorCheck } from "@/lib/validation";
+  } from "@/lib/authProcesses";
 
   import {
     AuthService,
@@ -19,7 +19,6 @@
     PassageHandlingService,
     UserService,
     type PassageRead,
-    type Register,
     type ReviewRead,
     type RideRead,
     type ReviewedUserCreate,
@@ -49,7 +48,7 @@
   import Background from "/background.webm";
   import Ambient from "/ambient.mp3";
 
-  let radio_select: number;
+  let radioSelect: number;
   let ambientNoise = false;
 
   let page: number;
@@ -59,7 +58,7 @@
 
   let showModal = false;
   let modalHeader = "";
-  let review_text = "";
+  let reviewText = "";
 
   let welcome = false;
   let login = false;
@@ -71,28 +70,28 @@
   let notificationMessage = "";
   let errors: Array<string> = [];
 
-  let rider_list: Array<RideRead>;
-  let review_list: Array<ReviewRead>;
+  let riderList: Array<RideRead>;
+  let reviewList: Array<ReviewRead>;
 
   let dialog = false;
   let passage: PassageRead;
-  let text_parsed: Promise<string>;
+  let textParsed: Promise<string>;
 
   let journal = false;
-  let journal_data: Array<PassageRead> = [];
+  let journalData: Array<PassageRead> = [];
 
-  let current_ride: RideRead;
+  let currentRide: RideRead;
 
   let resolution = false;
-  let resolution_data: RideRead = {
-    ...current_ride,
-    main_problem: "",
-    parties_involved: "",
-    main_cause: "",
+  let resolutionData: RideRead = {
+    ...currentRide,
+    mainProblem: "",
+    partiesInvolved: "",
+    mainCause: "",
   };
   let solution: string;
 
-  let parsed_jwt: jwtObject;
+  let parsedJWT: jwtObject;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -116,7 +115,7 @@
 
   const startGame = async () => {
     const token = localStorage.getItem("access_token");
-    parsed_jwt = await parseJwt(token);
+    parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
     loader = false;
@@ -126,28 +125,28 @@
     page = 0;
 
     await CharactersService.getRides()
-      .then((res) => (rider_list = res))
+      .then((res) => (riderList = res))
       .catch((err) => showError(err));
 
-    await CharactersService.getReviews(parsed_jwt.sub)
-      .then((res) => (review_list = res))
+    await CharactersService.getReviews(parsedJWT.sub)
+      .then((res) => (reviewList = res))
       .catch((err) => showError(err));
   };
 
-  const phoneToggle = () => {
+  const togglePhone = () => {
     showPhoneButton = !showPhoneButton;
   };
 
-  const ambientToggle = () => {
+  const toggleAmbient = () => {
     ambientNoise = !ambientNoise;
   };
 
-  const journalToggle = () => {
+  const toggleJournal = () => {
     journal = !journal;
     dialog = false;
   };
 
-  const dialogToggle = () => {
+  const toggleDialog = () => {
     dialog = !dialog;
     journal = false;
   };
@@ -171,7 +170,7 @@
   const toggleModal = (review: ReviewRead) => {
     modalHeader = review.ride.passenger.name + "'s review";
     showModal = !showModal;
-    review_text = review.description;
+    reviewText = review.description;
   };
 
   const selectRide = async (ride: RideRead) => {
@@ -183,7 +182,7 @@
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
       .catch((err) => showError(err));
 
-    current_ride = ride;
+    currentRide = ride;
     dialog = true;
     showPhoneButton = true;
     ambientNoise = true;
@@ -197,30 +196,30 @@
   const showResolution = ({ detail }) => {
     journal = false;
     resolution = true;
-    resolution_data = detail;
+    resolutionData = detail;
   };
 
   const changeAccount = async (settingsName: string) => {
     settingsPlane = settingsName;
 
     dialog = false;
-    phoneToggle();
+    togglePhone();
     journal = false;
   };
 
   const updateAccount = async ({ target }) => {
-    const update = await updateUserAccount(target, parsed_jwt.sub);
+    const update = await updateUserAccount(target, parsedJWT.sub);
     if (update === true) {
       settingsPlane = "";
       journal = false;
-      phoneToggle();
+      togglePhone();
     } else {
       showError(update);
     }
   };
 
   const deleteUser = async () => {
-    UserService.deleteUser(parsed_jwt.sub)
+    UserService.deleteUser(parsedJWT.sub)
       .then(() => {
         localStorage.clear();
       })
@@ -234,9 +233,9 @@
   };
 
   const nextPassageName = () => {
-    let text = passage.passage_name;
+    let text = passage.passageName;
 
-    if (passage.speaker === "You" && !passage.branch_name.includes("FinishNow")) {
+    if (passage.speaker === "You" && !passage.branchName.includes("FinishNow")) {
       text = text.replace("You", "");
     } else {
       let numbers = Number(text.match(/[0-9]*[0-9]$/g));
@@ -244,9 +243,9 @@
       text = text.replace(/[0-9]*[0-9]$/g, "You" + numbers);
     }
 
-    if (passage.branch_name.includes("FinishNow")) {
+    if (passage.branchName.includes("FinishNow")) {
       createReview();
-      dialogToggle();
+      toggleDialog();
     }
 
     nextPassage(text);
@@ -258,8 +257,8 @@
         // TODO: This should be done inside resolution probably.
         // Quick hack to get reviews working for the boys
         if (res.length === 0) {
-          CharactersService.getReviews(parsed_jwt.sub)
-            .then((res) => (review_list = res))
+          CharactersService.getReviews(parsedJWT.sub)
+            .then((res) => (reviewList = res))
             .catch((err) => showError(err));
           passage = undefined;
           ambientNoise = false;
@@ -284,36 +283,36 @@
 
   const updateJournalData = async () => {
     // Workaround for adding {user} template parsing for the journal
-    let dialog_update = passage;
-    dialog_update.content = await text_parsed;
+    let dialogUpdate = passage;
+    dialogUpdate.content = await textParsed;
     //prevent duplicate passages in journal
-    if (journal_data.length !== 0) {
+    if (journalData.length !== 0) {
       let alreadyInJournal = false;
-      journal_data.forEach((obj) => {
-        if (obj.id === dialog_update.id) {
+      journalData.forEach((obj) => {
+        if (obj.id === dialogUpdate.id) {
           alreadyInJournal = true;
         }
       });
       if (!alreadyInJournal) {
-        journal_data.push(dialog_update);
+        journalData.push(dialogUpdate);
       }
-    } else journal_data.push(dialog_update);
+    } else journalData.push(dialogUpdate);
   };
 
   const updateContextData = async (event: CustomEvent) => {
-    if (event.detail.type === "main_problem") {
-      resolution_data.main_problem = event.detail.text;
-    } else if (event.detail.type === "parties_involved") {
-      resolution_data.parties_involved = event.detail.text;
-    } else if (event.detail.type === "main_cause") {
-      resolution_data.main_cause = event.detail.text;
+    if (event.detail.type === "mainProblem") {
+      resolutionData.mainProblem = event.detail.text;
+    } else if (event.detail.type === "partiesInvolved") {
+      resolutionData.partiesInvolved = event.detail.text;
+    } else if (event.detail.type === "mainCause") {
+      resolutionData.mainCause = event.detail.text;
     }
   };
 
   const gotoBranch = async (event: CustomEvent) => {
     journal = false;
-    dialogToggle();
-    nextPassage(event.detail.passage_name);
+    toggleDialog();
+    nextPassage(event.detail.passageName);
   };
 
   const finishRide = async (event: CustomEvent) => {
@@ -330,23 +329,23 @@
   };
 
   const createReview = async () => {
-    const current_date = new Date();
-    let current_time = current_date.toISOString();
+    const currentDate = new Date();
+    let currentTime = currentDate.toISOString();
 
-    var reviewScore = Number(passage.branch_name.replace(/\D/g, ""));
+    var reviewScore = Number(passage.branchName.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
-      userId: parsed_jwt.sub,
+      userId: parsedJWT.sub,
       reviewId: reviewScore,
-      date: current_time,
+      date: currentTime,
     };
 
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsed_jwt.sub).catch((err) => showError(err));
+    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
 
     page = 3;
-    phoneToggle();
+    togglePhone();
   };
 
   onMount(() => {
@@ -369,12 +368,12 @@
     }
   });
 
-  $: if ($passage_name !== "") {
-    nextPassage($passage_name);
+  $: if ($passageName !== "") {
+    nextPassage($passageName);
   }
 
   $: if (passage) {
-    text_parsed = textParser(passage.content);
+    textParsed = textParser(passage.content);
     updateJournalData();
   }
 </script>
@@ -386,10 +385,10 @@
 <main>
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
-  <Resolution data={resolution_data} {current_ride} on:finishRide={finishRide} {resolution} />
+  <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
-    <p class="mb-3">{review_text}</p>
+    <p class="mb-3">{reviewText}</p>
     <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
   </Modal>
   <video
@@ -400,8 +399,8 @@
     <track kind="captions" />
     <source src={Background} />
   </video>
-  {#if radio_select}
-    <audio class="hidden" autoplay controls loop src={radios[radio_select].source} />
+  {#if radioSelect}
+    <audio class="hidden" autoplay controls loop src={radios[radioSelect].source} />
   {/if}
   {#if ambientNoise}
     <audio class="hidden" autoplay controls loop src={Ambient} />
@@ -426,7 +425,7 @@
                 class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
               <Button
                 onClick={() => {
-                  phoneToggle();
+                  togglePhone();
                   settingsPlane = "";
                 }}
                 text="Cancel"
@@ -438,10 +437,10 @@
               backButton={true}
               on:back={() => {
                 settingsPlane = "";
-                phoneToggle();
+                togglePhone();
               }}>
               <div slot="forms">
-                <input hidden required name="role" value={parsed_jwt.role} />
+                <input hidden required name="role" value={parsedJWT.role} />
                 {#if settingsPlane == "username"}
                   <label for="username">New Username</label>
                   <input required placeholder="test123" name="username" type="text" />
@@ -466,13 +465,13 @@
     {#if dialog}
       <div in:fade class="absolute left-0 right-0 top-1/3 m-auto">
         {#await passage then dialog}
-          {#await text_parsed then parsed_text}
+          {#await textParsed then parsedText}
             <Dialog
               on:next={nextPassageName}
-              continue_button={dialog.continue_button}
+              continueButton={dialog.continueButton}
               user={dialog.speaker}
               dialogColor={dialog.attribute.color}
-              text={parsed_text}
+              text={parsedText}
               font={dialog.attribute.font_family}
               fontSize={dialog.attribute.font_size}
               color={dialog.attribute.color} />
@@ -483,8 +482,8 @@
     {#if journal}
       <div in:fade class="w-9/12">
         <Journal
-          {journal_data}
-          {resolution_data}
+          {journalData}
+          {resolutionData}
           on:report={showResolution}
           on:gotoTab={gotoBranch} />
       </div>
@@ -492,11 +491,11 @@
     {#if showPhoneButton}
       <button
         class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
-        on:click={phoneToggle}>
+        on:click={togglePhone}>
         <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
       </button>
     {:else if login}
-      <Phone on:close={phoneToggle} on:item={handleClick} menuName="Login">
+      <Phone on:close={togglePhone} on:item={handleClick} menuName="Login">
         <div slot="content" class="px-4 mt-3">
           <p class="text-center text-3xl text-frost-1">Login</p>
           <Form
@@ -511,7 +510,7 @@
         </div>
       </Phone>
     {:else if register}
-      <Phone on:close={phoneToggle} on:item={handleClick} menuName="Register">
+      <Phone on:close={togglePhone} on:item={handleClick} menuName="Register">
         <div slot="content" class="px-4 mt-3">
           <p class="text-center text-3xl text-frost-1">Register</p>
           <Form
@@ -525,7 +524,7 @@
         </div>
       </Phone>
     {:else if welcome}
-      <Phone on:close={phoneToggle} on:item={handleClick} menuName="Welcome">
+      <Phone on:close={togglePhone} on:item={handleClick} menuName="Welcome">
         <div slot="content" class="px-4 mt-3">
           <div class="flex flex-col items-center gap-6">
             <p class="text-3xl">Welcome to</p>
@@ -540,14 +539,14 @@
       </Phone>
     {:else if page}
       {#if page == 1}
-        <Phone on:close={phoneToggle} on:item={handleClick} menuName="Choose Ride">
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Choose Ride">
           <div slot="content" class="px-4 mt-3">
             <div class="profile">
-              {#if rider_list.length}
+              {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
                 {:else}
-                  {#await rider_list then rider}
+                  {#await riderList then rider}
                     {#each rider as data}
                       <div
                         class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
@@ -581,7 +580,7 @@
           </div>
         </Phone>
       {:else if page == 2}
-        <Phone on:close={phoneToggle} on:item={handleClick} menuName="Achievements">
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Achievements">
           <div slot="content" class="px-4 mt-3">
             <div class="flex justify-center flex-wrap gap-3">
               {#each Array(5) as _}
@@ -594,10 +593,10 @@
           </div>
         </Phone>
       {:else if page == 3}
-        <Phone on:close={phoneToggle} on:item={handleClick} menuName="Reviews">
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Reviews">
           <div slot="content" class="px-4 mt-3">
-            {#if review_list.length}
-              {#await review_list then reviewer}
+            {#if reviewList.length}
+              {#await reviewList then reviewer}
                 {#each reviewer as data}
                   <div
                     class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
@@ -641,14 +640,14 @@
           </div>
         </Phone>
       {:else if page == 4}
-        <Phone on:close={phoneToggle} on:item={handleClick} menuName="Dashboard">
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Dashboard">
           <div slot="content" class="px-4 mt-3 flex justify-around">
             <div class="flex flex-col items-center gap-5">
               {#if typeof passage == "object"}
-                <Button onClick={dialogToggle} text="Toggle Dialog" class="bg-frost-1 w-full" />
-                <Button onClick={journalToggle} text="Toggle Journal" class="bg-frost-2 w-full" />
+                <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
+                <Button onClick={toggleJournal} text="Toggle Journal" class="bg-frost-2 w-full" />
                 <Button
-                  onClick={ambientToggle}
+                  onClick={toggleAmbient}
                   text="Toggle Ambient Noise"
                   class="bg-frost-4 w-full" />
               {:else}
@@ -660,23 +659,23 @@
           </div>
         </Phone>
       {:else if page == 5}
-        <Phone on:close={phoneToggle} on:item={handleClick} menuName="Radio">
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Radio">
           <div slot="content" class="px-4 mt-3 flex flex-col items-center">
-            <select name="station" bind:value={radio_select} class="my-5 p-3 bg-frost-4 rounded">
+            <select name="station" bind:value={radioSelect} class="my-5 p-3 bg-frost-4 rounded">
               {#each radios as radio}
                 <option value={radio.id}>{radio.name}</option>
               {/each}
             </select>
-            {#if radio_select}
+            {#if radioSelect}
               <Button
-                onClick={() => (radio_select = 0)}
+                onClick={() => (radioSelect = 0)}
                 text="Stop"
                 class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
             {/if}
           </div>
         </Phone>
       {:else if page == 6}
-        <Phone on:close={phoneToggle} on:item={handleClick} menuName="Settings">
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Settings">
           <div slot="content" class="px-4 mt-3">
             <p class="text-center text-3xl text-frost-1">Account</p>
             <div class="flex flex-col items-center gap-5 mt-6 mx-12">
@@ -708,7 +707,7 @@
         </Phone>
       {/if}
     {:else}
-      <Phone on:close={phoneToggle} on:item={handleClick} />
+      <Phone on:close={togglePhone} on:item={handleClick} />
     {/if}
   </div>
 </main>

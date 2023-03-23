@@ -16,7 +16,7 @@
 
   let showModal = false;
 
-  const reset_db = async () => {
+  const resetDatabase = async () => {
     await FactoryService.factory().then(() => {
       localStorage.clear();
       push("/");
@@ -37,7 +37,7 @@
   <p><b>Note: All current data will be lost.</b></p>
   <div class="flex gap-4 mt-3">
     <Button
-      onClick={reset_db}
+      onClick={resetDatabase}
       text="Reset Database"
       class="bg-transparent !border-aurora-red hover:bg-aurora-red" />
     <Button

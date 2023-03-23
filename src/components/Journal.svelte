@@ -7,10 +7,10 @@
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
 
-  export let journal_data: Array<PassageRead>;
-  export let resolution_data: RideRead;
+  export let journalData: Array<PassageRead>;
+  export let resolutionData: RideRead;
 
-  let branch_data: Array<PassageRead> = [];
+  let branchData: Array<PassageRead> = [];
 
   const dispatch = createEventDispatcher();
 
@@ -26,20 +26,20 @@
   let virtues: Array<string> = ["bravery", "perseverance", "integrity", "enthusiasm"];
 
   const getData = (tab: number) => {
-    journal_data.forEach((obj) => {
+    journalData.forEach((obj) => {
       if (tab === 1) {
-        if (obj.trunk) branch_data.push(obj);
+        if (obj.trunk) branchData.push(obj);
       } else {
-        if (!tabItems.find((e) => e.label === obj.branch_name)) {
-          let tab_num: number = tabItems.length;
-          tabItems.push({ label: obj.branch_name, value: tab_num + 1 });
+        if (!tabItems.find((e) => e.label === obj.branchName)) {
+          let tabNum: number = tabItems.length;
+          tabItems.push({ label: obj.branchName, value: tabNum + 1 });
         }
 
         let item = tabItems.find((e) => e.value === tab);
         // TODO: fix this
         const validTabs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
         if (validTabs.includes(tab) && !obj.trunk && item.value === tab) {
-          branch_data.push(obj);
+          branchData.push(obj);
         }
       }
     });
@@ -48,7 +48,7 @@
   const gotoBranch = async () => {
     dispatch(
       "gotoTab",
-      branch_data.find((e) => e.branch_name === tabItems[currentTab - 1].label)
+      branchData.find((e) => e.branchName === tabItems[currentTab - 1].label)
     );
   };
 
@@ -57,18 +57,18 @@
   }
 
   const submitForm = async ({ target }) => {
-    const form_data = new FormData(target);
+    const formData = new FormData(target);
 
-    addInputToFormData(form_data, "main_problem", resolution_data.main_problem);
-    addInputToFormData(form_data, "parties_involved", resolution_data.parties_involved);
-    addInputToFormData(form_data, "main_cause", resolution_data.main_cause);
+    addInputToFormData(formData, "mainProblem", resolutionData.mainProblem);
+    addInputToFormData(formData, "partiesInvolved", resolutionData.partiesInvolved);
+    addInputToFormData(formData, "mainCause", resolutionData.mainCause);
 
-    const value = Object.fromEntries(form_data.entries());
+    const value = Object.fromEntries(formData.entries());
     dispatch("report", value);
   };
 
   $: {
-    branch_data = [];
+    branchData = [];
     getData(currentTab);
   }
 </script>
@@ -84,7 +84,7 @@
     <div class="h-full" />
     <div class="overflow-y-auto overflow-x-hidden">
       {#if currentTab}
-        {#each branch_data as data}
+        {#each branchData as data}
           <div
             class={data.speaker === "You"
               ? "flex flex-col items-end text-end w-96 px-3 mt-2"
@@ -107,29 +107,29 @@
   <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap pb-4 w-full pr-2">
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
       <div slot="forms" class="w-full">
-        <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="main_problem">Main Problem</label>
+        <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="mainProblem">Main Problem</label>
         <input
           disabled
-          value={resolution_data.main_problem}
-          name="main_problem"
+          value={resolutionData.mainProblem}
+          name="mainProblem"
           type="text"
           placeholder="What?"
           required
           class="w-full !rounded-[0px]" />
-        <label class="bg-aurora-orange p-2 !mb-0" for="parties_involved">Parties Involved</label>
+        <label class="bg-aurora-orange p-2 !mb-0" for="partiesInvolved">Parties Involved</label>
         <input
           disabled
-          value={resolution_data.parties_involved}
-          name="parties_involved"
+          value={resolutionData.partiesInvolved}
+          name="partiesInvolved"
           type="text"
           placeholder="What?"
           required
           class="w-full !rounded-[0px]" />
-        <label class="bg-aurora-orange p-2 !mb-0" for="main_cause">Primary Cause</label>
+        <label class="bg-aurora-orange p-2 !mb-0" for="mainCause">Primary Cause</label>
         <input
           disabled
-          value={resolution_data.main_cause}
-          name="main_cause"
+          value={resolutionData.mainCause}
+          name="mainCause"
           type="text"
           placeholder="What?"
           required

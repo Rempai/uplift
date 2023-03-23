@@ -34,8 +34,8 @@
   $validation.length = 0;
 
   const updateForm = async ({ target }) => {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
+    const formData = new FormData(target);
+    const value = Object.fromEntries(formData.entries());
 
     await validateData(crudRoute, value, false).then(async () => {
       for (let x in value) {
