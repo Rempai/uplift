@@ -99,8 +99,7 @@
   let colors = ["bg-aurora-red", "bg-aurora-orange", "bg-aurora-yellow", "bg-aurora-green", "bg-aurora-purple"]
 
   function randomnumber() {
-    let color = colors[Math.floor(Math.random() * colors.length)]
-    return color
+    return colors[Math.floor(Math.random() * colors.length)]
   }
 </script>
 
@@ -110,7 +109,7 @@
     {#await visibleSolution then solution}
       {#each solution as solution}
         <div class="flex flex-col gap-1 mt-6">
-          <Button onClick={() => finishRide(solution)} text={solution} class="{randomnumber()} w-fit" />
+          <Button onClick={() => finishRide(solution)} text={solution} class="{randomnumber()}" />
         </div>
       {/each}
     {/await}
