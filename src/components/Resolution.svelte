@@ -103,7 +103,7 @@
     {#await visibleSolution then solution}
       {#each solution as solution}
         <div class="flex flex-col gap-1 w-full mt-6">
-          <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4" />
+          <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4 !px-42" />
         </div>
       {/each}
     {/await}
