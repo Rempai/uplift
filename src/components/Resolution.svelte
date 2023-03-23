@@ -96,10 +96,10 @@
     getData();
   }
 
-  let colors = ["bg-aurora-red", "bg-aurora-orange", "bg-aurora-yellow", "bg-aurora-green", "bg-aurora-purple"]
+  let ResolutionColors = ["bg-aurora-red", "bg-aurora-orange", "bg-aurora-yellow", "bg-aurora-green", "bg-aurora-purple"]
 
   function randomnumber() {
-    return colors[Math.floor(Math.random() * colors.length)]
+    return ResolutionColors[Math.floor(Math.random() * ResolutionColors.length)]
   }
 </script>
 
