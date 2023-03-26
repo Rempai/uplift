@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Register } from "../models/Register";
 import type { Response } from "../models/Response";
+import type { UserCreate } from "../models/UserCreate";
 import type { UserRead } from "../models/UserRead";
 import type { UserUpdate } from "../models/UserUpdate";
 
@@ -29,13 +29,19 @@ export class UserService {
 
   /**
    * Get Users
+   * @param limit
+   * @param offset
    * @returns UserRead Successful Response
    * @throws ApiError
    */
-  public static getUsers(): CancelablePromise<Array<UserRead>> {
+  public static getUsers(limit?: number, offset?: number): CancelablePromise<Array<UserRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/user/users/",
+      query: {
+        limit: limit,
+        offset: offset,
+      },
       errors: {
         404: `Not Found`,
         500: `Internal Server Error`,
@@ -57,7 +63,7 @@ export class UserService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -78,7 +84,7 @@ export class UserService {
         id: id,
       },
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -103,7 +109,7 @@ export class UserService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unautorized`,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -116,14 +122,14 @@ export class UserService {
    * @returns any Created Resource
    * @throws ApiError
    */
-  public static postUser(requestBody: Register): CancelablePromise<any> {
+  public static postUser(requestBody: UserCreate): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: "POST",
-      url: "/api/user/user/",
+      url: "/api/user/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unautorized`,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });

@@ -3,12 +3,12 @@
 /* eslint-disable */
 
 export type UserUpdate = {
-  old_password?: string;
-  new_password?: string;
-  confirm_password?: string;
+  password?: string;
+  newPassword?: string;
+  repeatPassword?: string;
   username?: string;
   role?: UserUpdate.role;
-  is_active?: boolean;
+  isActive?: boolean;
 };
 
 export namespace UserUpdate {

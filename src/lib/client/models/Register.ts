@@ -5,5 +5,5 @@
 export type Register = {
   username: string;
   password: string;
-  repeat_password: string;
+  repeatPassword: string;
 };
