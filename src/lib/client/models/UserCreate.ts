@@ -4,9 +4,10 @@
 
 export type UserCreate = {
   password: string;
+  repeatPassword?: string;
   username: string;
   role?: UserCreate.role;
-  is_active?: boolean;
+  isActive?: boolean;
 };
 
 export namespace UserCreate {

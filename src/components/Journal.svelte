@@ -32,9 +32,9 @@
       if (tab === 1) {
         if (obj.trunk) branch_data.push(obj);
       } else {
-        if (!tabItems.find((e) => e.label === obj.branch_name)) {
+        if (!tabItems.find((e) => e.label === obj.branch)) {
           let tab_num: number = tabItems.length;
-          tabItems.push({ label: obj.branch_name, value: tab_num + 1 });
+          tabItems.push({ label: obj.branch, value: tab_num + 1 });
         }
 
         let item = tabItems.find((e) => e.value === tab);
@@ -50,7 +50,7 @@
   const gotoBranch = async () => {
     dispatch(
       "gotoTab",
-      branch_data.find((e) => e.branch_name === tabItems[currentTab - 1].label)
+      branch_data.find((e) => e.branch === tabItems[currentTab - 1].label)
     );
   };
 

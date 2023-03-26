@@ -1,13 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import type { report } from "@/main";
   import { CharactersService, type ReviewRead, type RideRead } from "@/lib/client";
 
   import Button from "@/components/Button.svelte";
   import Modal from "@/components/Modal.svelte";
 
-  export let data: report;
+  export let data: RideRead;
   export let current_ride: RideRead;
   export let resolution = false;
 
@@ -36,7 +35,7 @@
 
     for (const [iterate] of Object.entries(solution)) {
       const setup = solution[iterate];
-      if (score >= setup.linked_score) {
+      if (score >= setup.linkedScore) {
         visibleSolution.push(setup.solution);
       }
     }
@@ -46,7 +45,7 @@
     return visibleSolution;
   };
 
-  const giveScore = async (data: report, correctReport: report) => {
+  const giveScore = async (data: RideRead, correctReport: RideRead) => {
     for (const [property, value] of Object.entries(data)) {
       property; // Type is string
       value; // Type is any
@@ -67,7 +66,7 @@
     return score;
   };
 
-  const checkAnswer = async (data: report, id: number) => {
+  const checkAnswer = async (data: RideRead, id: number) => {
     await CharactersService.getRideById(id)
       .then((res) => (correct_answer_list = res))
       .catch((err) => console.log(err));

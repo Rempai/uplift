@@ -12,7 +12,7 @@ export const userHTML = `
   <input required type="text" name="username" placeholder="username" />
   <label for="password">Password</label>
   <input required type="password" name="password" placeholder="password" />
-  <label for="repeat_password">Repeat password</label>
+  <label for="repeatPassword">Repeat password</label>
   <input required type="password" name="repeat_password" placeholder="repeat_password" />
   <label for="disabled">Disabled</label>
   <input type="checkbox" name="disabled" checked={true} />
@@ -33,10 +33,10 @@ export const passengerHTML = `
 export const rideHTML = `
   <label for="time">Time</label>
   <input required type="number" name="time" placeholder="60" />
-  <label for="from_location">from_location</label>
-  <input required type="text" name="from_location" placeholder="Brooklyn" />
-  <label for="to_location">to_location</label>
-  <input required type="text" name="to_location" placeholder="Manhatton" />
+  <label for="fromLocation">From Location</label>
+  <input required type="text" name="fromLocation" placeholder="Brooklyn" />
+  <label for="toLocation">To Location</label>
+  <input required type="text" name="toLocation" placeholder="Manhatton" />
   <label for="bravery">Bravery</label>
   <input required type="number" name="bravery" placeholder="5" />
   <label for="perseverance">Perseverance</label>
@@ -59,16 +59,16 @@ export const reviewHTML = `
 `;
 
 export const passageHTML = `
-  <label for="passage_name">Passage Name</label>
-  <input required type="text" name="passage_name" placeholder="Paolo trunk" />
-  <label for="passage_content">Passage Content</label>
-  <textarea required name="passage_content" placeholder="Lorem ipsum"></textarea>
-  <label for="branch_name">Branch Name</label>
-  <input type="text" name="branch_name" />
+  <label for="passage">Passage</label>
+  <input required type="text" name="passage" placeholder="Paolo trunk" />
+  <label for="content">Content</label>
+  <textarea required name="content" placeholder="Lorem ipsum"></textarea>
+  <label for="branch">Branch</label>
+  <input type="text" name="branch" />
   <label for="speaker">Speaker</label>
   <input type="text" name="speaker" />
-  <label for="continue_button">Continue Button</label>
-  <input type="checkbox" name="continue_button" />
+  <label for="continueButton">Continue Button</label>
+  <input type="checkbox" name="continueButton" />
   <label for="trunk">Trunk</label>
   <input type="checkbox" name="trunk" />
   <label for="rideId">Ride id</label>
@@ -80,10 +80,10 @@ export const passageHTML = `
 export const attributeHTML = `
   <label for="color">Color</label>
   <input required type="text" name="color" placeholder="red" />
-  <label for="font_size">Font Size</label>
+  <label for="fontSize">Font Size</label>
   <input required type="text" name="font_size" placeholder="1.2em" />
-  <label for="font_family">Font Family</label>
-  <input required type="text" name="font_family" placeholder="Arial" />
+  <label for="fontFamily">Font Family</label>
+  <input required type="text" name="fontFamily" placeholder="Arial" />
 `;
 
 export function userEditHTML(data: UserUpdate): string {
@@ -94,7 +94,7 @@ export function userEditHTML(data: UserUpdate): string {
   <label for="username">Username</label>
   <input type="text" name="username" placeholder="Username" value="${data.username}" />
   <label for="disabled">Disabled</label>
-  <input type="checkbox" name="disabled" checked="${data.is_active}" />
+  <input type="checkbox" name="disabled" checked="${data.isActive}" />
   <label for="role">Role</label>
   `;
 
@@ -128,10 +128,10 @@ export function passengerEditHTML(data: PassengerUpdate): string {
 
 export function rideEditHTML(data: RideUpdate): string {
   return `
-  <label for="from_location">from_location</label>
-  <input required type="text" name="from_location" placeholder="Brooklyn" value="${data.from_location}" />
-  <label for="to_location">to_location</label>
-  <input required type="text" name="to_location" placeholder="Manhatton" value="${data.to_location}" />
+  <label for="fromLocation">From Location</label>
+  <input required type="text" name="fromLocation" placeholder="Brooklyn" value="${data.fromLocation}" />
+  <label for="toLocation">To Location</label>
+  <input required type="text" name="toLocation" placeholder="Manhatton" value="${data.toLocation}" />
   <label for="time">Time</label>
   <input required type="number" name="time" placeholder="60" value="${data.time}" />
   <label for="bravery">Bravery</label>
@@ -160,16 +160,16 @@ export function reviewEditHTML(data: ReviewUpdate): string {
 
 export function passageEditHTML(data: PassageUpdate): string {
   return `
-  <label for="passage_name">Passage Name</label>
-  <input required type="text" name="passage_name" placeholder="PaoloTrunk1" value="${data.passage_name}" />
-  <label for="passage_content">Passage Content</label>
-  <textarea required name="passage_content">${data.content}</textarea>
-  <label for="branch_name">Branch Name</label>
-  <input required type="text" name="branch_name" placeholder="PaoloTrunk" value="${data.branch_name}" />
+  <label for="passage">Passage</label>
+  <input required type="text" name="passage" placeholder="PaoloTrunk1" value="${data.passage}" />
+  <label for="content">Content</label>
+  <textarea required name="content">${data.content}</textarea>
+  <label for="branch">Branch</label>
+  <input required type="text" name="branch" placeholder="PaoloTrunk" value="${data.branch}" />
   <label for="speaker">Speaker</label>
   <input required type="text" name="speaker" placeholder="You" value="${data.speaker}" />
-  <label for="continue_button">Continue Button</label>
-  <input type="checkbox" name="continue_button" checked="${data.continue_button}" />
+  <label for="continueButton">Continue Button</label>
+  <input type="checkbox" name="continueButton" checked="${data.continueButton}" />
   <label for="trunk">Trunk</label>
   <input type="checkbox" name="trunk" checked="${data.trunk}" />
   <label for="attributeId">Attributes id</label>
@@ -183,9 +183,9 @@ export function attributeEditHTML(data: AttributeUpdate): string {
   return `
   <label for="color">Color</label>
   <input type="text" name="color" placeholder="red" value="${data.color}" />
-  <label for="font_size">Font Size</label>
-  <input type="text" name="font_size" placeholder="1.2em" value="${data.font_size}" />
-  <label for="font_family">Font Family</label>
-  <input type="text" name="font_family" placeholder="10" value="${data.font_family}" />
+  <label for="fontSize">Font Size</label>
+  <input type="text" name="fontSize" placeholder="1.2em" value="${data.fontSize}" />
+  <label for="fontFamily">Font Family</label>
+  <input type="text" name="fontFamily" placeholder="10" value="${data.fontFamily}" />
   `;
 }
