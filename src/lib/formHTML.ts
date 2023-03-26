@@ -14,8 +14,8 @@ export const userHTML = `
   <input required type="password" name="password" placeholder="password" />
   <label for="repeatPassword">Repeat password</label>
   <input required type="password" name="repeat_password" placeholder="repeat_password" />
-  <label for="disabled">Disabled</label>
-  <input type="checkbox" name="disabled" checked={true} />
+  <label for="isActive">IsActive</label>
+  <input type="checkbox" name="isActive" checked={true} />
   <label for="role">Role</label>
   <select name="role">
     <option value="User" selected>User</option>
@@ -93,8 +93,8 @@ export function userEditHTML(data: UserUpdate): string {
   const str = `
   <label for="username">Username</label>
   <input type="text" name="username" placeholder="Username" value="${data.username}" />
-  <label for="disabled">Disabled</label>
-  <input type="checkbox" name="disabled" checked="${data.isActive}" />
+  <label for="isActive">isActive</label>
+  <input type="checkbox" name="isActive" checked="${data.isActive}" />
   <label for="role">Role</label>
   `;
 
