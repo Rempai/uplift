@@ -9,10 +9,10 @@ export type PassageRead = {
   id: number;
   ride: RideRead;
   attribute: AttributeRead;
-  passage_name: string;
+  passage: string;
   content: string;
-  branch_name: string;
-  continue_button: boolean;
+  branch: string;
+  continueButton: boolean;
   speaker: string;
   trunk: boolean;
   attributeId: number;

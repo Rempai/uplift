@@ -46,8 +46,8 @@
         <input required type="password" name="password" placeholder="password" />
       </div>
       <div>
-        <label for="repeat_password">Repeat Password</label>
-        <input required type="password" name="repeat_password" placeholder="repeat password" />
+        <label for="repeatPassword">Repeat Password</label>
+        <input required type="password" name="repeatPassword" placeholder="repeat password" />
       </div>
     {:else}
       <slot name="forms" />

@@ -38,9 +38,9 @@ async function userCheck(formdata: Register, createMode: boolean) {
     validationArray.push("Username is too short (Min 3 characters).");
 
   if (createMode == true) {
-    if (!(formdata.password === formdata.repeat_password))
+    if (!(formdata.password === formdata.repeatPassword))
       validationArray.push("Passwords do not match.");
-    if (formdata.password.length < 6 || formdata.repeat_password.length < 6)
+    if (formdata.password.length < 6 || formdata.repeatPassword.length < 6)
       validationArray.push("Password too short (Min 6 characters).");
   }
 }
@@ -73,7 +73,7 @@ async function ArrayChecker() {
       if (validationArray.length > 0) {
         return reject("CAT");
       } else {
-        return resolve("tertrete");
+        return resolve(undefined);
       }
     }, 0);
   });

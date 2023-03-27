@@ -4,6 +4,6 @@
 
 export type AttributeUpdate = {
   color?: string;
-  font_size?: string;
-  font_family?: string;
+  fontSize?: string;
+  fontFamily?: string;
 };
