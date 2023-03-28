@@ -3,12 +3,12 @@
 /* eslint-disable */
 
 export type RideCreate = {
-  from_location: string;
-  to_location: string;
+  fromLocation: string;
+  toLocation: string;
   time: number;
-  main_problem: string;
-  parties_involved: string;
-  main_cause: string;
+  mainProblem: string;
+  partiesInvolved: string;
+  mainCause: string;
   bravery: number;
   perseverance: number;
   integrity: number;

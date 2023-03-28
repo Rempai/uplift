@@ -6,6 +6,6 @@ export type ReviewUpdate = {
   stars?: number;
   description?: string;
   solution?: string;
-  linked_score?: number;
+  linkedScore?: number;
   rideId?: number;
 };

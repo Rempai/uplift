@@ -122,7 +122,7 @@
   let context_data: journalAnswer = { marked_problem: "", marked_involved: "", marked_cause: "" };
 
   let resolution = false;
-  let resolution_data: report;
+  let resolution_data: RideRead;
   let solution: string;
 
   let current_ride: RideRead;
@@ -150,7 +150,7 @@
     const register: Register = {
       username: value.username as string,
       password: value.password as string,
-      repeat_password: value.repeat_password as string,
+      repeatPassword: value.repeatPassword as string,
     };
 
     await validateData("Register", value as Register, true).then(async () => {
@@ -236,7 +236,7 @@
       return;
     }
 
-    await PassageHandlingService.getPassages(undefined, ride.passenger.id)
+    await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
       .catch((err) => showError(err));
 
@@ -295,9 +295,9 @@
   };
 
   const nextPassageName = () => {
-    let text = passage.passage_name;
+    let text = passage.passage;
 
-    if (passage.speaker === "You" && !passage.branch_name.includes("FinishNow")) {
+    if (passage.speaker === "You" && !passage.branch.includes("FinishNow")) {
       text = text.replace("You", "");
     } else {
       let numbers = Number(text.match(/[0-9]*[0-9]$/g));
@@ -305,7 +305,7 @@
       text = text.replace(/[0-9]*[0-9]$/g, "You" + numbers);
     }
 
-    if (passage.branch_name.includes("FinishNow")) {
+    if (passage.branch.includes("FinishNow")) {
       createReview();
       dialogToggle();
     }
@@ -318,14 +318,16 @@
       .then((res) => {
         // TODO: This should be done inside resolution probably.
         // Quick hack to get reviews working for the boys
-        if (res.length === 0) {
+        if (res === undefined) {
           CharactersService.getReviews(parsed_jwt.sub)
-            .then((res) => (review_list = res))
+            .then((res) => {
+              review_list = res;
+              passage = undefined;
+              ambientNoise = false;
+              const video = document.querySelector("video");
+              video.pause();
+            })
             .catch((err) => showError(err));
-          passage = undefined;
-          ambientNoise = false;
-          const video = document.querySelector("video");
-          video.pause();
         } else {
           Array.isArray(res) ? ([passage] = res) : (passage = res);
         }
@@ -374,7 +376,7 @@
   const gotoBranch = async (event: CustomEvent) => {
     journal = false;
     dialogToggle();
-    nextPassage(event.detail.passage_name);
+    nextPassage(event.detail.passage);
   };
 
   const finishRide = async (event: CustomEvent) => {
@@ -393,7 +395,7 @@
     const current_date = new Date();
     let current_time = current_date.toISOString();
 
-    var reviewScore = Number(passage.branch_name.replace(/\D/g, ""));
+    var reviewScore = Number(passage.branch.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
       userId: parsed_jwt.sub,
@@ -406,7 +408,7 @@
     await CharactersService.getReviews(null, parsed_jwt.sub).catch((err) => showError(err));
 
     page = 3;
-    phoneToggle();
+    showPhoneButton = false;
   };
 
   onMount(() => {
@@ -508,15 +510,15 @@
                   <label for="username">New Username</label>
                   <input required placeholder="test123" name="username" type="text" />
                 {:else if settingsPlane == "password"}
-                  <label for="old_password">Old password</label>
-                  <input required placeholder="Old password" name="password" type="password" />
-                  <label for="new_password">New password</label>
-                  <input required placeholder="New password" name="new_password" type="password" />
-                  <label for="confirm_password">Confirm password</label>
+                  <label for="password">Password</label>
+                  <input required placeholder="password" name="password" type="password" />
+                  <label for="newPassword">New password</label>
+                  <input required placeholder="New password" name="newPassword" type="password" />
+                  <label for="repeatPassword">Confirm password</label>
                   <input
                     required
                     placeholder="Confirm password"
-                    name="confirm_password"
+                    name="repeatPassword"
                     type="password" />
                 {/if}
               </div>
@@ -531,12 +533,12 @@
           {#await text_parsed then parsed_text}
             <Dialog
               on:next={nextPassageName}
-              continue_button={dialog.continue_button}
+              continue_button={dialog.continueButton}
               user={dialog.speaker}
               dialogColor={dialog.attribute.color}
               text={parsed_text}
-              font={dialog.attribute.font_family}
-              fontSize={dialog.attribute.font_size}
+              font={dialog.attribute.fontFamily}
+              fontSize={dialog.attribute.fontSize}
               color={dialog.attribute.color} />
           {/await}
         {/await}
@@ -623,10 +625,10 @@
                           <p class="flex items-center">
                             <IoIosLocationOutline
                               font-size="1.2em"
-                              class="mr-2" />{data.from_location}
+                              class="mr-2" />{data.fromLocation}
                           </p>
                           <p class="flex items-center">
-                            <FaRoute font-size="1.2em" class="mr-2" />{data.to_location}
+                            <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
                           </p>
                           <p class="flex items-center">
                             <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
