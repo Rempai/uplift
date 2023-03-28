@@ -1,7 +1,6 @@
 <script>
   import Router from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
-
   import NotFound from "@/routes/NotFound.svelte";
 
   import { OpenAPI } from "@/lib/client/index";
@@ -104,6 +103,60 @@
 
     // Catch-all, must be last
     "*": NotFound,
+  };
+
+  const fetchOriginal = window.fetch;
+
+  window.fetch = async function (url, options) {
+    const headers = new Headers(options.headers);
+    const access_token = localStorage.getItem("access_token");
+
+    if (access_token) {
+      headers.set("Authorization", `Bearer ${access_token}`);
+    }
+
+    const response = await fetchOriginal(url, {
+      ...options,
+      headers,
+    });
+
+    if (response.status === 401) {
+      const refreshToken = localStorage.getItem("refresh_token");
+      if (refreshToken) {
+        const refreshResponse = await fetchOriginal(OpenAPI.BASE + "/api/auth/refresh/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refresh_token: refreshToken,
+          }),
+        });
+
+        if (refreshResponse.ok) {
+          const { access_token } = await refreshResponse.json();
+          localStorage.setItem("access_token", access_token);
+          headers.set("Authorization", `Bearer ${access_token}`);
+          options.headers = headers;
+          const retryResponse = await fetchOriginal(url, {
+            ...options,
+            headers,
+          });
+          return retryResponse;
+        } else {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          window.location.reload();
+        }
+        console.log(refreshResponse);
+      } else {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.reload();
+      }
+    } else {
+      return response;
+    }
   };
 </script>
 

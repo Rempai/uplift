@@ -1,12 +1,11 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { onMount } from "svelte";
 
   import { passage_name, validation } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validateData, validationErrorCheck } from "@/lib/validation";
 
-  import type { report, journalAnswer } from "@/main";
+  import type { journalAnswer } from "@/main";
 
   import {
     AuthService,
@@ -410,26 +409,6 @@
     page = 3;
     showPhoneButton = false;
   };
-
-  onMount(() => {
-    if (!localStorage.getItem("access_token")) {
-      if (localStorage.getItem("refresh_token")) {
-        AuthService.refresh()
-          .then((res) => {
-            localStorage.setItem("access_token", res.access_token);
-            startGame();
-          })
-          .catch(() => (welcome = true));
-      } else {
-        showPhoneButton = false;
-        welcome = true;
-      }
-    } else {
-      UserService.getMe()
-        .then(() => startGame())
-        .catch(() => (welcome = true));
-    }
-  });
 
   $: if ($passage_name !== "") {
     nextPassage($passage_name);
