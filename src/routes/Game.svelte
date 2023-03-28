@@ -13,6 +13,7 @@
   } from "@/lib/authProcesses";
 
   import {
+    AuthService,
     CharactersService,
     OpenAPI,
     PassageHandlingService,
@@ -86,6 +87,13 @@
   let parsedJWT: jwtObject;
 
   onMount(async () => {
+   const accessToken = localStorage.getItem("access_token");
+   if (accessToken){
+    startGame();
+   }
+   else{
+    welcome = true;
+   }
     if (!resolutionData) {
       resolutionData = {
         ...resolutionData,
