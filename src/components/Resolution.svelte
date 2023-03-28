@@ -96,17 +96,41 @@
   $: if (resolution) {
     getData();
   }
+
+  let ResolutionColors = [
+    "bg-aurora-red",
+    "bg-aurora-orange",
+    "bg-aurora-yellow",
+    "bg-aurora-green",
+    "bg-aurora-purple",
+  ];
+
+  function randomnumber() {
+    if (ResolutionColors.length > 0) {
+      const index = Math.floor(Math.random() * ResolutionColors.length);
+      const color = ResolutionColors[index];
+      ResolutionColors.splice(index, 1);
+      return color;
+    } else {
+      return "bg-frost-4";
+    }
+  }
 </script>
 
 <Modal modalHeader="Resolution" showModal={resolution}>
-  <div class="overflow-y-auto overflow-x-hidden h-full pb-4">
-    <p class="text-3xl text-frost-1">What should Paolo do?</p>
-    {#await visibleSolution then solution}
-      {#each solution as solution}
-        <div class="flex flex-col gap-1 w-screen mt-3">
-          <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4" />
-        </div>
-      {/each}
-    {/await}
+  <div class="flex w-full justify-center">
+    <div class="flex flex-col overflow-y-auto overflow-x-hidden h-full pb-4">
+      <p class="text-3xl text-frost-1 text-center">What should Paolo do?</p>
+      {#await visibleSolution then solution}
+        {#each solution as solution}
+          <div class="flex flex-col mt-6">
+            <Button
+              onClick={() => finishRide(solution)}
+              text={solution}
+              class="{randomnumber()} !px-8" />
+          </div>
+        {/each}
+      {/await}
+    </div>
   </div>
 </Modal>
