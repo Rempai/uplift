@@ -106,7 +106,14 @@
   ];
 
   function randomnumber() {
-    return ResolutionColors[Math.floor(Math.random() * ResolutionColors.length)];
+    if (ResolutionColors.length > 0) {
+      const index = Math.floor(Math.random() * ResolutionColors.length);
+      const color = ResolutionColors[index];
+      ResolutionColors.splice(index, 1);
+      return color;
+    } else {
+      return "bg-frost-4";
+    }
   }
 </script>
 
@@ -115,8 +122,11 @@
     <p class="text-3xl text-frost-1">What should Paolo do?</p>
     {#await visibleSolution then solution}
       {#each solution as solution}
-        <div class="flex flex-col gap-1 mt-6">
-          <Button onClick={() => finishRide(solution)} text={solution} class={randomnumber()} />
+        <div class="flex flex-col mt-6">
+          <Button
+            onClick={() => finishRide(solution)}
+            text={solution}
+            class="{randomnumber()} !px-8" />
         </div>
       {/each}
     {/await}
