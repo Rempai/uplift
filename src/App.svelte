@@ -1,10 +1,9 @@
 <script>
   import Router from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
-  import { parseJwt } from "@/lib/jwtParser";
   import NotFound from "@/routes/NotFound.svelte";
 
-  import { AuthService, OpenAPI } from "@/lib/client/index";
+  import { OpenAPI } from "@/lib/client/index";
 
   OpenAPI.BASE = "https://uplift.appelsapje.net";
   OpenAPI.TOKEN = localStorage.getItem("access_token");
@@ -107,7 +106,6 @@
   };
 
   const fetchOriginal = window.fetch;
-
   window.fetch = async function (url, options) {
     const headers = new Headers(options.headers);
     const access_token = localStorage.getItem("access_token");
@@ -121,11 +119,12 @@
       headers,
     });
 
-    if (response.status === 500) {
+    if (response.status === 401) {
       console.log("401");
       const refreshToken = localStorage.getItem("refresh_token");
+      console.log(refreshToken);
       if (refreshToken) {
-        const refreshResponse = await fetchOriginal("/api/auth/refresh", {
+        const refreshResponse = await fetchOriginal(OpenAPI.BASE + "/api/auth/refresh/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -146,12 +145,13 @@
         } else {
           localStorage.removeItem("access_token");
           localStorage.removeItem("refresh_token");
-          window.location.href = "/login";
+          window.location.reload();
         }
+        console.log(refreshResponse);
       } else {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/login";
+        window.location.reload();
       }
     } else {
       return response;
