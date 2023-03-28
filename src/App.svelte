@@ -131,7 +131,6 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user:  await UserService.getMe(),
             refresh_token: refreshToken,
           }),
         });
