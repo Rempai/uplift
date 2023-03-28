@@ -13,7 +13,6 @@
   } from "@/lib/authProcesses";
 
   import {
-    AuthService,
     CharactersService,
     OpenAPI,
     PassageHandlingService,
@@ -354,26 +353,6 @@
     togglePhone();
     showPhoneButton = false;
   };
-
-  onMount(() => {
-    if (!localStorage.getItem("access_token")) {
-      if (localStorage.getItem("refresh_token")) {
-        AuthService.refresh()
-          .then((res) => {
-            localStorage.setItem("access_token", res.access_token);
-            startGame();
-          })
-          .catch(() => (welcome = true));
-      } else {
-        showPhoneButton = false;
-        welcome = true;
-      }
-    } else {
-      UserService.getMe()
-        .then(() => startGame())
-        .catch(() => (welcome = true));
-    }
-  });
 
   $: if ($passageName !== "") {
     nextPassage($passageName);
