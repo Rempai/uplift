@@ -3,7 +3,7 @@
   import { wrap } from "svelte-spa-router/wrap";
   import NotFound from "@/routes/NotFound.svelte";
 
-  import { OpenAPI, UserService } from "@/lib/client/index";
+  import { OpenAPI } from "@/lib/client/index";
 
   OpenAPI.BASE = "https://uplift.appelsapje.net";
   OpenAPI.TOKEN = localStorage.getItem("access_token");
