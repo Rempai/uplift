@@ -106,8 +106,7 @@
   };
 
   const fetchOriginal = window.fetch;
-  const userId = async () => await UserService.getMe().then((res) => res.id);
-  console.log(userId())
+
   window.fetch = async function (url, options) {
     const headers = new Headers(options.headers);
     const access_token = localStorage.getItem("access_token");
@@ -132,7 +131,7 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: await userId(),
+            user:  await UserService.getMe(),
             refresh_token: refreshToken,
           }),
         });
