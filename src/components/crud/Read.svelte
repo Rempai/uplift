@@ -33,22 +33,22 @@
 
   let loading = true;
 
-  interface select_data {
+  interface selectData {
     // bruh
     data: any; // eslint-disable-line
     name: string;
   }
 
-  let selected_data: select_data;
+  let selectedData: selectData;
 
   let handler;
   let rows;
 
-  let columns_keys: Array<string> = [];
+  let columnsKeys: Array<string> = [];
 
   let loc = $location + "/create";
 
-  const td_class = `border border-dotted border-storm-1 px-3 py-2 overflow-hidden`;
+  const tdClass = `border border-dotted border-storm-1 px-3 py-2 overflow-hidden`;
 
   const locEdit = (id: number): string => {
     return $location + "/edit/" + id;
@@ -64,33 +64,33 @@
       name = data.name;
     } else if (data.username) {
       name = data.username;
-    } else if (data.passage_name) {
-      name = data.passage_name;
+    } else if (data.passageName) {
+      name = data.passageName;
     } else {
       name = "id " + data.id;
     }
 
     modalHeader = "Delete " + name;
-    selected_data = { data, name };
+    selectedData = { data, name };
     showModal = true;
   };
 
   const deleteRow = async () => {
     if ($location === "/admin/user") {
-      let parsed_token = await parseJwt(localStorage.getItem("access_token"));
+      let parsedToken = await parseJwt(localStorage.getItem("access_token"));
 
-      if (selected_data.data.id == parsed_token.sub) {
-        UserService.deleteUser(selected_data.data.id)
+      if (selectedData.data.id == parsedToken.sub) {
+        UserService.deleteUser(selectedData.data.id)
           .then(() => {
             localStorage.clear();
             push("/admin/login");
           })
           .catch((err) => console.log(err));
       } else {
-        await UserService.deleteUser(selected_data.data.id).catch((err) => console.log(err));
+        await UserService.deleteUser(selectedData.data.id).catch((err) => console.log(err));
       }
     } else {
-      await service(selected_data.data.id).catch((err) => console.log(err));
+      await service(selectedData.data.id).catch((err) => console.log(err));
     }
 
     showModal = false;
@@ -109,22 +109,22 @@
     return data;
   };
 
-  const add_nested_objects = (
+  const addNestedObjects = (
     data: object,
     prefix: string | null = null,
-    nested_keys = columns_keys
+    nestedKeys = columnsKeys
   ) => {
     for (let key in data) {
       const value = data[key];
-      const new_prefix = prefix ? `${prefix}_${key}` : key;
+      const newPrefix = prefix ? `${prefix}_${key}` : key;
       if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-        if (nested_keys.includes(key)) {
-          add_nested_objects(value, null, nested_keys);
+        if (nestedKeys.includes(key)) {
+          addNestedObjects(value, null, nestedKeys);
         } else {
-          add_nested_objects(value, new_prefix, nested_keys);
+          addNestedObjects(value, newPrefix, nestedKeys);
         }
       } else {
-        columns_keys.push(new_prefix);
+        columnsKeys.push(newPrefix);
       }
     }
   };
@@ -134,7 +134,7 @@
 
     handler = new DataHandler(data, { rowsPerPage: 10 });
     rows = handler.getRows();
-    add_nested_objects($rows[0]);
+    addNestedObjects($rows[0]);
 
     loading = false;
   });
@@ -146,7 +146,7 @@
 
 <main class="admin-space">
   <Modal {modalHeader} {showModal} on:click={toggleModal}>
-    <p>Are you sure you want to delete {selected_data.name}?</p>
+    <p>Are you sure you want to delete {selectedData.name}?</p>
     <p><b>This action is irreversable.</b></p>
     <div class="flex gap-3">
       <Button onClick={deleteRow} text="Delete" class="bg-aurora-red" />
@@ -180,8 +180,8 @@
             class="border border-dotted border-storm-1 table-fixed w-full border-separate border-spacing-0">
             <thead class="sticky">
               <tr>
-                {#if columns_keys}
-                  {#each columns_keys as column}
+                {#if columnsKeys}
+                  {#each columnsKeys as column}
                     <th class="border border-dotted border-storm-1 py-2 bg-frost-4 w-56"
                       >{column}</th>
                   {/each}
@@ -196,31 +196,31 @@
                     {#if typeof data === "object"}
                       {#each Object.values(data) as obj}
                         {#if checkIcon(obj)}
-                          <td class={td_class}
+                          <td class={tdClass}
                             ><img
                               class="h-12 w-12 rounded text-center mx-auto"
                               src={obj}
                               alt="" /></td>
                         {:else}
-                          <td class={td_class}>{obj}</td>
+                          <td class={tdClass}>{obj}</td>
                         {/if}
                       {/each}
                     {:else if checkIcon(data)}
-                      <td class={td_class}
+                      <td class={tdClass}
                         ><img
                           class="h-12 w-12 rounded text-center mx-auto"
                           src={escapeIconError(data)}
                           alt="" /></td>
                     {:else if data === true || data === false}
-                      <td class={td_class}
+                      <td class={tdClass}
                         ><input type="checkbox" bind:checked={data} disabled /></td>
                     {:else if data == row.content}
                       <td class="border border-dotted border-storm-1 px-3 py-2"
                         ><Highlight language={vbscriptHtml} code={data} /></td>
                     {:else if data == row.color}
-                      <td style:color={row.color} class={td_class}>{data}</td>
+                      <td style:color={row.color} class={tdClass}>{data}</td>
                     {:else}
-                      <td class={td_class}>{data}</td>
+                      <td class={tdClass}>{data}</td>
                     {/if}
                   {/each}
                   <td class="py-2 border border-dotted border-storm-1">

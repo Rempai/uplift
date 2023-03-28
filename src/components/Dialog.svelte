@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { passage_name } from "@/lib/stores";
+  import { passageName } from "@/lib/stores";
 
   import MdChevronRight from "~icons/mdi/chevron-right";
 
@@ -16,7 +16,7 @@
   export let color = dialogColor;
 
   export let text: string;
-  export let continue_button: boolean;
+  export let continueButton: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -73,15 +73,15 @@
     return [];
   }
 
-  let branch_name = "";
-  Object.defineProperty(window, "branch_name", {
+  let branchName = "";
+  Object.defineProperty(window, "branchName", {
     get: function () {
-      return branch_name;
+      return branchName;
     },
 
     set: function (val) {
-      branch_name = val;
-      $passage_name = val;
+      branchName = val;
+      $passageName = val;
     },
     configurable: true,
   });
@@ -97,15 +97,15 @@
       </div>
       <div class="w-full flex justify-start ml-2 h-48">
         {#if text}
-          {#await text then parsed_text}
+          {#await text then parsedText}
             <p
               style="font-family: {font}; font-size: {fontSize}; color: {color}"
               class="break-words overflow-y-auto h-1/2"
               in:typewriter={{ delay: delay, speed: speed }}>
-              {@html parsed_text}
+              {@html parsedText}
             </p>
           {/await}
-          {#if continue_button}
+          {#if continueButton}
             <span
               style="background-color: {dialogColor}"
               class="rounded absolute bottom-4 right-4">
@@ -118,7 +118,7 @@
           {/if}
           <script>
             branch = (branchName) => {
-              branch_name = branchName;
+              branchName = branchName;
             };
           </script>
         {/if}

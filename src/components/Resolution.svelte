@@ -7,12 +7,12 @@
   import Modal from "@/components/Modal.svelte";
 
   export let data: RideRead;
-  export let current_ride: RideRead;
+  export let currentRide: RideRead;
   export let resolution = false;
 
   const dispatch = createEventDispatcher();
 
-  let correct_answer_list: RideRead;
+  let correctAnswerList: RideRead;
   let solution: ReviewRead[];
   let visibleSolution: Array<string> = [];
 
@@ -29,7 +29,7 @@
   };
 
   const getSolution = async (score: number) => {
-    await CharactersService.getReviews(null, current_ride.id)
+    await CharactersService.getReviews(null, currentRide.id)
       .then((res) => (solution = res))
       .catch((err) => console.log(err));
 
@@ -68,16 +68,16 @@
 
   const checkAnswer = async (data: RideRead, id: number) => {
     await CharactersService.getRideById(id)
-      .then((res) => (correct_answer_list = res))
+      .then((res) => (correctAnswerList = res))
       .catch((err) => console.log(err));
 
     for (const [property] of Object.entries(data)) {
       property; // Type is string
-      if (typeof correct_answer_list[property] === "number") {
+      if (typeof correctAnswerList[property] === "number") {
         data[property] = Number(data[property]);
       }
     }
-    score = await giveScore(data, correct_answer_list);
+    score = await giveScore(data, correctAnswerList);
 
     return score;
   };
@@ -89,24 +89,48 @@
   };
 
   const getData = async () => {
-    score = await checkAnswer(data, current_ride.id);
+    score = await checkAnswer(data, currentRide.id);
     visibleSolution = await getSolution(score);
   };
 
   $: if (resolution) {
     getData();
   }
+
+  let ResolutionColors = [
+    "bg-aurora-red",
+    "bg-aurora-orange",
+    "bg-aurora-yellow",
+    "bg-aurora-green",
+    "bg-aurora-purple",
+  ];
+
+  function randomnumber() {
+    if (ResolutionColors.length > 0) {
+      const index = Math.floor(Math.random() * ResolutionColors.length);
+      const color = ResolutionColors[index];
+      ResolutionColors.splice(index, 1);
+      return color;
+    } else {
+      return "bg-frost-4";
+    }
+  }
 </script>
 
 <Modal modalHeader="Resolution" showModal={resolution}>
-  <div class="overflow-y-auto overflow-x-hidden h-full pb-4">
-    <p class="text-3xl text-frost-1">What should Paolo do?</p>
-    {#await visibleSolution then solution}
-      {#each solution as solution}
-        <div class="flex flex-col gap-1 w-screen mt-3">
-          <Button onClick={() => finishRide(solution)} text={solution} class="bg-frost-4" />
-        </div>
-      {/each}
-    {/await}
+  <div class="flex w-full justify-center">
+    <div class="flex flex-col overflow-y-auto overflow-x-hidden h-full pb-4">
+      <p class="text-3xl text-frost-1 text-center">What should Paolo do?</p>
+      {#await visibleSolution then solution}
+        {#each solution as solution}
+          <div class="flex flex-col mt-6">
+            <Button
+              onClick={() => finishRide(solution)}
+              text={solution}
+              class="{randomnumber()} !px-8" />
+          </div>
+        {/each}
+      {/await}
+    </div>
   </div>
 </Modal>
