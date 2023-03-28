@@ -3,7 +3,7 @@
   import { wrap } from "svelte-spa-router/wrap";
   import NotFound from "@/routes/NotFound.svelte";
 
-  import { OpenAPI } from "@/lib/client/index";
+  import { OpenAPI, UserService } from "@/lib/client/index";
 
   OpenAPI.BASE = "https://uplift.appelsapje.net";
   OpenAPI.TOKEN = localStorage.getItem("access_token");
@@ -106,6 +106,8 @@
   };
 
   const fetchOriginal = window.fetch;
+  const userId = async () => await UserService.getMe().then((res) => res.id);
+  console.log(userId())
   window.fetch = async function (url, options) {
     const headers = new Headers(options.headers);
     const access_token = localStorage.getItem("access_token");
@@ -129,7 +131,10 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ refresh_token: refreshToken }),
+          body: JSON.stringify({
+            userId: await userId(),
+            refresh_token: refreshToken,
+          }),
         });
 
         if (refreshResponse.ok) {
