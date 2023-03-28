@@ -86,6 +86,17 @@
 
   let parsedJWT: jwtObject;
 
+  onMount(async () => {
+    if (!resolutionData) {
+      resolutionData = {
+        ...resolutionData,
+        mainCause: "",
+        mainProblem: "",
+        partiesInvolved: "",
+      };
+    }
+  });
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
