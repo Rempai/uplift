@@ -8,7 +8,6 @@
   import Form from "@/components/Form.svelte";
 
   export let enctype = "application/x-www-form-urlencoded";
-  export let formData = false;
   export let crudRoute: string;
   export let formHTML: string | CallableFunction;
   export let service: CallableFunction;
@@ -21,8 +20,8 @@
     : (page = parts[parts.length - 2]);
 
   const submitForm = async ({ target }) => {
-    const form_data = new FormData(target);
-    const value = Object.fromEntries(form_data.entries());
+    const formData = new FormData(target);
+    const value = Object.fromEntries(formData.entries());
 
     try {
       await validateData(crudRoute, value, true);

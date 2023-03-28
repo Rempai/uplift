@@ -7,12 +7,12 @@
   import Modal from "@/components/Modal.svelte";
 
   export let data: RideRead;
-  export let current_ride: RideRead;
+  export let currentRide: RideRead;
   export let resolution = false;
 
   const dispatch = createEventDispatcher();
 
-  let correct_answer_list: RideRead;
+  let correctAnswerList: RideRead;
   let solution: ReviewRead[];
   let visibleSolution: Array<string> = [];
 
@@ -29,7 +29,7 @@
   };
 
   const getSolution = async (score: number) => {
-    await CharactersService.getReviews(null, current_ride.id)
+    await CharactersService.getReviews(null, currentRide.id)
       .then((res) => (solution = res))
       .catch((err) => console.log(err));
 
@@ -68,16 +68,16 @@
 
   const checkAnswer = async (data: RideRead, id: number) => {
     await CharactersService.getRideById(id)
-      .then((res) => (correct_answer_list = res))
+      .then((res) => (correctAnswerList = res))
       .catch((err) => console.log(err));
 
     for (const [property] of Object.entries(data)) {
       property; // Type is string
-      if (typeof correct_answer_list[property] === "number") {
+      if (typeof correctAnswerList[property] === "number") {
         data[property] = Number(data[property]);
       }
     }
-    score = await giveScore(data, correct_answer_list);
+    score = await giveScore(data, correctAnswerList);
 
     return score;
   };
@@ -89,7 +89,7 @@
   };
 
   const getData = async () => {
-    score = await checkAnswer(data, current_ride.id);
+    score = await checkAnswer(data, currentRide.id);
     visibleSolution = await getSolution(score);
   };
 
