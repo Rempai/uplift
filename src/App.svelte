@@ -121,9 +121,7 @@
     });
 
     if (response.status === 401) {
-      console.log("401");
       const refreshToken = localStorage.getItem("refresh_token");
-      console.log(refreshToken);
       if (refreshToken) {
         const refreshResponse = await fetchOriginal(OpenAPI.BASE + "/api/auth/refresh/", {
           method: "POST",
