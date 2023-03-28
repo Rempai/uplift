@@ -1,7 +1,6 @@
 <script>
   import Router from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
-  
   import NotFound from "@/routes/NotFound.svelte";
 
   import { OpenAPI } from "@/lib/client/index";
