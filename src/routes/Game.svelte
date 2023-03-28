@@ -6,7 +6,7 @@
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validateData, validationErrorCheck } from "@/lib/validation";
 
-  import type { report, journalAnswer } from "@/main";
+  import type { journalAnswer } from "@/main";
 
   import {
     AuthService,
