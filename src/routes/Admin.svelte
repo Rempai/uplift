@@ -47,29 +47,29 @@
   </div>
 </Modal>
 
-<AdminNav />
-
 <main class="admin-space">
-  <h1>Admin Page</h1>
-  <hr class="mb-3" />
-  <div class="flex justify-between w-full px-3 gap-4">
-    <div class="card w-full">
-      <div class="flex justify-between items-center">
-        <h2>Logs</h2>
+  <AdminNav />
+  <div class="flex-1 pb-10 pr-10">
+    <h1 class="mt-6">Admin page</h1>
+    <hr class="mb-3" />
+    <div class="gap-4 flex justify-between ">
+      <div class="w-full">
+        <div class="card h-full">
+          <h2>Logs</h2>
+          <hr class="mb-3" />
+        </div>
       </div>
-      <hr class="mb-3" />
-      <div class="overflow-y-auto bg-night-1 rounded p-4 h-screen" />
-    </div>
-    <div class="flex flex-col gap-4 w-full">
-      <div class="card">
-        <h2>Happy users</h2>
-        <hr class="mb-3" />
-        <img class="w-full rounded" src={RealAnalysis1} alt="Happy Users" />
-      </div>
-      <div class="card">
-        <h2>Stock value</h2>
-        <hr class="mb-3" />
-        <img class="w-full rounded" src={RealAnalysis2} alt="Stock Value" />
+      <div class="flex flex-col gap-4 w-full">
+        <div class="card">
+          <h2>Happy users</h2>
+          <hr class="mb-3" />
+          <img class="w-full rounded" src={RealAnalysis1} alt="Happy Users" />
+        </div>
+        <div class="card">
+          <h2>Stock value</h2>
+          <hr class="mb-3" />
+          <img class="w-full rounded" src={RealAnalysis2} alt="Stock Value" />
+        </div>
       </div>
     </div>
   </div>

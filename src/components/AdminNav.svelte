@@ -10,6 +10,7 @@
   import IoIosServer from "~icons/ion/server-outline";
 
   import Logo from "/logo.png";
+  import { onMount } from "svelte";
 
   const logout = () => {
     localStorage.clear();
@@ -38,8 +39,7 @@
   };
 </script>
 
-<nav
-  class="shadow bg-night-2 flex flex-col gap-2 fixed h-full left-0 top-0 overflow-x-hidden overflow-y-auto pl-2">
+<nav class="shadow bg-night-2 flex flex-col gap-2 overflow-x-hidden overflow-y-auto pl-2 mr-10">
   <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l">
     <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
     <p>Uplift Admin</p>
@@ -78,11 +78,12 @@
 <style>
   @media (min-width: 768px) {
     :global(.admin-space) {
-      margin: 2rem 2rem 2rem 15rem;
+      /* margin: 2rem 2rem 2rem 15rem; */
+      display: flex;
     }
   }
 
-  :global(.admin-space .card) {
+  :global(.card) {
     background-color: #434c5e;
     padding: 0 2em 1em;
     border-radius: 10px;

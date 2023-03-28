@@ -15,6 +15,7 @@
   <title>Uplift | Read</title>
 </svelte:head>
 
-<AdminNav />
-
-<Read crudRoute={crudRoute.route} service={crudRoute.service} />
+<main class="admin-space">
+  <AdminNav />
+  <Read crudRoute={crudRoute.route} service={crudRoute.service} />
+</main>
