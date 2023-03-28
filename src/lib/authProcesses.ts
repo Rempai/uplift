@@ -19,7 +19,7 @@ export const registerForAccessToken = async (target: HTMLFormElement) => {
   const register: Register = {
     username: value.username as string,
     password: value.password as string,
-    repeat_password: value.repeat_password as string,
+    repeatPassword: value.repeatPassword as string,
   };
 
   const returnvalue = await validateData("Register", value as Register, true).then(async () => {

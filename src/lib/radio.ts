@@ -1,4 +1,4 @@
-export let radios = [
+export const radios = [
   {
     id: 0,
     name: "Choose Radio",

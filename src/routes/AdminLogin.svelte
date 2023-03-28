@@ -6,35 +6,27 @@
   import { validationErrorCheck } from "@/lib/validation";
   import { loginForAccessToken } from "@/lib/authProcesses";
 
-  import { AuthService } from "@/lib/client";
-
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
 
   $validation.length = 0;
   const handleSubmit = async ({ target }) => {
-    const urlSearchParams = new URLSearchParams(new FormData(target) as any);
-    await AuthService.login(urlSearchParams)
-      .then((res) => {
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-      })
-      .catch((err) => {
-        validationErrorCheck(err, false);
-        $validation = $validation;
-      });
+    const login = await loginForAccessToken(target);
+    if (login == true) {
+      let parsedJwt = await parseJwt(localStorage.getItem("access_token"));
+
+      if (parsedJwt.role === "Admin") {
+        push("/admin");
+      } else {
+        // TODO: show error that user is not admin
+        push("/");
+      }
+    } else {
+      validationErrorCheck(login, false);
+    }
 
     if (localStorage.getItem("access_token") === null) {
       return;
-    }
-
-    let parsedJwt = await parseJwt(localStorage.getItem("access_token"));
-
-    if (parsedJwt.role === "Admin") {
-      push("/admin");
-    } else {
-      // TODO: show error that user is not admin
-      push("/");
     }
   };
 </script>

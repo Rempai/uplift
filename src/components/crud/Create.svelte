@@ -8,7 +8,6 @@
   import Form from "@/components/Form.svelte";
 
   export let enctype = "application/x-www-form-urlencoded";
-  export let formData = false;
   export let crudRoute: string;
   export let formHTML: string | CallableFunction;
   export let service: CallableFunction;
