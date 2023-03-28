@@ -73,14 +73,14 @@
     return [];
   }
 
-  let branchName = "";
-  Object.defineProperty(window, "branchName", {
+  let initialBranchName = "";
+  Object.defineProperty(window, "initialBranchName", {
     get: function () {
-      return branchName;
+      return initialBranchName;
     },
 
     set: function (val) {
-      branchName = val;
+      initialBranchName = val;
       $passageName = val;
     },
     configurable: true,
@@ -118,7 +118,7 @@
           {/if}
           <script>
             branch = (branchName) => {
-              branchName = branchName;
+              initialBranchName = branchName;
             };
           </script>
         {/if}
