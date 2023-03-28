@@ -20,13 +20,22 @@ import { request as __request } from "../core/request";
 export class CharactersService {
   /**
    * Get Passengers
+   * @param limit
+   * @param offset
    * @returns PassengerRead Successful Response
    * @throws ApiError
    */
-  public static getPassengers(): CancelablePromise<Array<PassengerRead>> {
+  public static getPassengers(
+    limit?: number,
+    offset?: number
+  ): CancelablePromise<Array<PassengerRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/passengers/",
+      query: {
+        limit: limit,
+        offset: offset,
+      },
       errors: {
         500: `Internal Server Error`,
       },
@@ -47,7 +56,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -68,7 +77,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -96,7 +105,7 @@ export class CharactersService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -116,7 +125,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });
@@ -124,16 +133,18 @@ export class CharactersService {
 
   /**
    * Get Rides
-   * @param userId
+   * @param limit
+   * @param offset
    * @returns RideRead Successful Response
    * @throws ApiError
    */
-  public static getRides(userId?: number): CancelablePromise<Array<RideRead>> {
+  public static getRides(limit?: number, offset?: number): CancelablePromise<Array<RideRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/character/rides/",
       query: {
-        userId: userId,
+        limit: limit,
+        offset: offset,
       },
       errors: {
         500: `Internal Server Error`,
@@ -155,7 +166,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -176,7 +187,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -201,7 +212,7 @@ export class CharactersService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -221,7 +232,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });
@@ -231,12 +242,16 @@ export class CharactersService {
    * Get Reviews
    * @param userId
    * @param rideId
+   * @param limit
+   * @param offset
    * @returns ReviewRead Successful Response
    * @throws ApiError
    */
   public static getReviews(
     userId?: number,
-    rideId?: number
+    rideId?: number,
+    limit?: number,
+    offset?: number
   ): CancelablePromise<Array<ReviewRead>> {
     return __request(OpenAPI, {
       method: "GET",
@@ -244,6 +259,8 @@ export class CharactersService {
       query: {
         userId: userId,
         rideId: rideId,
+        limit: limit,
+        offset: offset,
       },
       errors: {
         500: `Internal Server Error`,
@@ -265,7 +282,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -286,7 +303,7 @@ export class CharactersService {
         id: id,
       },
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -314,7 +331,7 @@ export class CharactersService {
       mediaType: "application/json",
       errors: {
         400: `Bad Request`,
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         404: `Not Found`,
         500: `Internal Server Error`,
       },
@@ -334,7 +351,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });
@@ -353,7 +370,7 @@ export class CharactersService {
       body: requestBody,
       mediaType: "application/json",
       errors: {
-        401: `Unauthorized `,
+        401: `Unauthorized`,
         500: `Internal Server Error`,
       },
     });

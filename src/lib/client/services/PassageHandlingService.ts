@@ -17,23 +17,29 @@ export class PassageHandlingService {
   /**
    * Get Passages
    * @param passageName
-   * @param passengerId
+   * @param rideId
    * @param all
+   * @param limit
+   * @param offset
    * @returns PassageRead Successful Response
    * @throws ApiError
    */
   public static getPassages(
     passageName?: string,
-    passengerId?: number,
-    all?: string
+    rideId?: number,
+    all?: string,
+    limit?: number,
+    offset?: number
   ): CancelablePromise<Array<PassageRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/passage_handler/passages/",
       query: {
-        passage_name: passageName,
-        passenger_id: passengerId,
+        passageName: passageName,
+        rideId: rideId,
         all: all,
+        limit: limit,
+        offset: offset,
       },
       errors: {
         500: `Internal Server Error`,
@@ -132,13 +138,22 @@ export class PassageHandlingService {
 
   /**
    * Get Attributes
+   * @param limit
+   * @param offset
    * @returns AttributeRead Successful Response
    * @throws ApiError
    */
-  public static getAttributes(): CancelablePromise<Array<AttributeRead>> {
+  public static getAttributes(
+    limit?: number,
+    offset?: number
+  ): CancelablePromise<Array<AttributeRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/passage_handler/attributes/",
+      query: {
+        limit: limit,
+        offset: offset,
+      },
       errors: {
         500: `Internal Server Error`,
       },

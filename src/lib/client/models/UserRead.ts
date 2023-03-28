@@ -6,7 +6,7 @@ export type UserRead = {
   id: number;
   username: string;
   role: UserRead.role;
-  is_active: boolean;
+  isActive: boolean;
 };
 
 export namespace UserRead {
