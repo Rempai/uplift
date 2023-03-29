@@ -13,6 +13,7 @@ export type UserCreate = {
 export namespace UserCreate {
   export enum role {
     ADMIN = "Admin",
+    WRITER = "Writer",
     USER = "User",
   }
 }
