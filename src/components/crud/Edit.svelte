@@ -41,6 +41,12 @@
       for (let x in value) {
         if (value[x] === "") {
           delete value[x];
+        } else if (value[x] === "on") {
+          // @ts-ignore
+          value[x] = true;
+        } else if (/^\d+$/.test(value[x].toString())) {
+          // @ts-ignore
+          value[x] = parseInt(value[x].toString());
         }
       }
       await service(id, value)
