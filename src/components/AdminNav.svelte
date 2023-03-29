@@ -1,15 +1,16 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { push } from "svelte-spa-router";
 
   import { routes, type route } from "@/lib/adminLogic";
+  import { parseJwt, type jwtObject } from "@/lib/jwtParser";
 
   import AdminNavLink from "@/components/AdminNavLink.svelte";
 
   import IoIosLogOut from "~icons/ion/log-out-outline";
   import IoIosHomeOutline from "~icons/ion/home-outline";
-  import IoIosServer from "~icons/ion/server-outline";
 
-  import Logo from "/logo.png";
+  let parsedJWT: jwtObject;
 
   const logout = () => {
     localStorage.clear();
@@ -36,44 +37,66 @@
 
     return categories;
   };
+
+  onMount(async () => {
+    const token = localStorage.getItem("access_token");
+    parsedJWT = await parseJwt(token);
+  });
 </script>
 
-<nav
-  class="shadow bg-night-2 flex flex-col gap-2 fixed h-full left-0 top-0 overflow-x-hidden overflow-y-auto pl-2">
-  <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l">
-    <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
-    <p>Uplift Admin</p>
-  </div>
-  <div class="flex flex-col">
-    <AdminNavLink name="Homepage" link="/admin">
-      <IoIosHomeOutline font-size="1.5em" />
-    </AdminNavLink>
-    <span on:keypress on:click={logout}>
-      <AdminNavLink name="Logout" link="/">
-        <IoIosLogOut font-size="1.5em" />
+{#if parsedJWT}
+  <nav
+    class="shadow bg-night-2 flex flex-col gap-2 fixed h-full left-0 top-0 overflow-x-hidden overflow-y-auto pl-2">
+    <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l">
+      <img src="logo.png" alt="logo" class="w-10 h-6 mr-2" />
+      <p>Uplift Admin</p>
+    </div>
+    <div class="flex flex-col">
+      <AdminNavLink name="Homepage" link="/admin">
+        <IoIosHomeOutline font-size="1.5em" />
       </AdminNavLink>
-    </span>
-    <AdminNavLink name="Database" link="/admin/database">
-      <IoIosServer font-size="1.5em" />
-    </AdminNavLink>
-  </div>
-  {#each Object.entries(groupRoutesByCategory(routes)) as [category, routesInCategory]}
-    {#if routesInCategory.length > 0}
-      <div class="flex flex-col">
-        <details open={true} class="cursor-pointer">
-          <summary class="capitalize pr-4">{category} management</summary>
-          {#each routesInCategory as route}
-            {#if route.icon}
-              <AdminNavLink name={route.route} link={route.route}>
-                <svelte:component this={route.icon} font-size="1.5em" />
-              </AdminNavLink>
-            {/if}
-          {/each}
-        </details>
-      </div>
-    {/if}
-  {/each}
-</nav>
+      <span on:keypress on:click={logout}>
+        <AdminNavLink name="Logout" link="/">
+          <IoIosLogOut font-size="1.5em" />
+        </AdminNavLink>
+      </span>
+    </div>
+    {#each Object.entries(groupRoutesByCategory(routes)) as [category, routesInCategory]}
+      {#if routesInCategory.length > 0}
+        <div class="flex flex-col">
+          <details open={true} class="cursor-pointer">
+            <summary class="capitalize pr-4">{category} management</summary>
+            {#each routesInCategory as route}
+              {#if route.icon}
+                {#if parsedJWT.role === "Writer" && route.role === "Writer"}
+                  {#if route.route === "/admin/passage/abstractor"}
+                    <AdminNavLink name={route.route} link={route.route}>
+                      <svelte:component this={route.icon} font-size="1.5em" />
+                    </AdminNavLink>
+                  {:else}
+                    <AdminNavLink name={route.route} link={route.route}>
+                      <svelte:component this={route.icon} font-size="1.5em" />
+                    </AdminNavLink>
+                  {/if}
+                {:else if parsedJWT.role === "Admin"}
+                  {#if route.route === "/admin/passage/abstractor"}
+                    <AdminNavLink name={route.route} link={route.route}>
+                      <svelte:component this={route.icon} font-size="1.5em" />
+                    </AdminNavLink>
+                  {:else}
+                    <AdminNavLink name={route.route} link={route.route}>
+                      <svelte:component this={route.icon} font-size="1.5em" />
+                    </AdminNavLink>
+                  {/if}
+                {/if}
+              {/if}
+            {/each}
+          </details>
+        </div>
+      {/if}
+    {/each}
+  </nav>
+{/if}
 
 <style>
   @media (min-width: 768px) {
