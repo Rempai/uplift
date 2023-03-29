@@ -80,7 +80,7 @@
       let parsedToken = await parseJwt(localStorage.getItem("access_token"));
 
       if (selectedData.data.id == parsedToken.sub) {
-        UserService.deleteUser(selectedData.data.id)
+        await UserService.deleteUser(selectedData.data.id)
           .then(() => {
             localStorage.clear();
             push("/admin/login");
@@ -102,11 +102,6 @@
   const checkIcon = (data) => {
     data = data.toString();
     return data.endsWith(".png" || ".jpg");
-  };
-
-  const escapeIconError = (data) => {
-    // This function is to just evade a TS error that shoudn't be there in the first place
-    return data;
   };
 
   const addNestedObjects = (
@@ -209,7 +204,7 @@
                       <td class={tdClass}
                         ><img
                           class="h-12 w-12 rounded text-center mx-auto"
-                          src={escapeIconError(data)}
+                          src={data.toString()}
                           alt="" /></td>
                     {:else if data === true || data === false}
                       <td class={tdClass}

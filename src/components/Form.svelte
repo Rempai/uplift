@@ -92,7 +92,8 @@
     height: 1.2em;
   }
 
-  .form :global(input:invalid) {
+  .form :global(input:invalid),
+  .form :global(textarea:invalid) {
     border: 2px dashed #bf616a;
   }
 </style>

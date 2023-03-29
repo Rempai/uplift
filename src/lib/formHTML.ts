@@ -54,8 +54,8 @@ export const reviewHTML = `
   <input required type="number" name="stars" placeholder="3" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum"></textarea>
-  <label for="passengerId">Passenger id</label>
-  <input required type="number" name="passengerId" placeholder="1" />
+  <label for="rideId">Ride id</label>
+  <input required type="number" name="rideId" placeholder="1" />
 `;
 
 export const passageHTML = `
@@ -86,6 +86,10 @@ export const attributeHTML = `
   <input required type="text" name="fontFamily" placeholder="Arial" />
 `;
 
+export const passageBulkHTML = `
+  <input type="file" name="passageBuld">
+`;
+
 export function userEditHTML(data: UserUpdate): string {
   const getOption = data.role;
   let option: string;
@@ -102,13 +106,23 @@ export function userEditHTML(data: UserUpdate): string {
     option = `
       <select name="role">
         <option value="User">User</option>
+        <option value="Writer">Writer</option>
         <option value="Admin" selected>Admin</option>
+      </select>
+    `;
+  } else if (getOption === "Writer") {
+    option = `
+      <select name="role">
+        <option value="User">User</option>
+        <option value="Writer" selected>Writer</option>
+        <option value="Admin" >Admin</option>
       </select>
     `;
   } else {
     option = `
       <select name="role">
         <option value="User" selected>User</option>
+        <option value="Writer">Writer</option>
         <option value="Admin">Admin</option>
       </select>
     `;
@@ -153,8 +167,8 @@ export function reviewEditHTML(data: ReviewUpdate): string {
   <input required type="number" name="stars" placeholder="3" value="${data.stars}" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum">${data.description}</textarea>
-  <label for="passengerId">passengerId</label>
-  <input required type="number" name="passengerId" placeholder="1" value="${data.rideId}" />
+  <label for="rideId">RideId</label>
+  <input required type="number" name="rideId" placeholder="1" value="${data.rideId}" />
   `;
 }
 

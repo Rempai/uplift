@@ -3,8 +3,8 @@ import { defineConfig } from "vite";
 
 import Icons from "unplugin-icons/vite";
 
-import path from "path";
-import fs from "fs";
+import { resolve } from "path";
+import { readFileSync } from "fs";
 
 export default defineConfig({
   plugins: [
@@ -24,13 +24,13 @@ export default defineConfig({
   server: {
     host: "127.0.0.1",
     https: {
-      key: fs.readFileSync("./key.pem"),
-      cert: fs.readFileSync("./cert.pem"),
+      key: readFileSync("./key.pem"),
+      cert: readFileSync("./cert.pem"),
     },
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": resolve(__dirname, "./src"),
     },
   },
   optimizeDeps: {

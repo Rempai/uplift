@@ -14,8 +14,7 @@
     const login = await loginForAccessToken(target);
     if (login == true) {
       let parsedJwt = await parseJwt(localStorage.getItem("access_token"));
-
-      if (parsedJwt.role === "Admin") {
+      if (parsedJwt.role === "Admin" || parsedJwt.role === "Writer") {
         push("/admin");
       } else {
         // TODO: show error that user is not admin

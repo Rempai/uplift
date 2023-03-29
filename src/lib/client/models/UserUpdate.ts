@@ -14,6 +14,7 @@ export type UserUpdate = {
 export namespace UserUpdate {
   export enum role {
     ADMIN = "Admin",
+    WRITER = "Writer",
     USER = "User",
   }
 }

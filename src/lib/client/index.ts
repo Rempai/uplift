@@ -11,6 +11,7 @@ export type { AttributeCreate } from "./models/AttributeCreate";
 export type { AttributeRead } from "./models/AttributeRead";
 export type { AttributeUpdate } from "./models/AttributeUpdate";
 export type { Login } from "./models/Login";
+export type { PassageBulk } from "./models/PassageBulk";
 export type { PassageCreate } from "./models/PassageCreate";
 export type { PassageRead } from "./models/PassageRead";
 export type { PassageUpdate } from "./models/PassageUpdate";
