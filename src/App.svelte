@@ -21,10 +21,6 @@
       asyncComponent: () => import("@/routes/Admin.svelte"),
     }),
 
-    "/admin/database": wrap({
-      asyncComponent: () => import("@/routes/Admin.svelte"),
-    }),
-
     "/admin/login": wrap({
       asyncComponent: () => import("@/routes/AdminLogin.svelte"),
     }),
@@ -70,6 +66,10 @@
     }),
 
     "/admin/passage/create": wrap({
+      asyncComponent: () => import("@/routes/AdminCreate.svelte"),
+    }),
+
+    "/admin/abstractor": wrap({
       asyncComponent: () => import("@/routes/AdminCreate.svelte"),
     }),
 
