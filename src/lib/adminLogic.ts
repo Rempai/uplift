@@ -4,6 +4,7 @@ import { parseJwt } from "@/lib/jwtParser";
 import {
   attributeEditHTML,
   attributeHTML,
+  passageBulkHTML,
   passageEditHTML,
   passageHTML,
   passengerEditHTML,
@@ -24,14 +25,17 @@ import GiRoad from "~icons/game-icons/road";
 import IoIosStarOutline from "~icons/ion/star-outline";
 import IoIosDocOutline from "~icons/ion/document-text-outline";
 import IoIosAttach from "~icons/ion/attach-outline";
+import IonGitMergeOutline from "~icons/ion/git-merge-outline";
 
 export interface route {
   route: string;
-  call?: string;
+  call: string;
+  service: CallableFunction;
+  role: string;
   icon?: any;
   html?: string | CallableFunction;
-  service?: CallableFunction;
   preview?: boolean;
+  enctype?: string;
 }
 
 export const routes: Array<route> = [
@@ -41,36 +45,42 @@ export const routes: Array<route> = [
     call: "/user/users/",
     icon: IoIosPersonCircleOutline,
     service: UserService.deleteUser,
+    role: "Admin",
   },
   {
     route: "/admin/passenger",
     call: "/character/passengers/",
     icon: MdPersonOutline,
     service: CharactersService.deletePassenger,
+    role: "Writer",
   },
   {
     route: "/admin/ride",
     call: "/character/rides/",
     icon: GiRoad,
     service: CharactersService.deleteRide,
+    role: "Writer",
   },
   {
     route: "/admin/review",
     call: "/character/reviews/",
     icon: IoIosStarOutline,
     service: CharactersService.deleteReview,
+    role: "Writer",
   },
   {
     route: "/admin/passage",
     call: "/passage_handler/passages/",
     icon: IoIosDocOutline,
     service: PassageHandlingService.deletePassage,
+    role: "Writer",
   },
   {
     route: "/admin/attribute",
     call: "/passage_handler/attributes/",
     icon: IoIosAttach,
     service: PassageHandlingService.deleteAttribute,
+    role: "Writer",
   },
 
   // Create
@@ -79,36 +89,51 @@ export const routes: Array<route> = [
     call: "/user/users/",
     html: userHTML,
     service: UserService.postUser,
+    role: "Admin",
   },
   {
     route: "/admin/passenger/create",
     call: "/character/passengers/",
     html: passengerHTML,
     service: CharactersService.postPassenger,
+    role: "Writer",
   },
   {
     route: "/admin/ride/create",
     call: "/character/rides/",
     html: rideHTML,
     service: CharactersService.postRide,
+    role: "Writer",
   },
   {
     route: "/admin/review/create",
     call: "/character/reviews/",
     html: reviewHTML,
     service: CharactersService.postReview,
+    role: "Writer",
   },
   {
     route: "/admin/passage/create",
     call: "/passage_handler/passages/",
     html: passageHTML,
     service: PassageHandlingService.postPassage,
+    role: "Writer",
   },
   {
     route: "/admin/attribute/create",
     call: "/passage_handler/attributes/",
     html: attributeHTML,
     service: PassageHandlingService.postAttribute,
+    role: "Writer",
+  },
+  {
+    route: "/admin/abstractor",
+    call: "/passage_handler/passage_bulk/",
+    html: passageBulkHTML,
+    service: PassageHandlingService.postPassageBulk,
+    icon: IonGitMergeOutline,
+    role: "Writer",
+    enctype: "multipart/form-data",
   },
 
   // Update
@@ -117,24 +142,28 @@ export const routes: Array<route> = [
     call: "/user/",
     html: userEditHTML,
     service: UserService.updateUser,
+    role: "Admin",
   },
   {
     route: "/admin/passenger/edit",
     call: "/character/passenger/",
     html: passengerEditHTML,
     service: CharactersService.updatePassenger,
+    role: "Writer",
   },
   {
     route: "/admin/ride/edit",
     call: "/character/ride/",
     html: rideEditHTML,
     service: CharactersService.updateRide,
+    role: "Writer",
   },
   {
     route: "/admin/review/edit",
     call: "/character/review/",
     html: reviewEditHTML,
     service: CharactersService.updateReview,
+    role: "Writer",
   },
   {
     route: "/admin/passage/edit",
@@ -142,12 +171,14 @@ export const routes: Array<route> = [
     html: passageEditHTML,
     preview: true,
     service: PassageHandlingService.updatePassage,
+    role: "Writer",
   },
   {
     route: "/admin/attribute/edit",
     call: "/passage_handler/attribute/",
     html: attributeEditHTML,
     service: PassageHandlingService.updateAttribute,
+    role: "Writer",
   },
 ];
 
@@ -157,7 +188,7 @@ export async function checkAccount() {
   );
 
   if (acc) {
-    if (acc.role !== "Admin") push("/");
+    if (acc.role !== "Admin" && acc.role !== "Writer") push("/");
   }
 }
 
@@ -171,8 +202,10 @@ export function checkRoute(location: string): route {
   const path_check = stripPath(location);
   let route: string;
   let html: string | CallableFunction;
-  let preview: boolean;
+  let role: string;
   let service: CallableFunction;
+  let preview: boolean;
+  let enctype: string;
 
   checkAccount();
   routes.some((e) => {
@@ -180,7 +213,9 @@ export function checkRoute(location: string): route {
       route = e.call;
       html = e.html;
       service = e.service;
+      role = e.role;
       preview = e.preview;
+      enctype = e.enctype;
 
       return true; // Go out of loop
     }
@@ -188,8 +223,11 @@ export function checkRoute(location: string): route {
 
   return {
     route: route,
+    call: route,
     html: html,
     service: service,
+    role: role,
+    enctype: enctype,
     preview: preview,
   };
 }
