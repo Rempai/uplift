@@ -3,26 +3,26 @@ import { readFileSync } from "fs";
 const num_attributeIDs = 3; //the max attributeID value, before giving an error
 
 class Passage {
-  text: String = "";
-  speaker: String = ""; //full name of character (not a shorthand set with :character)
-  attributeID: number = -1; //attributeID used
-  links_to: Array<String> = [];
-  original_location: String; //just for giving the user a line number when an error occurs
+  text = "";
+  speaker = ""; //full name of character (not a shorthand set with :character)
+  attributeID = -1; //attributeID used
+  links_to: Array<string> = [];
+  original_location: string; //just for giving the user a line number when an error occurs
 }
 class Branch {
-  name: String = "";
-  root_name: String = ""; //in case it's a "label", the root_name will be used to put in the passage_name.
+  name = "";
+  root_name = ""; //in case it's a "label", the root_name will be used to put in the passage_name.
   passages: Array<Passage> = [];
   fallthrough: boolean = null; //if branch should continue to the next branch (in branches array) when it reaches the end
-  original_location: String; //for error purposes
+  original_location: string; //for error purposes
 }
 
 export function do_thing(filename: string): number {
-  var errors: number = 0;
+  let errors = 0;
 
-  let rideid = { rideid: -1 };
-  let branches: Array<Branch> = [];
-  let characters: Array<[String, String, number]> = []; //first string is the shortcut used in file, second string is the "game" name. third is attributeID
+  const rideid = { rideid: -1 };
+  const branches: Array<Branch> = [];
+  const characters: Array<[string, string, number]> = []; //first string is the shortcut used in file, second string is the "game" name. third is attributeID
 
   //any referenced files will be recursively called for parsing by the parse_file function
   errors += parse_file(filename, rideid, branches, characters);
@@ -35,10 +35,10 @@ export function parse_file(
   filename: string,
   rideid: { rideid },
   branches: Array<Branch>,
-  characters: Array<[String, String, number]>
+  characters: Array<[string, string, number]>
 ): number {
-  var errors: number = 0;
-  let default_character: number = -1; //index to characters array, defines what character should be used when the line doesn't begin with "charname;"
+  let errors = 0;
+  let default_character = -1; //index to characters array, defines what character should be used when the line doesn't begin with "charname;"
 
   //log verbose
   function lverb(input) {
@@ -54,7 +54,7 @@ export function parse_file(
   const input_data = readFileSync(filename, "utf-8");
   const input_lines = input_data.split("\n");
 
-  let in_branch: boolean = false;
+  let in_branch = false;
 
   for (let line = 0; line < input_lines.length; line++) {
     const location = filename + ":" + (line + 1);
@@ -151,7 +151,7 @@ export function parse_file(
 
       default:
         if (cur_split[0][0] == "#") {
-          var new_branch_name = "";
+          let new_branch_name = "";
           if (cur_split[0][0] == "#" && cur_split[0][1] == "#" && cur_split[0][2] == "#") {
             if (!in_branch) {
               lerr(
@@ -220,7 +220,7 @@ export function parse_file(
             break;
           }
 
-          var new_passage = new Passage();
+          const new_passage = new Passage();
 
           const speaker = cur.substring(0, cur.indexOf("}")); //get string until first occurence of ], which will have the speaker's name (if any)
           if (speaker != "") {
@@ -252,7 +252,7 @@ export function parse_file(
           const linestart = cur.indexOf("}") ? cur.indexOf("}") + 1 : 0;
           const branch_split = cur.substring(linestart, cur.length).split(/(\[|:|\])/g); //remove speaker (if present) and split on {, :, and } character.
           //console.log(branch_split)
-          var finalized_text = "";
+          let finalized_text = "";
           for (let part = 0; part < branch_split.length; part++) {
             const elem = branch_split[part];
             if (elem == "[") {
@@ -305,12 +305,12 @@ export function parse_file(
 
 //filename is the filename of the root file
 function check_branches(
-  filename: String,
+  filename: string,
   rideid: { rideid },
   branches: Array<Branch>,
-  characters: Array<[String, String, number]>
+  characters: Array<[string, string, number]>
 ): number {
-  var errors: number = 0;
+  let errors = 0;
 
   //error logging
   function lerr(location, input) {
@@ -387,18 +387,18 @@ function check_branches(
   return errors;
 }
 
-function generate_output(branches: Array<Branch>, rideid: { rideid }): String {
-  var output_array: Array<Object> = [];
+function generate_output(branches: Array<Branch>, rideid: { rideid }): string {
+  const output_array: Array<object> = [];
 
   for (let i = 0; i < branches.length; i++) {
     const branch = branches[i];
-    var you_dialogue = 1;
-    var other_dialogue = 1;
+    let you_dialogue = 1;
+    let other_dialogue = 1;
     for (let j = 0; j < branch.passages.length; j++) {
       const passage = branch.passages[j];
 
       //make passage name
-      var passage_name = branch.name;
+      let passage_name = branch.name;
 
       if (branch.name == "start") {
         passage_name += "Trunk";

@@ -3,7 +3,7 @@ import { readdirSync, statSync } from "fs";
 import { do_thing } from "./parser";
 
 //must be run from the root directory
-var test_results: Array<[String, boolean]> = []; //contains whether output was expected (eg, a failed test on a file marked as "fail" would be true, since we expect it to fail)
+const test_results: Array<[string, boolean]> = []; //contains whether output was expected (eg, a failed test on a file marked as "fail" would be true, since we expect it to fail)
 
 function checkDir(directory) {
   const files_in_dir = readdirSync(directory);
@@ -28,7 +28,7 @@ function checkDir(directory) {
 
 checkDir("./test");
 
-var nofail = true;
+let nofail = true;
 test_results.forEach((result) => {
   console.log("\x1b[39;49mtest " + result[0] + " " + (result[1] ? "succeeded" : "\x1b[91mfailed"));
   if (result[1] == false) {
