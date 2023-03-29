@@ -3,19 +3,13 @@
 
   import Button from "@/components/Button.svelte";
   import Footer from "@/components/Footer.svelte";
-
-  import Logo from "/logo.png";
-  import UpliftCar from "/uplift-car.png";
-  import UpliftMoney from "/uplift-money.png";
-  import UpliftTraining from "/uplift-training.png";
-  import UpliftBuitenkamer from "/uplift-buitenkamer.png";
 </script>
 
 <header
   class="h-screen w-full bg-[url('/bg.png')] bg-cover bg-center text-center flex items-center">
   <div class="bg-night-2/80 rounded shadow p-4 md:p-10 w-9/12 md:w-4/12 mx-auto">
     <div class="flex flex-col justify-around items-center gap-4">
-      <img class="w-4/12" src={Logo} alt="Logo" />
+      <img class="w-4/12" src="logo.png" alt="Logo" />
       <h1>Uplift</h1>
       <p class="text-frost-1">Getting you where you should be</p>
       <Button onClick={() => push("/game")} text="Start Uplift" class="bg-frost-4 md:!px-10" />
@@ -35,7 +29,7 @@
       </p>
     </div>
     <div>
-      <img src={UpliftCar} alt="" class="w-screen" />
+      <img src="uplift-car.png" alt="" class="w-screen" />
     </div>
   </div>
   <div class="md:flex md:justify-around md:items-center md:gap-20">
@@ -50,7 +44,7 @@
       </p>
     </div>
     <div class="order-1">
-      <img src={UpliftMoney} alt="" class="w-screen" />
+      <img src="uplift-money.png" alt="" class="w-screen" />
     </div>
   </div>
 </section>
@@ -67,7 +61,7 @@
       </p>
     </div>
     <div>
-      <img src={UpliftTraining} alt="" class="w-screen" />
+      <img src="uplift-training.png" alt="" class="w-screen" />
     </div>
   </div>
   <div class="flex justify-center my-10">
@@ -89,7 +83,7 @@
       </p>
     </div>
     <div class="order-1">
-      <img src={UpliftBuitenkamer} alt="" class="rounded w-screen" />
+      <img src="uplift-buitenkamer.png" alt="" class="rounded w-screen" />
     </div>
   </div>
 </section>
