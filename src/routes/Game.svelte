@@ -236,6 +236,7 @@
     if (passage.branch.includes("FinishNow")) {
       createReview();
       toggleDialog();
+      journalData = [];
     }
 
     nextPassage(text);
