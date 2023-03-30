@@ -1,11 +1,11 @@
 import { readdirSync, statSync } from "fs";
 
-import { do_thing } from "./parser";
+import { do_thing } from "./parser.js";
 
 //must be run from the root directory
 const test_results: Array<[string, boolean]> = []; //contains whether output was expected (eg, a failed test on a file marked as "fail" would be true, since we expect it to fail)
 
-function checkDir(directory) {
+function checkDir(directory: string) {
   const files_in_dir = readdirSync(directory);
   files_in_dir.forEach((file) => {
     if (statSync(directory + "/" + file).isDirectory()) {
@@ -26,7 +26,7 @@ function checkDir(directory) {
   });
 }
 
-checkDir("./test");
+checkDir("./parser/test");
 
 let nofail = true;
 test_results.forEach((result) => {

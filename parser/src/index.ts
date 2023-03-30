@@ -1,4 +1,4 @@
-import { do_thing } from "./parser";
+import { do_thing } from "./parser.js";
 
 const args = process.argv.slice(2);
 args.forEach((file) => {

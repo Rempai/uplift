@@ -4,8 +4,9 @@
 :default y
 :rideid 1
 
-# start
+:import paolo_workload.md
 
+# start
 Good morning, you must be Paolo.
 p}Oh hi, are you my taxi driver?
 Yes I am. Where to?

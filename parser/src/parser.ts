@@ -7,14 +7,14 @@ class Passage {
   speaker = ""; //full name of character (not a shorthand set with :character)
   attributeID = -1; //attributeID used
   links_to: Array<string> = [];
-  original_location: string; //just for giving the user a line number when an error occurs
+  original_location: string = ""; //just for giving the user a line number when an error occurs
 }
 class Branch {
   name = "";
   root_name = ""; //in case it's a "label", the root_name will be used to put in the passage_name.
   passages: Array<Passage> = [];
-  fallthrough: boolean = null; //if branch should continue to the next branch (in branches array) when it reaches the end
-  original_location: string; //for error purposes
+  fallthrough: boolean | null = null; //if branch should continue to the next branch (in branches array) when it reaches the end
+  original_location: string = ""; //for error purposes
 }
 
 export function do_thing(filename: string): number {
@@ -33,7 +33,7 @@ export function do_thing(filename: string): number {
 
 export function parse_file(
   filename: string,
-  rideid: { rideid },
+  rideid: { rideid: number },
   branches: Array<Branch>,
   characters: Array<[string, string, number]>
 ): number {
@@ -41,12 +41,12 @@ export function parse_file(
   let default_character = -1; //index to characters array, defines what character should be used when the line doesn't begin with "charname;"
 
   //log verbose
-  function lverb(input) {
+  function lverb(input: any) {
     //console.log("\x1b[39;49m" + input)
   }
 
   //log error
-  function lerr(location, input) {
+  function lerr(location: string, input: any) {
     console.log("\x1b[91mERROR at location " + location + ": " + input);
     errors += 1;
   }
@@ -67,13 +67,14 @@ export function parse_file(
       case ":character":
         if (cur_split.length == 4) {
           //:character shortcut originalname attributeID
-          if (characters.find((element) => element[0] === cur_split[1]) != null) {
+          const found_character = characters.find((element) => element[0] === cur_split[1]);
+          if (found_character != null) {
             lerr(
               location,
               "character shortcut '" +
                 cur_split[1] +
                 "' already exists for character " +
-                characters.find((element) => element[0] === cur_split[1])[1]
+                found_character[1]
             );
             break;
           }
@@ -89,7 +90,7 @@ export function parse_file(
             break;
           }
 
-          characters.push([cur_split[1], cur_split[2], cur_split[3]]);
+          characters.push([cur_split[1], cur_split[2], parseInt(cur_split[3])]);
           lverb("added character shortcut " + cur_split[1] + " for character " + cur_split[2]);
         } else {
           lerr(
@@ -138,14 +139,14 @@ export function parse_file(
         break;
       case ":end":
         if (in_branch) {
-          branches.at(-1).fallthrough = false;
+          branches.slice(-1)[0].fallthrough = false;
         } else {
           lerr(location, "tried to end branch, but no branch is open.");
         }
         in_branch = false;
         break;
       case ":rideid":
-        rideid.rideid = cur_split[1].toString();
+        rideid.rideid = parseInt(cur_split[1]);
         //TODO error checking
         break;
 
@@ -159,7 +160,7 @@ export function parse_file(
                 "tried inserting a label, but we are currently not in a branch. did you accidentally end the previous one?"
               );
             }
-            branches.at(-1).fallthrough = false; //set previous branch to fallthrough
+            branches.slice(-1)[0].fallthrough = false; //set previous branch to fallthrough
             new_branch_name = cur.substring(3, cur.length).trimStart(); //remove # and whitespace in front of name.
           } else if (cur_split[0][0] == "#" && cur_split[0][1] == "#") {
             if (!in_branch) {
@@ -168,7 +169,7 @@ export function parse_file(
                 "tried inserting a label, but we are currently not in a branch. did you accidentally end the previous one?"
               );
             }
-            branches.at(-1).fallthrough = true; //set previous branch to fallthrough
+            branches.slice(-1)[0].fallthrough = true; //set previous branch to fallthrough
             new_branch_name = cur.substring(2, cur.length).trimStart(); //remove # and whitespace in front of name.
           } else {
             // for making a new branch with #branch
@@ -194,15 +195,15 @@ export function parse_file(
               branches.pop();
               break;
             }
-            branches.at(-1).root_name = branches.at(-2).root_name;
+            branches.slice(-1)[0].root_name = branches.slice(-2)[0].root_name;
           } else {
-            branches.at(-1).root_name = new_branch_name;
+            branches.slice(-1)[0].root_name = new_branch_name;
           }
-          branches.at(-1).name = new_branch_name;
-          branches.at(-1).original_location = location;
-          lverb("creating branch " + branches.at(-1).name);
+          branches.slice(-1)[0].name = new_branch_name;
+          branches.slice(-1)[0].original_location = location;
+          lverb("creating branch " + branches.slice(-1)[0].name);
           in_branch = true;
-          //lerr(location, new_branch_name + " :: " + branches.at(-1).root_name);
+          //lerr(location, new_branch_name + " :: " + branches.slice(-1)[0].root_name);
           break;
         }
         if (cur == "") {
@@ -295,7 +296,7 @@ export function parse_file(
           lverb("line (" + new_passage.speaker + "): " + finalized_text);
           new_passage.original_location = location; //to allow error reporting with line number when we verify links later
           new_passage.text = finalized_text;
-          branches.at(-1).passages.push(new_passage);
+          branches.slice(-1)[0].passages.push(new_passage);
         }
         break;
     }
@@ -306,14 +307,14 @@ export function parse_file(
 //filename is the filename of the root file
 function check_branches(
   filename: string,
-  rideid: { rideid },
+  rideid: { rideid: number },
   branches: Array<Branch>,
   characters: Array<[string, string, number]>
 ): number {
   let errors = 0;
 
-  //error logging
-  function lerr(location, input) {
+  //log error
+  function lerr(location: string, input: any) {
     console.log("\x1b[91mERROR at location " + location + ": " + input);
     errors += 1;
   }
@@ -337,14 +338,14 @@ function check_branches(
   }
 
   //check if last branch has been closed off properly (all other branches were checked when the next branch was made)
-  if (branches.at(-1).fallthrough == null) {
+  if (branches.slice(-1)[0].fallthrough == null) {
     lerr(
-      branches.at(-1).original_location,
+      branches.slice(-1)[0].original_location,
       "last branch hasn't been closed off. did you forget an :end?"
     );
-  } else if (branches.at(-1).fallthrough == true) {
+  } else if (branches.slice(-1)[0].fallthrough == true) {
     lerr(
-      branches.at(-1).original_location,
+      branches.slice(-1)[0].original_location,
       "last branch has fallthrough applied, but it can't fallthrough because there is no branch following it. (internal error)"
     );
   }
@@ -387,7 +388,7 @@ function check_branches(
   return errors;
 }
 
-function generate_output(branches: Array<Branch>, rideid: { rideid }): string {
+function generate_output(branches: Array<Branch>, rideid: { rideid: number }): string {
   const output_array: Array<object> = [];
 
   for (let i = 0; i < branches.length; i++) {
