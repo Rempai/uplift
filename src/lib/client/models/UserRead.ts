@@ -12,6 +12,7 @@ export type UserRead = {
 export namespace UserRead {
   export enum role {
     ADMIN = "Admin",
+    WRITER = "Writer",
     USER = "User",
   }
 }

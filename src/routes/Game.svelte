@@ -13,7 +13,6 @@
   } from "@/lib/authProcesses";
 
   import {
-    AuthService,
     CharactersService,
     OpenAPI,
     PassageHandlingService,
@@ -44,9 +43,7 @@
   import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
   import IonStar from "~icons/ion/star";
 
-  import Logo from "/logo.png";
   import Background from "/background.webm";
-  import Ambient from "/ambient.mp3";
 
   let radioSelect: number;
   let ambientNoise = false;
@@ -85,23 +82,6 @@
   let solution: string;
 
   let parsedJWT: jwtObject;
-
-  onMount(async () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) {
-      startGame();
-    } else {
-      welcome = true;
-    }
-    if (!resolutionData) {
-      resolutionData = {
-        ...resolutionData,
-        mainCause: "",
-        mainProblem: "",
-        partiesInvolved: "",
-      };
-    }
-  });
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -361,6 +341,23 @@
     showPhoneButton = false;
   };
 
+  onMount(async () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      startGame();
+    } else {
+      welcome = true;
+    }
+    if (!resolutionData) {
+      resolutionData = {
+        ...resolutionData,
+        mainCause: "",
+        mainProblem: "",
+        partiesInvolved: "",
+      };
+    }
+  });
+
   $: if ($passageName !== "") {
     nextPassage($passageName);
   }
@@ -396,7 +393,7 @@
     <audio class="hidden" autoplay controls loop src={radios[radioSelect].source} />
   {/if}
   {#if ambientNoise}
-    <audio class="hidden" autoplay controls loop src={Ambient} />
+    <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
   <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
@@ -521,7 +518,7 @@
         <div slot="content" class="px-4 mt-3">
           <div class="flex flex-col items-center gap-6">
             <p class="text-3xl">Welcome to</p>
-            <img src={Logo} alt="Logo" class="w-32" />
+            <img src="logo.png" alt="Logo" class="w-32" />
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">

@@ -4,6 +4,7 @@
 import type { AttributeCreate } from "../models/AttributeCreate";
 import type { AttributeRead } from "../models/AttributeRead";
 import type { AttributeUpdate } from "../models/AttributeUpdate";
+import type { PassageBulk } from "../models/PassageBulk";
 import type { PassageCreate } from "../models/PassageCreate";
 import type { PassageRead } from "../models/PassageRead";
 import type { PassageUpdate } from "../models/PassageUpdate";
@@ -240,6 +241,25 @@ export class PassageHandlingService {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/passage_handler/attribute/",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        401: `Unauthorized`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Post Passage Bulk
+   * @param requestBody
+   * @returns any Created Resource
+   * @throws ApiError
+   */
+  public static postPassageBulk(requestBody: PassageBulk): CancelablePromise<any> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/passage_handler/passage_bulk/",
       body: requestBody,
       mediaType: "application/json",
       errors: {

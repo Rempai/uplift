@@ -50,7 +50,7 @@ async function passengerCheck(formdata: PassengerRead) {
   if (formdata.name.length < 3)
     validationArray.push("Character name too short (min 3 characters)");
 
-  if (formdata.icon.startsWith("/") && !formdata.icon.endsWith(".png" || ".jpg"))
+  if (!formdata.icon.endsWith(".png" || ".jpg"))
     validationArray.push(
       "Invalid icon format, did you start with a '/' did you use a png or jpg?"
     );

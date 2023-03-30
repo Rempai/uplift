@@ -17,4 +17,8 @@
 
 <AdminNav />
 
-<Create crudRoute={crudRoute.route} service={crudRoute.service} formHTML={crudRoute.html} />
+<Create
+  crudRoute={crudRoute.route}
+  service={crudRoute.service}
+  formHTML={crudRoute.html}
+  enctype={crudRoute.enctype} />
