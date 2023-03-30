@@ -5,6 +5,7 @@
 :rideid 1
 
 :import paolo_workload.md
+:import paolo_stress.md
 :import paolo_friends.md
 :import paolo_project.md
 
