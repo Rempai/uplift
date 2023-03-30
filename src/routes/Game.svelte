@@ -311,7 +311,14 @@
     solution = event.detail;
     // TODO: this won't work for other rides
     nextPassage("Paolo" + solution + "You" + 1);
+    journalData = [];
     resolution = false;
+    resolutionData = {
+        ...resolutionData,
+        mainCause: "",
+        mainProblem: "",
+        partiesInvolved: "",
+      };
     dialog = true;
   };
 
