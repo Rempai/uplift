@@ -83,6 +83,8 @@
 
   let parsedJWT: jwtObject;
 
+  let filledjournal = true;
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
@@ -184,6 +186,7 @@
   };
 
   const showResolution = ({ detail }) => {
+    togglePhone();
     journal = false;
     resolution = true;
     resolutionData = detail;
@@ -236,6 +239,8 @@
     if (passage.branch.includes("FinishNow")) {
       createReview();
       toggleDialog();
+      journalData = [];
+      filledjournal = true;
     }
 
     nextPassage(text);
@@ -311,8 +316,16 @@
     solution = event.detail;
     // TODO: this won't work for other rides
     nextPassage("Paolo" + solution + "You" + 1);
+    journalData = [];
     resolution = false;
+    resolutionData = {
+      ...resolutionData,
+      mainCause: "",
+      mainProblem: "",
+      partiesInvolved: "",
+    };
     dialog = true;
+    filledjournal = false;
   };
 
   const formatDate = (dateString: string) => {
@@ -635,7 +648,12 @@
             <div class="flex flex-col items-center gap-5">
               {#if typeof passage == "object"}
                 <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
-                <Button onClick={toggleJournal} text="Toggle Journal" class="bg-frost-2 w-full" />
+                {#if filledjournal}
+                  <Button
+                    onClick={toggleJournal}
+                    text="Toggle Journal"
+                    class="bg-frost-2 w-full" />
+                {/if}
                 <Button
                   onClick={toggleAmbient}
                   text="Toggle Ambient Noise"
