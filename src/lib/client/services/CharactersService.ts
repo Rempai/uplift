@@ -115,16 +115,17 @@ export class CharactersService {
   /**
    * Post Passenger
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postPassenger(requestBody: PassengerCreate): CancelablePromise<any> {
+  public static postPassenger(requestBody: PassengerCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/character/passenger/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
@@ -222,16 +223,17 @@ export class CharactersService {
   /**
    * Post Ride
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postRide(requestBody: RideCreate): CancelablePromise<any> {
+  public static postRide(requestBody: RideCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/character/ride/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
@@ -341,16 +343,17 @@ export class CharactersService {
   /**
    * Post Review
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postReview(requestBody: ReviewCreate): CancelablePromise<any> {
+  public static postReview(requestBody: ReviewCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/character/review/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
@@ -360,16 +363,17 @@ export class CharactersService {
   /**
    * Post ReviewedUser
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postReviewedUser(requestBody: ReviewedUserCreate): CancelablePromise<any> {
+  public static postReviewedUser(requestBody: ReviewedUserCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/character/reviewed_user/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },

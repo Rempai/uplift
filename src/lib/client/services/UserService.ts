@@ -119,16 +119,17 @@ export class UserService {
   /**
    * Post User
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postUser(requestBody: UserCreate): CancelablePromise<any> {
+  public static postUser(requestBody: UserCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/user/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
