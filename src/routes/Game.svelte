@@ -646,7 +646,7 @@
         <Phone on:close={togglePhone} on:item={handleClick} menuName="Dashboard">
           <div slot="content" class="px-4 mt-3 flex justify-around">
             <div class="flex flex-col items-center gap-5">
-              {#if typeof passage == "object" && filledjournal}
+              {#if typeof passage == "object"}
                 <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
                 <Button onClick={toggleJournal} text="Toggle Journal" class="bg-frost-2 w-full" />
                 <Button
