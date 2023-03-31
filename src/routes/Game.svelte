@@ -649,7 +649,10 @@
               {#if typeof passage == "object"}
                 <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
                 {#if filledjournal}
-                <Button onClick={toggleJournal} text="Toggle Journal" class="bg-frost-2 w-full" />
+                  <Button
+                    onClick={toggleJournal}
+                    text="Toggle Journal"
+                    class="bg-frost-2 w-full" />
                 {/if}
                 <Button
                   onClick={toggleAmbient}
