@@ -121,16 +121,17 @@ export class PassageHandlingService {
   /**
    * Post Passage
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postPassage(requestBody: PassageCreate): CancelablePromise<any> {
+  public static postPassage(requestBody: PassageCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/passage_handler/passage/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
@@ -234,16 +235,17 @@ export class PassageHandlingService {
   /**
    * Post Attribute
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postAttribute(requestBody: AttributeCreate): CancelablePromise<any> {
+  public static postAttribute(requestBody: AttributeCreate): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/passage_handler/attribute/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
@@ -253,16 +255,17 @@ export class PassageHandlingService {
   /**
    * Post Passage Bulk
    * @param requestBody
-   * @returns any Created Resource
+   * @returns Response Created Resource
    * @throws ApiError
    */
-  public static postPassageBulk(requestBody: PassageBulk): CancelablePromise<any> {
+  public static postPassageBulk(requestBody: PassageBulk): CancelablePromise<Response> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/passage_handler/passage_bulk/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
+        400: `Bad Request`,
         401: `Unauthorized`,
         500: `Internal Server Error`,
       },
