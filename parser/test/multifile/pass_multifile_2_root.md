@@ -2,6 +2,7 @@
 :character p Paolo 2
 :default p
 :rideid 1
+:ridename a
 
 :import multifile_2_sub.md
 

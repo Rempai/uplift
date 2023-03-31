@@ -2,6 +2,7 @@
 :character p Paolo 2
 :default paolo
 :rideid 1
+:ridename a
 
 # start
 

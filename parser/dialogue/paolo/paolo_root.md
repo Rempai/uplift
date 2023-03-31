@@ -3,6 +3,7 @@
 :character y You 1
 :default y
 :rideid 1
+:ridename Paolo
 
 :import paolo_workload.md
 :import paolo_stress.md

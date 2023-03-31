@@ -20,20 +20,20 @@ class Branch {
 export function do_thing(filename: string): number {
   let errors = 0;
 
-  const rideid = { rideid: -1 };
+  const ridedata = { id: -1, name: "" };
   const branches: Array<Branch> = [];
   const characters: Array<[string, string, number]> = []; //first string is the shortcut used in file, second string is the "game" name. third is attributeID
 
   //any referenced files will be recursively called for parsing by the parse_file function
-  errors += parse_file(filename, rideid, branches, characters);
-  errors += check_branches(filename, rideid, branches, characters);
-  generate_output(branches, rideid);
+  errors += parse_file(filename, ridedata, branches, characters);
+  errors += check_branches(filename, ridedata, branches, characters);
+  generate_output(branches, ridedata);
   return errors;
 }
 
 export function parse_file(
   filename: string,
-  rideid: { rideid: number },
+  ridedata: { id: number, name: string },
   branches: Array<Branch>,
   characters: Array<[string, string, number]>
 ): number {
@@ -104,7 +104,7 @@ export function parse_file(
         console.log(cur.substring(7));
         parse_file(
           filename.substring(0, filename.lastIndexOf("/") + 1) + cur.substring(7).trimStart(),
-          rideid,
+          ridedata,
           branches,
           characters
         );
@@ -146,13 +146,19 @@ export function parse_file(
         in_branch = false;
         break;
       case ":rideid":
-        rideid.rideid = parseInt(cur_split[1]);
+        ridedata.id = parseInt(cur_split[1]);
         //TODO error checking
         break;
-
+      case ":ridename":
+        //TODO error checking
+        ridedata.name = cur_split[1];
+        break;
       default:
         if (cur_split[0][0] == "#") {
-          let new_branch_name = "";
+          if(ridedata.name == "") {
+            lerr(location, "no ride name set, set it with :ridename name");
+          }
+          let new_branch_name = ridedata.name;
           if (cur_split[0][0] == "#" && cur_split[0][1] == "#" && cur_split[0][2] == "#") {
             if (!in_branch) {
               lerr(
@@ -161,7 +167,7 @@ export function parse_file(
               );
             }
             branches.slice(-1)[0].fallthrough = false; //set previous branch to fallthrough
-            new_branch_name = cur.substring(3, cur.length).trimStart(); //remove # and whitespace in front of name.
+            new_branch_name += cur.substring(3, cur.length).trimStart(); //remove # and whitespace in front of name.
           } else if (cur_split[0][0] == "#" && cur_split[0][1] == "#") {
             if (!in_branch) {
               lerr(
@@ -170,10 +176,10 @@ export function parse_file(
               );
             }
             branches.slice(-1)[0].fallthrough = true; //set previous branch to fallthrough
-            new_branch_name = cur.substring(2, cur.length).trimStart(); //remove # and whitespace in front of name.
+            new_branch_name += cur.substring(2, cur.length).trimStart(); //remove # and whitespace in front of name.
           } else {
             // for making a new branch with #branch
-            new_branch_name = cur.substring(1, cur.length).trimStart();
+            new_branch_name += cur.substring(1, cur.length).trimStart();
             if (in_branch) {
               lerr(
                 location,
@@ -263,8 +269,12 @@ export function parse_file(
                 break;
               }
 
+              if(ridedata.name == "") {
+                lerr(filename, "ride name wasn't set (set with :ridename in root file)")
+              }
+
               const button_text = branch_split[part + 1];
-              const button_link = branch_split[part + 3]; //TODO: put in "You" etc if needed
+              const button_link = ridedata.name + branch_split[part + 3]; //TODO: put in "You" etc if needed
 
               if (button_text == "" || button_link == "") {
                 lerr(
@@ -273,6 +283,8 @@ export function parse_file(
                 );
                 break;
               }
+
+
 
               //include "1" after link since the first passage in the branch is called that.
               finalized_text +=
@@ -307,7 +319,7 @@ export function parse_file(
 //filename is the filename of the root file
 function check_branches(
   filename: string,
-  rideid: { rideid: number },
+  ridedata: { id: number, name: string },
   branches: Array<Branch>,
   characters: Array<[string, string, number]>
 ): number {
@@ -320,8 +332,13 @@ function check_branches(
   }
 
   //check rideid
-  if (rideid.rideid == -1) {
+  if (ridedata.id == -1) {
     lerr(filename, "rideID wasn't set!");
+  }
+
+  //check ridename
+  if(ridedata.name == "") {
+    lerr(filename, "ride name wasn't set (set with :ridename in root file)")
   }
 
   //check if all branch links are linking to valid branches
@@ -353,7 +370,7 @@ function check_branches(
   //check if all branches have been linked to (via jumps or fallthroughs), else give unreachable error
   for (let i = 1; i < branches.length; i++) {
     const branch = branches[i];
-    if (branch.name == "start") {
+    if (branch.name == ridedata.name + "start") {
       continue;
     } //skip starting branch (since it's fine if it's unreachable)
     if (
@@ -379,7 +396,7 @@ function check_branches(
   //check if there are any branches in the first place
   if (branches.length != 0) {
     //check if start branch has been defined
-    if (branches.find(({ name }) => name === "start") == null) {
+    if (branches.find(({ name }) => name === ridedata.name + "start") == null) {
       lerr(filename, "no start branch exists");
     }
   } else {
@@ -388,7 +405,7 @@ function check_branches(
   return errors;
 }
 
-function generate_output(branches: Array<Branch>, rideid: { rideid: number }): string {
+function generate_output(branches: Array<Branch>, ridedata: { id: number, name: string }): string {
   const output_array: Array<object> = [];
 
   for (let i = 0; i < branches.length; i++) {
@@ -417,7 +434,7 @@ function generate_output(branches: Array<Branch>, rideid: { rideid: number }): s
       const m = new Map();
       m.set("passage_name", passage_name);
       m.set("content", passage.text);
-      m.set("rideId", rideid.rideid);
+      m.set("rideId", ridedata.id);
       m.set("speaker", passage.speaker);
       m.set("attributeId", passage.attributeID);
       if (branch.name == "start") {
