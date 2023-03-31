@@ -6,10 +6,16 @@
   import AdminNav from "@/components/AdminNav.svelte";
 
   let check = false;
+  let mobileContentMargin;
+
   onMount(async () => {
     await checkAccount();
     check = true;
   });
+
+  function test(event) {
+    mobileContentMargin = event.detail;
+  }
 </script>
 
 <svelte:head>
@@ -17,14 +23,13 @@
 </svelte:head>
 
 {#if check}
-  <AdminNav />
-
-  <main class="admin-space">
-    <AdminNav />
-    <div class="flex-1 pb-10 pr-10">
-      <h1 class="mt-6">Admin page</h1>
+  <main class="md:flex min-h-screen">
+    <AdminNav on:navHeight={test} />
+    <div class="flex-1 pb-10 px-5 mt-[{mobileContentMargin}px] md:mt-0">
+      <h1 class="mt-2">Admin page</h1>
       <hr class="mb-3" />
-      <div class="gap-4 flex justify-between ">
+      <div class="gap-4 flex justify-between flex-col md:flex-row">
+        <!-- use flex-row for screens larger than md breakpoint -->
         <div class="w-full">
           <div class="card h-full">
             <h2>Logs</h2>

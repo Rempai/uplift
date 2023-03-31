@@ -14,11 +14,13 @@
 <svelte:head>
   <title>Admin | Create</title>
 </svelte:head>
-
-<AdminNav />
-
-<Create
-  crudRoute={crudRoute.route}
-  service={crudRoute.service}
-  formHTML={crudRoute.html}
-  enctype={crudRoute.enctype} />
+<main class="sm:flex min-h-screen">
+  <AdminNav />
+  <div class="overflow-auto flex-1 p-10">
+    <Create
+      crudRoute={crudRoute.route}
+      service={crudRoute.service}
+      formHTML={crudRoute.html}
+      enctype={crudRoute.enctype} />
+  </div>
+</main>

@@ -14,8 +14,9 @@
 <svelte:head>
   <title>Uplift | Read</title>
 </svelte:head>
-
-<main class="admin-space">
+<main class="md:flex min-h-screen">
   <AdminNav />
-  <Read crudRoute={crudRoute.route} service={crudRoute.service} />
+  <div class="overflow-auto flex-1 p-10">
+    <Read crudRoute={crudRoute.route} service={crudRoute.service} />
+  </div>
 </main>

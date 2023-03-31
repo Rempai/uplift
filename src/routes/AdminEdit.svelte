@@ -23,10 +23,13 @@
   <title>Admin | Edit</title>
 </svelte:head>
 
-<AdminNav />
-
-<Edit
-  crudRoute={crudRoute.route}
-  service={crudRoute.service}
-  formHTML={crudRoute.html}
-  preview={crudRoute.preview} />
+<main class="sm:flex min-h-screen">
+  <AdminNav />
+  <div class="overflow-auto flex-1 px-10">
+    <Edit
+      crudRoute={crudRoute.route}
+      service={crudRoute.service}
+      formHTML={crudRoute.html}
+      preview={crudRoute.preview} />
+  </div>
+</main>

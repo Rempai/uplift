@@ -35,7 +35,7 @@
   };
 </script>
 
-<main class="admin-space block">
+<main class="flex">
   <div class="card w-fit min-w-[25em]">
     <h1 class="capitalize text-3xl pt-2">Create {page}</h1>
     <Form handleSubmit={submitForm} backButton={true} on:back={() => history.back()} {enctype}>
