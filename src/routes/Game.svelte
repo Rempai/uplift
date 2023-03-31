@@ -646,17 +646,19 @@
         <Phone on:close={togglePhone} on:item={handleClick} menuName="Dashboard">
           <div slot="content" class="px-4 mt-3 flex justify-around">
             <div class="flex flex-col items-center gap-5">
-              {#if typeof passage == "object"}
+              {#if typeof passage == "object" && filledjournal}
                 <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
                 <Button onClick={toggleJournal} text="Toggle Journal" class="bg-frost-2 w-full" />
                 <Button
                   onClick={toggleAmbient}
                   text="Toggle Ambient Noise"
                   class="bg-frost-4 w-full" />
-              {:else if filledjournal}
-                <p class="text-center w-full">
-                  Dashboard features are only enabled when you have filled in the journal.
-                </p>
+              {:else if !filledjournal}
+                <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
+                <Button
+                  onClick={toggleAmbient}
+                  text="Toggle Ambient Noise"
+                  class="bg-frost-4 w-full" />
               {:else}
                 <p class="text-center w-full">
                   Dashboard features are only enabled when you are in a ride.
