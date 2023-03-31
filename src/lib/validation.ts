@@ -84,11 +84,30 @@ export async function validationErrorCheck(err: string, admin: boolean) {
 
   if (err == "ApiError: Validation Error" && !admin) {
     validationArray.push("Username already in use");
-    return "";
+    return "Username already in use";
   } else if (err == "ApiError: Unauthorized" && !admin) {
     validationArray.push("Incorrect password or username");
-    return "";
-  } else {
+    return "Incorrect password or username";
+  } else if (err == "ApiError: Not Found" && !admin) {
+    validationArray.push("User not found. Please check your username and try again.");
+    return "User not found. Please check your username and try again.";
+  } else if (err == "ApiError: Forbidden" && !admin) {
+    validationArray.push("client authenticated but does not have permission to access the requested resource.");
+    return "client authenticated but does not have permission to access the requested resource";
+  } else if (err == "ApiError: Internal Server Error" && !admin) {
+    validationArray.push("An error occurred on the server and the request could not be completed.");
+    return "An error occurred on the server and the request could not be completed.";
+  } else if (err == "ApiError: Bad Gateway" && !admin) {
+    validationArray.push("Our servers are having trouble communicating with each other.");
+    return "Our servers are having trouble communicating with each other.";
+  } else if (err == "ApiError: Service Unavailable" && !admin) {
+    validationArray.push("Our service is temporarily unavailable.");
+    return "Our service is temporarily unavailable.";
+  } else if (err == "ApiError: Bad Request" && !admin) {
+    validationArray.push("The request could not be understood or was missing required parameters.");
+    return "The request could not be understood or was missing required parameters.";
+  }
+  else {
     validationArray.push(err.toString());
     return err.toString();
   }
