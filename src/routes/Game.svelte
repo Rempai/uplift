@@ -319,11 +319,11 @@
     journalData = [];
     resolution = false;
     resolutionData = {
-        ...resolutionData,
-        mainCause: "",
-        mainProblem: "",
-        partiesInvolved: "",
-      };
+      ...resolutionData,
+      mainCause: "",
+      mainProblem: "",
+      partiesInvolved: "",
+    };
     dialog = true;
     filledjournal = false;
   };
