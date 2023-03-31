@@ -92,10 +92,14 @@ export async function validationErrorCheck(err: string, admin: boolean) {
     validationArray.push("User not found. Please check your username and try again.");
     return "User not found. Please check your username and try again.";
   } else if (err == "ApiError: Forbidden" && !admin) {
-    validationArray.push("client authenticated but does not have permission to access the requested resource.");
+    validationArray.push(
+      "client authenticated but does not have permission to access the requested resource."
+    );
     return "client authenticated but does not have permission to access the requested resource";
   } else if (err == "ApiError: Internal Server Error" && !admin) {
-    validationArray.push("An error occurred on the server and the request could not be completed.");
+    validationArray.push(
+      "An error occurred on the server and the request could not be completed."
+    );
     return "An error occurred on the server and the request could not be completed.";
   } else if (err == "ApiError: Bad Gateway" && !admin) {
     validationArray.push("Our servers are having trouble communicating with each other.");
@@ -104,10 +108,11 @@ export async function validationErrorCheck(err: string, admin: boolean) {
     validationArray.push("Our service is temporarily unavailable.");
     return "Our service is temporarily unavailable.";
   } else if (err == "ApiError: Bad Request" && !admin) {
-    validationArray.push("The request could not be understood or was missing required parameters.");
+    validationArray.push(
+      "The request could not be understood or was missing required parameters."
+    );
     return "The request could not be understood or was missing required parameters.";
-  }
-  else {
+  } else {
     validationArray.push(err.toString());
     return err.toString();
   }
