@@ -379,6 +379,10 @@
     textParsed = textParser(passage.content);
     updateJournalData();
   }
+
+  const quitRide = () =>{
+
+  }
 </script>
 
 <svelte:head>
@@ -413,7 +417,7 @@
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
           {#if settingsPlane === "Delete"}
-            <p class="text-3xl text-frost-1">{settingsPlane}  account</p>
+            <p class="text-3xl text-frost-1">{settingsPlane} account</p>
           {:else}
             <p class="text-3xl text-frost-1">Change {settingsPlane}</p>
           {/if}
@@ -548,6 +552,9 @@
               {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
+                  <div class="flex flex-col mb-3 mt-3">
+                    <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
+                  </div>
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
