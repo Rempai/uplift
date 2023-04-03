@@ -26,7 +26,6 @@ import IoIosStarOutline from "~icons/ion/star-outline";
 import IoIosDocOutline from "~icons/ion/document-text-outline";
 import IoIosAttach from "~icons/ion/attach-outline";
 import IonGitMergeOutline from "~icons/ion/git-merge-outline";
-import { onDestroy, onMount } from "svelte";
 
 export interface route {
   route: string;
