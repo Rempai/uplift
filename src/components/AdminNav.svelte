@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte";
   import { push } from "svelte-spa-router";
 
   import { routes, type route } from "@/lib/adminLogic";
@@ -55,6 +55,10 @@
     parsedJWT = await parseJwt(token);
     setNavHeight();
     window.addEventListener("resize", setNavHeight);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener("resize", setNavHeight);
   });
 
   const dispatch = createEventDispatcher();
@@ -140,16 +144,6 @@
 {/if}
 
 <style>
-  :global(.admin-space) {
-    display: flex;
-  }
-
-  @media (max-width: 640px) {
-    :global(.admin-space) {
-      display: block;
-    }
-  }
-
   :global(.card) {
     background-color: #434c5e;
     padding: 0 2em 1em;

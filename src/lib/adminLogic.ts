@@ -26,6 +26,7 @@ import IoIosStarOutline from "~icons/ion/star-outline";
 import IoIosDocOutline from "~icons/ion/document-text-outline";
 import IoIosAttach from "~icons/ion/attach-outline";
 import IonGitMergeOutline from "~icons/ion/git-merge-outline";
+import { onDestroy, onMount } from "svelte";
 
 export interface route {
   route: string;
@@ -248,4 +249,18 @@ export async function getData(crudRoute: string, id?: string) {
   });
 
   return await res.json();
+}
+
+export function getContentMargin(navHeight: number) {
+  let windowWidth = window.innerWidth;
+  let contentMargin = windowWidth < 768 ? navHeight : 0;
+
+  function updateWindowWidth() {
+    windowWidth = window.innerWidth;
+    contentMargin = windowWidth < 768 ? navHeight : 0;
+  }
+
+  window.addEventListener("resize", updateWindowWidth);
+
+  return contentMargin;
 }
