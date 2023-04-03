@@ -147,7 +147,7 @@
     <Button onClick={toggleModal} text="Cancel" class="bg-aurora-green" />
   </div>
 </Modal>
-<div class="card">
+<main class="card">
   <div class="card-header flex flex-col items-center text-center gap-4 lg:flex-row">
     <h1 class="capitalize">{crudName} management</h1>
     <Button
@@ -245,4 +245,4 @@
       </div>
     {/await}
   {/if}
-</div>
+</main>
