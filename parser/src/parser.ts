@@ -33,7 +33,7 @@ export function do_thing(filename: string): number {
 
 export function parse_file(
   filename: string,
-  ridedata: { id: number, name: string },
+  ridedata: { id: number; name: string },
   branches: Array<Branch>,
   characters: Array<[string, string, number]>
 ): number {
@@ -151,11 +151,17 @@ export function parse_file(
         break;
       case ":ridename":
         //TODO error checking
-        ridedata.name = cur_split[1];
+        if (ridedata.name != "") {
+          lerr(
+            location,
+            "tried to rename ridename, this isn't supported. current name: " + ridedata.name
+          );
+        }
+        ridedata.name = cur.substring(cur.indexOf(" ", 1)).trimStart();
         break;
       default:
         if (cur_split[0][0] == "#") {
-          if(ridedata.name == "") {
+          if (ridedata.name == "") {
             lerr(location, "no ride name set, set it with :ridename name");
           }
           let new_branch_name = ridedata.name;
@@ -269,8 +275,8 @@ export function parse_file(
                 break;
               }
 
-              if(ridedata.name == "") {
-                lerr(filename, "ride name wasn't set (set with :ridename in root file)")
+              if (ridedata.name == "") {
+                lerr(filename, "ride name wasn't set (set with :ridename in root file)");
               }
 
               const button_text = branch_split[part + 1];
@@ -283,8 +289,6 @@ export function parse_file(
                 );
                 break;
               }
-
-
 
               //include "1" after link since the first passage in the branch is called that.
               finalized_text +=
@@ -319,7 +323,7 @@ export function parse_file(
 //filename is the filename of the root file
 function check_branches(
   filename: string,
-  ridedata: { id: number, name: string },
+  ridedata: { id: number; name: string },
   branches: Array<Branch>,
   characters: Array<[string, string, number]>
 ): number {
@@ -337,8 +341,8 @@ function check_branches(
   }
 
   //check ridename
-  if(ridedata.name == "") {
-    lerr(filename, "ride name wasn't set (set with :ridename in root file)")
+  if (ridedata.name == "") {
+    lerr(filename, "ride name wasn't set (set with :ridename in root file)");
   }
 
   //check if all branch links are linking to valid branches
@@ -405,7 +409,7 @@ function check_branches(
   return errors;
 }
 
-function generate_output(branches: Array<Branch>, ridedata: { id: number, name: string }): string {
+function generate_output(branches: Array<Branch>, ridedata: { id: number; name: string }): string {
   const output_array: Array<object> = [];
 
   for (let i = 0; i < branches.length; i++) {
@@ -432,21 +436,14 @@ function generate_output(branches: Array<Branch>, ridedata: { id: number, name: 
 
       //fill output map
       const m = new Map();
-      m.set("passage_name", passage_name);
+      m.set("passage", passage_name);
       m.set("content", passage.text);
       m.set("rideId", ridedata.id);
       m.set("speaker", passage.speaker);
       m.set("attributeId", passage.attributeID);
-      if (branch.name == "start") {
-        m.set("trunk", true);
-        m.set("branch_name", "Trunk");
-      } else {
-        m.set("branch_name", branch.root_name);
-        m.set("trunk", false);
-      }
       if (j == branch.passages.length - 1) {
         //if at last passage of branch
-        m.set("continue_button", branch.fallthrough); //no continue button if there is no fallthrough
+        m.set("continueButton", branch.fallthrough); //no continue button if there is no fallthrough
       }
 
       //add branch to output
