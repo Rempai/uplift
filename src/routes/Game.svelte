@@ -318,12 +318,7 @@
     nextPassage("Paolo" + solution + "You" + 1);
     journalData = [];
     resolution = false;
-    resolutionData = {
-      ...resolutionData,
-      mainCause: "",
-      mainProblem: "",
-      partiesInvolved: "",
-    };
+    clearResolutionData();
     dialog = true;
     filledjournal = false;
   };
@@ -362,12 +357,7 @@
       welcome = true;
     }
     if (!resolutionData) {
-      resolutionData = {
-        ...resolutionData,
-        mainCause: "",
-        mainProblem: "",
-        partiesInvolved: "",
-      };
+      clearResolutionData();
     }
   });
 
@@ -380,9 +370,25 @@
     updateJournalData();
   }
 
-  const quitRide = () =>{
+  const clearResolutionData = () => {
+    resolutionData = {
+      ...resolutionData,
+      mainCause: "",
+      mainProblem: "",
+      partiesInvolved: "",
+    };
+  };
 
-  }
+  const quitRide = () => {
+    passage = undefined;
+    ambientNoise = false;
+    const video = document.querySelector("video");
+    video.pause();
+    journalData = [];
+    clearResolutionData();
+    dialog = false;
+    page = 0;
+  };
 </script>
 
 <svelte:head>
