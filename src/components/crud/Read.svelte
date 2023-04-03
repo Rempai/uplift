@@ -148,7 +148,7 @@
   </div>
 </Modal>
 <div class="card">
-  <div class="card-header lg:flex">
+  <div class="card-header flex flex-col items-center text-center gap-4 lg:flex-row">
     <h1 class="capitalize">{crudName} management</h1>
     <Button
       onClick={() => push(loc)}

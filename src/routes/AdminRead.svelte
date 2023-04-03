@@ -19,6 +19,7 @@
 <svelte:head>
   <title>Uplift | Read</title>
 </svelte:head>
+
 <div class="md:flex min-h-screen admin-space" style="margin-top: {contentMargin}px;">
   <AdminNav on:navHeight={setContentMargin} />
   <div class="overflow-auto flex-1 p-5">
