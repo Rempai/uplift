@@ -412,12 +412,12 @@
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
-          {#if settingsPlane === "delete"}
-            <p class="text-3xl text-frost-1">{settingsPlane}</p>
+          {#if settingsPlane === "Delete"}
+            <p class="text-3xl text-frost-1">{settingsPlane}  account</p>
           {:else}
             <p class="text-3xl text-frost-1">Change {settingsPlane}</p>
           {/if}
-          {#if settingsPlane == "delete"}
+          {#if settingsPlane == "Delete"}
             <p>
               <b>Are you sure you want to delete your account? All progression will be lost.</b>
             </p>
@@ -707,7 +707,7 @@
                 text="Logout"
                 class="bg-aurora-green w-full" />
               <Button
-                onClick={() => changeAccount("delete")}
+                onClick={() => changeAccount("Delete")}
                 text="Delete account"
                 class="bg-aurora-red w-full" />
             </div>
