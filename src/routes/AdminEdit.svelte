@@ -30,7 +30,7 @@
 
 <div class="sm:flex min-h-screen admin-space" style="margin-top: {contentMargin}px;">
   <AdminNav on:navHeight={setContentMargin} />
-  <div class="overflow-auto flex-1 px-10 pt-5">
+  <div class="overflow-auto flex-1 p-5">
     <Edit
       crudRoute={crudRoute.route}
       service={crudRoute.service}

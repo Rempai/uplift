@@ -21,7 +21,7 @@
 </svelte:head>
 <div class="md:flex min-h-screen admin-space" style="margin-top: {contentMargin}px;">
   <AdminNav on:navHeight={setContentMargin} />
-  <div class="overflow-auto flex-1 pl-10 pt-5">
+  <div class="overflow-auto flex-1 p-5">
     <Read crudRoute={crudRoute.route} service={crudRoute.service} />
   </div>
 </div>
