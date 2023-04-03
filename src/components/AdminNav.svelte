@@ -78,7 +78,7 @@
 {#if parsedJWT}
   <nav
     bind:this={nav}
-    class="shadow bg-night-2 flex flex-col gap-2 overflow-x-hidden overflow-y-auto pl-2 pb-3 fixed top-0 w-full md:static md:w-fit">
+    class="shadow bg-night-2 flex flex-col gap-2 overflow-x-hidden overflow-y-auto pl-2 pb-3 fixed top-0 w-full md:static md:w-fit z-10">
     <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l justify-between">
       <div class="flex items-center">
         <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
