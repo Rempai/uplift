@@ -139,113 +139,110 @@
   {@html onedark}
 </svelte:head>
 
-<main class="admin-space">
-  <Modal {modalHeader} {showModal} on:click={toggleModal}>
-    <p>Are you sure you want to delete {selectedData.name}?</p>
-    <p><b>This action is irreversable.</b></p>
-    <div class="flex gap-3">
-      <Button onClick={deleteRow} text="Delete" class="bg-aurora-red" />
-      <Button onClick={toggleModal} text="Cancel" class="bg-aurora-green" />
-    </div>
-  </Modal>
-  <div class="card">
-    <div class="card-header">
-      <h1 class="capitalize">{crudName} management</h1>
-      <Button
-        onClick={() => push(loc)}
-        href="#{loc}"
-        text="new {crudName}"
-        class="!px-2 bg-frost-4">
-        <div slot="icon" class="w-6 ml-4 text-night-1">
-          <MdPlusCircleOutline font-size="1em" class="!text-night-1" />
-        </div>
-      </Button>
-    </div>
-    <Loader {loading} />
-    {#if rows}
-      {#await rows}
-        <Loader />
-      {:then}
-        <div class="flex justify-between py-2">
-          <Search {handler} />
-          <RowsPerPage {handler} />
-        </div>
-        <div class="w-full overflow-auto max-h-96">
-          <table
-            class="border border-dotted border-storm-1 table-fixed w-full border-separate border-spacing-0">
-            <thead class="sticky">
-              <tr>
-                {#if columnsKeys}
-                  {#each columnsKeys as column}
-                    <th class="border border-dotted border-storm-1 py-2 bg-frost-4 w-56"
-                      >{column}</th>
-                  {/each}
-                  <th class="border border-dotted border-storm-1 py-2 bg-frost-4 w-56">options</th>
-                {/if}
-              </tr>
-            </thead>
-            <tbody>
-              {#each $rows as row}
-                <tr class="hover:bg-night-1 even:bg-night-2">
-                  {#each Object.values(row) as data}
-                    {#if typeof data === "object"}
-                      {#each Object.values(data) as obj}
-                        {#if checkIcon(obj)}
-                          <td class={tdClass}
-                            ><img
-                              class="h-12 w-12 rounded text-center mx-auto"
-                              src={obj}
-                              alt="" /></td>
-                        {:else}
-                          <td class={tdClass}>{obj}</td>
-                        {/if}
-                      {/each}
-                    {:else if checkIcon(data)}
-                      <td class={tdClass}
-                        ><img
-                          class="h-12 w-12 rounded text-center mx-auto"
-                          src={data.toString()}
-                          alt="" /></td>
-                    {:else if data === true || data === false}
-                      <td class={tdClass}
-                        ><input type="checkbox" bind:checked={data} disabled /></td>
-                    {:else if data == row.content}
-                      <td class="border border-dotted border-storm-1 px-3 py-2"
-                        ><Highlight language={vbscriptHtml} code={data} /></td>
-                    {:else if data == row.color}
-                      <td style:color={row.color} class={tdClass}>{data}</td>
-                    {:else}
-                      <td class={tdClass}>{data}</td>
-                    {/if}
-                  {/each}
-                  <td class="py-2 border border-dotted border-storm-1">
-                    <div class="flex justify-around">
-                      <Button
-                        onClick={() => push(locEdit(row.id))}
-                        href="#{$location}/edit/{row.id}"
-                        text=""
-                        class="bg-aurora-yellow">
-                        <div slot="icon" class="w-5 h-8 flex items-center text-night-1">
-                          <FaRegEdit class="text-night-1" font-size="2em" />
-                        </div>
-                      </Button>
-                      <Button onClick={() => deleteConfirm(row)} text="" class="bg-aurora-red">
-                        <div slot="icon" class="w-4 h-8 flex items-center text-night-1">
-                          <FaRegTrashAlt class="text-night-1" font-size="2em" />
-                        </div>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-        <div class="flex justify-between py-2">
-          <RowCount {handler} />
-          <Pagination {handler} />
-        </div>
-      {/await}
-    {/if}
+<Modal {modalHeader} {showModal} on:click={toggleModal}>
+  <p>Are you sure you want to delete {selectedData.name}?</p>
+  <p><b>This action is irreversable.</b></p>
+  <div class="flex gap-3">
+    <Button onClick={deleteRow} text="Delete" class="bg-aurora-red" />
+    <Button onClick={toggleModal} text="Cancel" class="bg-aurora-green" />
   </div>
+</Modal>
+<main class="card">
+  <div class="card-header flex flex-col items-center text-center gap-4 lg:flex-row">
+    <h1 class="capitalize">{crudName} management</h1>
+    <Button
+      onClick={() => push(loc)}
+      href="#{loc}"
+      text="new {crudName}"
+      class="!px-2 bg-frost-4 w-fit">
+      <div slot="icon" class="w-6 ml-4 text-night-1">
+        <MdPlusCircleOutline font-size="1em" class="!text-night-1" />
+      </div>
+    </Button>
+  </div>
+  <Loader {loading} />
+  {#if rows}
+    {#await rows}
+      <Loader />
+    {:then}
+      <div class="flex justify-between py-2">
+        <Search {handler} />
+        <RowsPerPage {handler} />
+      </div>
+      <div class="w-full overflow-auto max-h-96">
+        <table
+          class="border border-dotted border-storm-1 table-fixed w-full border-separate border-spacing-0">
+          <thead class="sticky">
+            <tr>
+              {#if columnsKeys}
+                {#each columnsKeys as column}
+                  <th class="border border-dotted border-storm-1 py-2 bg-frost-4 w-56"
+                    >{column}</th>
+                {/each}
+                <th class="border border-dotted border-storm-1 py-2 bg-frost-4 w-56">options</th>
+              {/if}
+            </tr>
+          </thead>
+          <tbody>
+            {#each $rows as row}
+              <tr class="hover:bg-night-1 even:bg-night-2">
+                {#each Object.values(row) as data}
+                  {#if typeof data === "object"}
+                    {#each Object.values(data) as obj}
+                      {#if checkIcon(obj)}
+                        <td class={tdClass}
+                          ><img
+                            class="h-12 w-12 rounded text-center mx-auto"
+                            src={obj}
+                            alt="" /></td>
+                      {:else}
+                        <td class={tdClass}>{obj}</td>
+                      {/if}
+                    {/each}
+                  {:else if checkIcon(data)}
+                    <td class={tdClass}
+                      ><img
+                        class="h-12 w-12 rounded text-center mx-auto"
+                        src={data.toString()}
+                        alt="" /></td>
+                  {:else if data === true || data === false}
+                    <td class={tdClass}><input type="checkbox" bind:checked={data} disabled /></td>
+                  {:else if data == row.content}
+                    <td class="border border-dotted border-storm-1 px-3 py-2"
+                      ><Highlight language={vbscriptHtml} code={data} /></td>
+                  {:else if data == row.color}
+                    <td style:color={row.color} class={tdClass}>{data}</td>
+                  {:else}
+                    <td class={tdClass}>{data}</td>
+                  {/if}
+                {/each}
+                <td class="py-2 border border-dotted border-storm-1">
+                  <div class="flex justify-around">
+                    <Button
+                      onClick={() => push(locEdit(row.id))}
+                      href="#{$location}/edit/{row.id}"
+                      text=""
+                      class="bg-aurora-yellow">
+                      <div slot="icon" class="w-5 h-8 flex items-center text-night-1">
+                        <FaRegEdit class="text-night-1" font-size="2em" />
+                      </div>
+                    </Button>
+                    <Button onClick={() => deleteConfirm(row)} text="" class="bg-aurora-red">
+                      <div slot="icon" class="w-4 h-8 flex items-center text-night-1">
+                        <FaRegTrashAlt class="text-night-1" font-size="2em" />
+                      </div>
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-between py-2">
+        <RowCount {handler} />
+        <Pagination {handler} />
+      </div>
+    {/await}
+  {/if}
 </main>

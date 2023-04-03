@@ -249,3 +249,17 @@ export async function getData(crudRoute: string, id?: string) {
 
   return await res.json();
 }
+
+export function getContentMargin(navHeight: number) {
+  let windowWidth = window.innerWidth;
+  let contentMargin = windowWidth < 768 ? navHeight : 0;
+
+  function updateWindowWidth() {
+    windowWidth = window.innerWidth;
+    contentMargin = windowWidth < 768 ? navHeight : 0;
+  }
+
+  window.addEventListener("resize", updateWindowWidth);
+
+  return contentMargin;
+}
