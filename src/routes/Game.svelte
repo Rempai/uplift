@@ -318,12 +318,7 @@
     nextPassage("Paolo" + solution + "You" + 1);
     journalData = [];
     resolution = false;
-    resolutionData = {
-      ...resolutionData,
-      mainCause: "",
-      mainProblem: "",
-      partiesInvolved: "",
-    };
+    clearResolutionData();
     dialog = true;
     filledjournal = false;
   };
@@ -362,12 +357,7 @@
       welcome = true;
     }
     if (!resolutionData) {
-      resolutionData = {
-        ...resolutionData,
-        mainCause: "",
-        mainProblem: "",
-        partiesInvolved: "",
-      };
+      clearResolutionData();
     }
   });
 
@@ -379,6 +369,26 @@
     textParsed = textParser(passage.content);
     updateJournalData();
   }
+
+  const clearResolutionData = () => {
+    resolutionData = {
+      ...resolutionData,
+      mainCause: "",
+      mainProblem: "",
+      partiesInvolved: "",
+    };
+  };
+
+  const quitRide = () => {
+    passage = undefined;
+    ambientNoise = false;
+    const video = document.querySelector("video");
+    video.pause();
+    journalData = [];
+    clearResolutionData();
+    dialog = false;
+    page = 0;
+  };
 </script>
 
 <svelte:head>
@@ -412,12 +422,12 @@
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
-          {#if settingsPlane === "delete"}
-            <p class="text-3xl text-frost-1">{settingsPlane}</p>
+          {#if settingsPlane === "Delete"}
+            <p class="text-3xl text-frost-1">{settingsPlane} account</p>
           {:else}
             <p class="text-3xl text-frost-1">Change {settingsPlane}</p>
           {/if}
-          {#if settingsPlane == "delete"}
+          {#if settingsPlane == "Delete"}
             <p>
               <b>Are you sure you want to delete your account? All progression will be lost.</b>
             </p>
@@ -548,6 +558,9 @@
               {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
+                  <div class="flex flex-col mb-3 mt-3">
+                    <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
+                  </div>
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
@@ -707,7 +720,7 @@
                 text="Logout"
                 class="bg-aurora-green w-full" />
               <Button
-                onClick={() => changeAccount("delete")}
+                onClick={() => changeAccount("Delete")}
                 text="Delete account"
                 class="bg-aurora-red w-full" />
             </div>
