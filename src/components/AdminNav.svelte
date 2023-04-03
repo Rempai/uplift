@@ -156,7 +156,6 @@
   }
 
   :global(.admin-space .card .card-header) {
-    /* display: flex; */
     justify-content: space-between;
     padding: 2em 0em;
   }
