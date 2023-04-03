@@ -148,9 +148,13 @@
   </div>
 </Modal>
 <div class="card">
-  <div class="card-header">
+  <div class="card-header lg:flex">
     <h1 class="capitalize">{crudName} management</h1>
-    <Button onClick={() => push(loc)} href="#{loc}" text="new {crudName}" class="!px-2 bg-frost-4">
+    <Button
+      onClick={() => push(loc)}
+      href="#{loc}"
+      text="new {crudName}"
+      class="!px-2 bg-frost-4 w-fit">
       <div slot="icon" class="w-6 ml-4 text-night-1">
         <MdPlusCircleOutline font-size="1em" class="!text-night-1" />
       </div>
