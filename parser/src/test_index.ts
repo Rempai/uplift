@@ -13,7 +13,7 @@ const jsonIsEqual = function (obj1: any, obj2: any) {
     return false;
   }
 
-  for (let objKey of obj1Keys) {
+  for (const objKey of obj1Keys) {
     if (obj1[objKey] !== obj2[objKey]) {
       if (typeof obj1[objKey] == "object" && typeof obj2[objKey] == "object") {
         if (!jsonIsEqual(obj1[objKey], obj2[objKey])) {

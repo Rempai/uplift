@@ -7,14 +7,14 @@ class Passage {
   speaker = ""; //full name of character (not a shorthand set with :character)
   attributeID = -1; //attributeID used
   links_to: Array<string> = [];
-  original_location: string = ""; //just for giving the user a line number when an error occurs
+  original_location = ""; //just for giving the user a line number when an error occurs
 }
 class Branch {
   name = "";
   root_name = ""; //in case it's a "label", the root_name will be used to put in the passage_name.
   passages: Array<Passage> = [];
   fallthrough: boolean | null = null; //if branch should continue to the next branch (in branches array) when it reaches the end
-  original_location: string = ""; //for error purposes
+  original_location = ""; //for error purposes
 }
 
 export function do_thing(filename: string): [number, string] {
@@ -26,7 +26,7 @@ export function do_thing(filename: string): [number, string] {
 
   //any referenced files will be recursively called for parsing by the parse_file function
   errors += parse_file(filename, ridedata, branches, characters);
-  errors += check_branches(filename, ridedata, branches, characters);
+  errors += check_branches(filename, ridedata, branches);
   const output: string = generate_output(branches, ridedata);
   process.stdout.write(output);
   process.stdout.write("\n");
@@ -44,7 +44,7 @@ export function parse_file(
 
   //log verbose
   function lverb(input: any) {
-    //console.log("\x1b[39;49m" + input)
+    console.log("\x1b[39;49m" + input)
   }
 
   //log error
@@ -326,8 +326,7 @@ export function parse_file(
 function check_branches(
   filename: string,
   ridedata: { id: number; name: string },
-  branches: Array<Branch>,
-  characters: Array<[string, string, number]>
+  branches: Array<Branch>
 ): number {
   let errors = 0;
 
