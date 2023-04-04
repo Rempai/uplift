@@ -5,22 +5,10 @@
   import Footer from "@/components/Footer.svelte";
 </script>
 
-<header
-  class="h-screen w-full bg-[url('/bg.png')] bg-cover bg-center text-center flex items-center">
-  <div class="bg-night-2/80 rounded shadow p-4 md:p-10 w-9/12 md:w-4/12 mx-auto">
-    <div class="flex flex-col justify-around items-center gap-4">
-      <img class="w-4/12" src="logo.png" alt="Logo" />
-      <h1>Uplift</h1>
-      <p class="text-frost-1">sadasdsadsadsadsadsadsadsada</p>
-      <Button onClick={() => push("/game")} text="Start Uplift" class="bg-frost-4 md:!px-10" />
-      <Button href="#about-uplift" text="Read more" class="bg-aurora-orange md:!px-10" />
-    </div>
-  </div>
-</header>
 <section class="p-4 mx-auto max-w-screen-lg" id="about-uplift">
   <div class="md:flex md:justify-around md:items-center md:gap-20">
     <div class="pb-10">
-      <h2>About Uplift</h2>
+      <h2>Knowledge Page</h2>
       <p>
         Uplift is a game set in the near future, one where the gig economy has kept expanding and
         taxi licensing has become impossibly complicated! So much so, that the only viable way for
