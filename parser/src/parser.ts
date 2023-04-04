@@ -44,7 +44,7 @@ export function parse_file(
 
   //log verbose
   function lverb(input: any) {
-    console.log("\x1b[39;49m" + input)
+    console.log("\x1b[39;49m" + input);
   }
 
   //log error
