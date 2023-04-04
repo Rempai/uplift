@@ -2,12 +2,11 @@
 :character p Paolo 2
 :default p
 :rideid 1
+:ridename a
 
-# start
+:import multifile_2_sub.md
 
-text {jumptext:nonexistentbranch}
+# root_file_branch
 
-## branch2
-
-text2
+maybe
 :end

@@ -2,12 +2,14 @@
 :character p Paolo 2
 :default p
 :rideid 1
+:ridename a
 
 # start
 
-text [jumptext:]
+text
+:end
 
-## branch2
+# unreachable
 
-text2
+text
 :end
