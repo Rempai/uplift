@@ -44,11 +44,6 @@
 
 {#if showMenu}
   <Menu {...pos} on:click={closeMenu} on:clickoutside={closeMenu}>
-    <!-- <MenuOption
-        on:click{console.log{}}
-        text= "{pos.x}, {pos.y}"
-      />
-      <hr> -->
     <MenuOption
       on:click={() => dispatchClick({ text: selectedText, type: "mainProblem" })}
       text="✏ Main Problem" />

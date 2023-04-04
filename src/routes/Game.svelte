@@ -387,6 +387,7 @@
     journalData = [];
     clearResolutionData();
     dialog = false;
+    filledjournal = true;
     page = 0;
   };
 </script>
