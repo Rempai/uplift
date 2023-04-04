@@ -101,6 +101,10 @@
       asyncComponent: () => import("@/routes/AdminEdit.svelte"),
     }),
 
+    "/knowledgepage": wrap({
+      asyncComponent: () => import("@/routes/KnowledgePage.svelte"),
+    }),
+
     // Catch-all, must be last
     "*": NotFound,
   };
