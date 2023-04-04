@@ -1,7 +1,4 @@
 <script lang="ts">
-  import { push } from "svelte-spa-router";
-
-  import Button from "@/components/Button.svelte";
   import Footer from "@/components/Footer.svelte";
 </script>
 
@@ -17,9 +14,6 @@
         to <a href="http://deugd.net">Deugd.net</a> for more info about virtues.
       </p>
     </div>
-    <div>
-      <img src="uplift-car.png" alt="" class="w-screen" />
-    </div>
   </div>
   <div class="md:flex md:justify-around md:items-center md:gap-20">
     <div class="pb-10 order-2">
@@ -31,9 +25,6 @@
         problems they are experiencing. Fill out the Uplift Standard Report with these insights to
         help your customers and earn money!
       </p>
-    </div>
-    <div class="order-1">
-      <img src="uplift-money.png" alt="" class="w-screen" />
     </div>
   </div>
 </section>
@@ -48,9 +39,6 @@
         analysis is highly intuitive and you will learn to define and recognize such virtuous
         concepts as Bravery, Perseverance, Integrity and more!
       </p>
-    </div>
-    <div>
-      <img src="uplift-training.png" alt="" class="w-screen" />
     </div>
   </div>
 </section>
