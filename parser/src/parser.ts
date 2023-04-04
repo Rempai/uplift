@@ -17,7 +17,7 @@ class Branch {
   original_location: string = ""; //for error purposes
 }
 
-export function do_thing(filename: string): number {
+export function do_thing(filename: string): [number, string] {
   let errors = 0;
 
   const ridedata = { id: -1, name: "" };
@@ -27,8 +27,10 @@ export function do_thing(filename: string): number {
   //any referenced files will be recursively called for parsing by the parse_file function
   errors += parse_file(filename, ridedata, branches, characters);
   errors += check_branches(filename, ridedata, branches, characters);
-  generate_output(branches, ridedata);
-  return errors;
+  const output: string = generate_output(branches, ridedata);
+  process.stdout.write(output);
+  process.stdout.write('\n');
+  return [errors, output];
 }
 
 export function parse_file(
