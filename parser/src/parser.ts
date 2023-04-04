@@ -29,7 +29,7 @@ export function do_thing(filename: string): [number, string] {
   errors += check_branches(filename, ridedata, branches, characters);
   const output: string = generate_output(branches, ridedata);
   process.stdout.write(output);
-  process.stdout.write('\n');
+  process.stdout.write("\n");
   return [errors, output];
 }
 
