@@ -101,7 +101,7 @@
       asyncComponent: () => import("@/routes/AdminEdit.svelte"),
     }),
 
-    "/knowledgepage": wrap({
+    "/info": wrap({
       asyncComponent: () => import("@/routes/KnowledgePage.svelte"),
     }),
 
