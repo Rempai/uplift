@@ -14,6 +14,7 @@ class Branch {
   root_name = ""; //in case it's a "label", the root_name will be used to put in the passage_name.
   passages: Array<Passage> = [];
   fallthrough: boolean | null = null; //if branch should continue to the next branch (in branches array) when it reaches the end
+  requires_linking = true; //if branch should be checked for linking (ending branches don't have this - the rest does)
   original_location = ""; //for error purposes
 }
 
@@ -167,14 +168,30 @@ export function parse_file(
             lerr(location, "no ride name set, set it with :ridename name");
           }
           let new_branch_name = ridedata.name;
-          if (cur_split[0][0] == "#" && cur_split[0][1] == "#" && cur_split[0][2] == "#") {
+          branches.push(new Branch());
+          if (
+            cur_split[0][0] == "#" &&
+            cur_split[0][1] == "#" &&
+            cur_split[0][2] == "#" &&
+            cur_split[0][3] == "#"
+          ) {
+            //no-link branches (for endings, which aren't linked to in the file itself.)
+            new_branch_name += cur.substring(4, cur.length).trimStart();
+            branches.slice(-1)[0].requires_linking = false;
+            if (in_branch) {
+              lerr(
+                location,
+                "tried starting a new ending branch, but the previous branch hasn't been ended yet. Did you forget an ':end'"
+              );
+            }
+          } else if (cur_split[0][0] == "#" && cur_split[0][1] == "#" && cur_split[0][2] == "#") {
             if (!in_branch) {
               lerr(
                 location,
                 "tried inserting a label, but we are currently not in a branch. did you accidentally end the previous one?"
               );
             }
-            branches.slice(-1)[0].fallthrough = false; //set previous branch to fallthrough
+            branches.slice(-2)[0].fallthrough = false; //set previous branch to fallthrough
             new_branch_name += cur.substring(3, cur.length).trimStart(); //remove # and whitespace in front of name.
           } else if (cur_split[0][0] == "#" && cur_split[0][1] == "#") {
             if (!in_branch) {
@@ -183,7 +200,7 @@ export function parse_file(
                 "tried inserting a label, but we are currently not in a branch. did you accidentally end the previous one?"
               );
             }
-            branches.slice(-1)[0].fallthrough = true; //set previous branch to fallthrough
+            branches.slice(-2)[0].fallthrough = true; //set previous branch to fallthrough
             new_branch_name += cur.substring(2, cur.length).trimStart(); //remove # and whitespace in front of name.
           } else {
             // for making a new branch with #branch
@@ -201,8 +218,7 @@ export function parse_file(
             break;
           }
 
-          branches.push(new Branch());
-          if (cur_split[0] == "##") {
+          if (cur_split[0][0] == "#" && cur_split[0][1] == "#") {
             //if we're a label, set root name to previous root name
             if (branches.length == 1) {
               lerr(location, "tried to put down a label, but we don't have a root branch yet.");
@@ -376,8 +392,11 @@ function check_branches(
   for (let i = 1; i < branches.length; i++) {
     const branch = branches[i];
     if (branch.name == ridedata.name + "start") {
-      continue;
-    } //skip starting branch (since it's fine if it's unreachable)
+      continue; //skip starting branch (since it's fine if it's unreachable)
+    }
+    if (branch.requires_linking == false) {
+      continue; //skip checking if the branch doesn't need to be linked to
+    }
     if (
       branches.find(({ passages }) =>
         passages.find(({ links_to }) => {

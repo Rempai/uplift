@@ -9,6 +9,7 @@
 :import paolo_stress.md
 :import paolo_friends.md
 :import paolo_project.md
+:import paolo_endings.md
 
 # start
 
