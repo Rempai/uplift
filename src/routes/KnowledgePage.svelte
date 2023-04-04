@@ -13,8 +13,8 @@
         Uplift is a game set in the near future, one where the gig economy has kept expanding and
         taxi licensing has become impossibly complicated! So much so, that the only viable way for
         a ride-sharing service to exist, is to offer a complimentary service to get around
-        licensing issues. In Uplift’s case, the service provided is one of psychological advice.
-        Go to <a href="http://deugd.net">Deugd.net</a> for more info about virtues.
+        licensing issues. In Uplift’s case, the service provided is one of psychological advice. Go
+        to <a href="http://deugd.net">Deugd.net</a> for more info about virtues.
       </p>
     </div>
     <div>
