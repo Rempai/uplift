@@ -52,9 +52,6 @@
       <img src="uplift-training.png" alt="" class="w-screen" />
     </div>
   </div>
-  <div class="flex justify-center my-10">
-    <Button onClick={() => push("/game")} text="Start Now!" class="bg-aurora-orange !px-10" />
-  </div>
 </section>
 <section class="bg-night-3">
   <div class="p-4 mx-auto max-w-screen-lg md:flex md:justify-around md:items-center md:gap-20">
