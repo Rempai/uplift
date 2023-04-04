@@ -438,7 +438,7 @@
                 class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
               <Button
                 onClick={() => {
-                  togglePhone();
+                  if (showPhoneButton === true) togglePhone();
                   settingsPlane = "";
                 }}
                 text="Cancel"
@@ -450,7 +450,7 @@
               backButton={true}
               on:back={() => {
                 settingsPlane = "";
-                togglePhone();
+                if (showPhoneButton === true) togglePhone();
               }}>
               <div slot="forms">
                 <input hidden required name="role" value={parsedJWT.role} />
