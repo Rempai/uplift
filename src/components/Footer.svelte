@@ -15,7 +15,7 @@
       <ul>
         <li><a href="#/">Home</a></li>
         <li><a href="#/game">Game</a></li>
-        <li><a href="#/info">Knowledge Page</a></li>
+        <li><a href="#/info">Info</a></li>
       </ul>
     </div>
   </div>

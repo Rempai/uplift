@@ -102,7 +102,7 @@
     }),
 
     "/info": wrap({
-      asyncComponent: () => import("@/routes/KnowledgePage.svelte"),
+      asyncComponent: () => import("@/routes/Info.svelte"),
     }),
 
     // Catch-all, must be last
