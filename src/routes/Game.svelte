@@ -691,7 +691,7 @@
               <Button
                 onClick={() => (radioSelect = 0)}
                 text="Stop"
-                class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
+                class="!border-aurora-red hover:bg-aurora-red" />
             {/if}
           </div>
         </Phone>
