@@ -604,7 +604,6 @@
                             </p>
                           </div>
                         </div>
-
                         <div class="flex items-center mt-1 gap-1 justify-center">
                           <p>Personal best:</p>
                           <div class="flex">
