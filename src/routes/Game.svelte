@@ -184,6 +184,8 @@
     showPhoneButton = true;
     ambientNoise = true;
     page = 0;
+    passedPassages = [];
+    emotion.set(100);
   };
 
   const showError = (err: string) => {
