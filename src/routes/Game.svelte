@@ -391,7 +391,7 @@
     page = 0;
   };
 
-  const getReviewStars = (data) => {
+  const getReviewStars = (data: RideRead) => {
     const review = reviewList.reduce((prevReview, currentReview) => {
       if (currentReview.ride.passenger.name === data.passenger.name) {
         if (!prevReview) {
@@ -404,9 +404,7 @@
       return prevReview;
     }, null);
 
-    const highestStars = review ? review.stars : null;
-
-    return highestStars;
+    return review ? review.stars : null;
   };
 </script>
 
@@ -583,11 +581,11 @@
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
-                      <div>
-                        <div
-                          class="gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
-                          on:keypress
-                          on:click={() => selectRide(data)}>
+                      <div
+                        on:keypress
+                        on:click={() => selectRide(data)}
+                        class="hover:bg-night-2 cursor-pointer rounded">
+                        <div class="gap-3 w-full flex items-center">
                           <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
                           <div>
                             <p class="flex items-center">
@@ -606,7 +604,8 @@
                             </p>
                           </div>
                         </div>
-                        <div class="flex items-center mt-2 gap-1 justify-center">
+
+                        <div class="flex items-center mt-1 gap-1 justify-center">
                           <p>Personal best:</p>
                           <div class="flex">
                             {#each { length: 5 } as _, i}
