@@ -86,6 +86,8 @@
 
   let filledjournal = true;
 
+  let allPassages: Array<PassageRead>;
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
@@ -172,6 +174,7 @@
     }
 
     await PassageHandlingService.getPassages(undefined, ride.id)
+      .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
       .catch((err) => showError(err));
 
@@ -248,25 +251,19 @@
   };
 
   const nextPassage = (name: string) => {
-    PassageHandlingService.getPassages(name)
-      .then((res) => {
-        // TODO: This should be done inside resolution probably.
-        // Quick hack to get reviews working for the boys
-        if (res === undefined) {
-          CharactersService.getReviews(parsedJWT.sub)
-            .then((res) => {
-              reviewList = res;
-              passage = undefined;
-              ambientNoise = false;
-              const video = document.querySelector("video");
-              video.pause();
-            })
-            .catch((err) => showError(err));
-        } else {
-          Array.isArray(res) ? ([passage] = res) : (passage = res);
-        }
-      })
-      .catch((err) => showError(err));
+    passage = allPassages.find((p) => p.passage === name);
+
+    if (passage == undefined) {
+      CharactersService.getReviews(parsedJWT.sub)
+        .then((res) => {
+          reviewList = res;
+          passage = undefined;
+          ambientNoise = false;
+          const video = document.querySelector("video");
+          video.pause();
+        })
+        .catch((err) => showError(err));
+    }
   };
 
   const textParser = async (text: string) => {
