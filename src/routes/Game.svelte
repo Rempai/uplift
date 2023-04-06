@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation } from "@/lib/stores";
+  import { passageName, validation, emotion } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validationErrorCheck } from "@/lib/validation";
   import { radios } from "@/lib/radio";
@@ -87,6 +87,7 @@
   let filledjournal = true;
 
   let allPassages: Array<PassageRead>;
+  let passedPassages: Array<string> = [];
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -253,6 +254,11 @@
   const nextPassage = (name: string) => {
     passage = allPassages.find((p) => p.passage === name);
 
+    if (!passedPassages.includes(passage.passage)) {
+      emotion.update((e) => e + -10);
+      passedPassages = [...passedPassages, passage.passage];
+    }
+
     if (passage == undefined) {
       CharactersService.getReviews(parsedJWT.sub)
         .then((res) => {
@@ -265,6 +271,8 @@
         .catch((err) => showError(err));
     }
   };
+
+  $: console.log($emotion);
 
   const textParser = async (text: string) => {
     if (text) {
