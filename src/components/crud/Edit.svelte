@@ -76,8 +76,8 @@
   {@html onedark}
 </svelte:head>
 
-<main class={preview ? "flex justify-around flex-wrap g-4 admin-space" : "block admin-space"}>
-  <div class="card w-fit">
+<main class={preview ? "flex flex-wrap gap-4 admin-space" : "admin-space"}>
+  <div class="card flex-1">
     <h1 class="capitalize">Edit {page}</h1>
     <Form handleSubmit={updateForm} backButton={true} on:back={() => history.back()}>
       <div slot="forms">
@@ -92,7 +92,7 @@
     </Form>
   </div>
   {#if preview}
-    <div class="card md:w-1/2">
+    <div class="card flex-1 max-w-full">
       <h1>Preview</h1>
       <hr class="mb-2" />
       <Highlight language={vbscriptHtml} {code} />
