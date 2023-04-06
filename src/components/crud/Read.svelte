@@ -165,7 +165,7 @@
     {#await rows}
       <Loader />
     {:then}
-      <div class="flex justify-between py-2">
+      <div class="flex justify-between py-2 flex-col md:flex-row">
         <Search {handler} />
         <RowsPerPage {handler} />
       </div>
@@ -239,7 +239,7 @@
           </tbody>
         </table>
       </div>
-      <div class="flex justify-between py-2">
+      <div class="flex justify-between py-2 flex-col md:flex-row">
         <RowCount {handler} />
         <Pagination {handler} />
       </div>

@@ -2,12 +2,14 @@
 :character p Paolo 2
 :default p
 :rideid 1
+:ridename a
 
 # start
 
-text [:branch2]
+text
 
-## branch2
+## branch1
 
-text2
-:end
+text
+
+## branch1

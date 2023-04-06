@@ -3,6 +3,13 @@
 :character y You 1
 :default y
 :rideid 1
+:ridename Paolo
+
+:import paolo_workload.md
+:import paolo_stress.md
+:import paolo_friends.md
+:import paolo_project.md
+:import paolo_endings.md
 
 # start
 
