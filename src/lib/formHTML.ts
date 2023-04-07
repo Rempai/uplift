@@ -69,8 +69,6 @@ export const passageHTML = `
   <input type="text" name="speaker" />
   <label for="continueButton">Continue Button</label>
   <input type="checkbox" name="continueButton" />
-  <label for="trunk">Trunk</label>
-  <input type="checkbox" name="trunk" />
   <label for="rideId">Ride id</label>
   <input required type="number" name="rideId" placeholder="1" />
   <label for="attributeId">Attributes id</label>
@@ -87,7 +85,8 @@ export const attributeHTML = `
 `;
 
 export const passageBulkHTML = `
-  <input type="file" name="passageBuld">
+  <label for="passageBulk">Passage Bulk</label>
+  <input type="file" name="passageBulk">
 `;
 
 export function userEditHTML(data: UserUpdate): string {
@@ -184,8 +183,6 @@ export function passageEditHTML(data: PassageUpdate): string {
   <input required type="text" name="speaker" placeholder="You" value="${data.speaker}" />
   <label for="continueButton">Continue Button</label>
   <input type="checkbox" name="continueButton" checked="${data.continueButton}" />
-  <label for="trunk">Trunk</label>
-  <input type="checkbox" name="trunk" checked="${data.trunk}" />
   <label for="attributeId">Attributes id</label>
   <input required type="number" name="attributeId" placeholder="1" value="${data.attributeId}" />
   <label for="rideId">Ride id</label>
