@@ -95,7 +95,6 @@
 
     showModal = false;
     // TODO: filter/reduce instead of reloading
-    // also, fix brokey
     window.location.reload();
   };
 
@@ -126,6 +125,14 @@
 
   onMount(async () => {
     let data = await getData(crudRoute);
+
+    for (const row of data) {
+      for (const prop in row) {
+        if (row[prop] === null) {
+          row[prop] = "null";
+        }
+      }
+    }
 
     handler = new DataHandler(data, { rowsPerPage: 10 });
     rows = handler.getRows();
