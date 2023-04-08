@@ -22,7 +22,7 @@ export default defineConfig({
   root: "./",
   publicDir: "public",
   server: {
-    host: "127.0.0.1",
+    host: "0.0.0.0",
     https: {
       key: readFileSync("./key.pem"),
       cert: readFileSync("./cert.pem"),
