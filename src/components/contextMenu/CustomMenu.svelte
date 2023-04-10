@@ -29,6 +29,8 @@
     }
 
     pos = { x: e.clientX, y: e.clientY };
+    if (pos.x > maxWidth - divWidth) pos.x = maxWidth - divWidth;
+    if (pos.y > maxHeight - divHeight) pos.y = maxHeight - divHeight;
     showMenu = true;
   }
 
