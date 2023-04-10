@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { setContext, createEventDispatcher } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -7,14 +7,13 @@
   export let x;
   export let y;
 
+  let width: number;
+  let height: number;
+
   // whenever x and y is changed, restrict box to be within bounds
   $: if ((x, y))
     () => {
       if (!menuEl) return;
-
-      const rect = menuEl.getBoundingClientRect();
-      x = Math.min(window.innerWidth - rect.width, x);
-      if (y > window.innerHeight - rect.height) y -= rect.height;
     };
 
   const dispatch = createEventDispatcher();
@@ -28,9 +27,24 @@
     if (e.target === menuEl || menuEl.contains(e.target)) return;
     dispatch("clickoutside");
   }
+
+  function getDimensions() {
+    dispatch("getDimensions", {
+      width: width,
+      height: height,
+    });
+  }
+
+  $: if (menuEl) {
+    const rect = menuEl.getBoundingClientRect();
+    dispatch("dimensions", {
+      width: rect.width,
+      height: rect.height,
+    });
+  }
 </script>
 
-<svelte:body on:click={onPageClick} />
+<svelte:body on:click={getDimensions} on:click={onPageClick} />
 
 <div
   transition:fade={{ duration: 100 }}
