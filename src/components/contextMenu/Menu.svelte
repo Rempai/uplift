@@ -7,8 +7,8 @@
   export let x;
   export let y;
 
-  let width: number;
-  let height: number;
+  let maxWidth = window.innerWidth;
+  let maxHeight = window.innerHeight;
 
   // whenever x and y is changed, restrict box to be within bounds
   $: if ((x, y))
@@ -28,23 +28,34 @@
     dispatch("clickoutside");
   }
 
-  function getDimensions() {
-    dispatch("getDimensions", {
-      width: width,
-      height: height,
-    });
-  }
-
   $: if (menuEl) {
+    test();
     const rect = menuEl.getBoundingClientRect();
     dispatch("dimensions", {
       width: rect.width,
       height: rect.height,
+      maxWidth: maxWidth,
+      maxHeight: maxHeight,
     });
+  }
+
+  function test() {
+    if (x > maxWidth - 162) {
+      if (y > maxHeight - 158) {
+        x = maxWidth - 162;
+        y = maxHeight - 158;
+      }
+      else {
+        x = maxWidth - 162
+      }
+    }
+    else if (y > maxHeight - 158) {
+      y = maxHeight - 158;
+    }
   }
 </script>
 
-<svelte:body on:click={getDimensions} on:click={onPageClick} />
+<svelte:body on:click={onPageClick} />
 
 <div
   transition:fade={{ duration: 100 }}
