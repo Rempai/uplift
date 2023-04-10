@@ -44,12 +44,10 @@
       if (y > maxHeight - 158) {
         x = maxWidth - 162;
         y = maxHeight - 158;
+      } else {
+        x = maxWidth - 162;
       }
-      else {
-        x = maxWidth - 162
-      }
-    }
-    else if (y > maxHeight - 158) {
+    } else if (y > maxHeight - 158) {
       y = maxHeight - 158;
     }
   }

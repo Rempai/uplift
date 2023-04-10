@@ -13,9 +13,6 @@
   let maxHeight: number;
   let divWidth: number;
   let divHeight: number;
-  let testheight = 158;
-  let testwidth = 162;
-
   export const key = {};
 
   let selectedText = "";
