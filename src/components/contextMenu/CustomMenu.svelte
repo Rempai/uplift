@@ -9,10 +9,6 @@
   let pos = { x: 0, y: 0 };
   let showMenu = false;
 
-  let maxWidth: number;
-  let maxHeight: number;
-  let divWidth: number;
-  let divHeight: number;
   export const key = {};
 
   let selectedText = "";
@@ -29,20 +25,11 @@
     }
 
     pos = { x: e.clientX, y: e.clientY };
-    if (pos.x > maxWidth - divWidth) pos.x = maxWidth - divWidth;
-    if (pos.y > maxHeight - divHeight) pos.y = maxHeight - divHeight;
     showMenu = true;
   }
 
   function closeMenu(event: CustomEvent) {
     showMenu = false;
-  }
-
-  function getDimensions(event: CustomEvent) {
-    divWidth = event.detail.divWidth;
-    divHeight = event.detail.divHeight;
-    maxWidth = event.detail.maxWidth;
-    maxHeight = event.detail.maxHeight;
   }
 
   interface marks {
@@ -56,7 +43,7 @@
 </script>
 
 {#if showMenu}
-  <Menu {...pos} on:click={closeMenu} on:clickoutside={closeMenu} on:dimensions={getDimensions}>
+  <Menu {...pos} on:click={closeMenu} on:clickoutside={closeMenu}>
     <MenuOption
       on:click={() => dispatchClick({ text: selectedText, type: "mainProblem" })}
       text="✏ Main Problem" />

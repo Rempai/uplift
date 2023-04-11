@@ -39,14 +39,12 @@
   }
 
   function fixposx(x) {
-    if (x > maxWidth - 162)
-    x = maxWidth - 162;
+    if (x > maxWidth - 162) x = maxWidth - 162;
     return x;
   }
 
   function fixposy(y) {
-    if (y > maxHeight - 158)
-    y = maxHeight - 158;
+    if (y > maxHeight - 158) y = maxHeight - 158;
     return y;
   }
 </script>
