@@ -8,6 +8,7 @@ export type PassageUpdate = {
   branch?: string;
   continueButton?: boolean;
   speaker?: string;
+  emotion?: number;
   attributeId?: number;
   rideId?: number;
 };
