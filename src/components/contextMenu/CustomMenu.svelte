@@ -28,7 +28,7 @@
     showMenu = true;
   }
 
-  function closeMenu(event: CustomEvent) {
+  function closeMenu() {
     showMenu = false;
   }
 
