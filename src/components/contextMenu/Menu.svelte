@@ -10,12 +10,6 @@
   let maxWidth = window.innerWidth;
   let maxHeight = window.innerHeight;
 
-  // whenever x and y is changed, restrict box to be within bounds
-  $: if ((x, y))
-    () => {
-      if (!menuEl) return;
-    };
-
   const dispatch = createEventDispatcher();
 
   setContext(key, {
