@@ -8,6 +8,7 @@ export type PassageCreate = {
   branch?: string;
   continueButton?: boolean;
   speaker?: string;
+  emotion?: number;
   attributeId?: number;
   rideId: number;
 };
