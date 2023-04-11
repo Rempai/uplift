@@ -5,6 +5,7 @@
 
   import Button from "@/components/Button.svelte";
   import Modal from "@/components/Modal.svelte";
+  import { emotion } from "@/lib/stores";
 
   export let data: RideRead;
   export let currentRide: RideRead;
@@ -61,6 +62,9 @@
           score = score += 0.5;
         }
       }
+
+      // base score on emotion level
+      score = (score + $emotion / 20) / 2;
     }
     return score;
   };

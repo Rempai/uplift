@@ -340,6 +340,8 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
+    console.log(passage.branch);
+
     var reviewScore = Number(passage.branch.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
