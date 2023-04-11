@@ -256,7 +256,7 @@
   const nextPassage = (name: string) => {
     passage = allPassages.find((p) => p.passage === name);
 
-    if (!passedPassages.includes(passage.passage)) {
+    if (passage && !passedPassages.includes(passage.passage)) {
       emotion.update((e) => e + -10);
       passedPassages = [...passedPassages, passage.passage];
     }
