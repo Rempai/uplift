@@ -28,7 +28,7 @@
   const getData = (tab: number) => {
     journalData.forEach((obj) => {
       if (tab === 1) {
-        if (obj.trunk) branchData.push(obj);
+        if (obj.branch === "Trunk") branchData.push(obj);
       } else {
         if (!tabItems.find((e) => e.label === obj.branch)) {
           let tab_num: number = tabItems.length;
@@ -38,7 +38,7 @@
         let item = tabItems.find((e) => e.value === tab);
         // TODO: fix this
         const validTabs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-        if (validTabs.includes(tab) && !obj.trunk && item.value === tab) {
+        if (validTabs.includes(tab) && obj.branch !== "Trunk" && item.value === tab) {
           branchData.push(obj);
         }
       }
