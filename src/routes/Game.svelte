@@ -388,6 +388,7 @@
     journalData = [];
     clearResolutionData();
     dialog = false;
+    filledjournal = true;
     page = 0;
   };
 
@@ -575,9 +576,11 @@
               {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
-                  <div class="flex flex-col mb-3 mt-3">
-                    <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
-                  </div>
+                  {#if filledjournal && !journal}
+                    <div class="flex flex-col mb-3 mt-3">
+                      <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
+                    </div>
+                  {/if}
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
