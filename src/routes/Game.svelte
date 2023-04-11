@@ -257,7 +257,7 @@
     passage = allPassages.find((p) => p.passage === name);
 
     if (passage && !passedPassages.includes(passage.passage)) {
-      emotion.update((e) => e + -10);
+      emotion.update((e) => e + passage.emotion);
       passedPassages = [...passedPassages, passage.passage];
     }
 
