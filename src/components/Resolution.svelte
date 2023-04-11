@@ -50,17 +50,16 @@
       property; // Type is string
       value; // Type is any
 
-      if (typeof correctReport[property] === "string") {
-        let workplease = correctReport[property];
-        if (workplease.includes(value) && value >= 11) {
-          score = score + 2;
-          console.log(score);
+      if (typeof correctReport[property] === "string" && value !== "") {
+        if (correctReport[property].includes(value)) {
+          score = score += 1;
         }
       }
 
-      if (value === correctReport[property] && typeof data[property] === "number") {
-        score = score + 1;
-        console.log(score);
+      if (typeof correctReport[property] === "number") {
+        if (correctReport[property] === value) {
+          score = score += 0.5;
+        }
       }
     }
     return score;

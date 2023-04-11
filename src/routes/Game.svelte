@@ -323,7 +323,7 @@
   const finishRide = async (event: CustomEvent) => {
     solution = event.detail;
     // TODO: this won't work for other rides
-    nextPassage("Paolo" + solution + "You" + 1);
+    nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
