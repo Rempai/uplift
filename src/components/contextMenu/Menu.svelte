@@ -31,11 +31,23 @@
   $: if (menuEl) {
     const rect = menuEl.getBoundingClientRect();
     dispatch("dimensions", {
-      width: rect.width,
-      height: rect.height,
+      divWidth: Math.ceil(rect.width),
+      divHeight: Math.ceil(rect.height),
       maxWidth: maxWidth,
       maxHeight: maxHeight,
     });
+  }
+
+  function fixposx(x) {
+    if (x > maxWidth - 162)
+    x = maxWidth - 162;
+    return x;
+  }
+
+  function fixposy(y) {
+    if (y > maxHeight - 158)
+    y = maxHeight - 158;
+    return y;
   }
 </script>
 
@@ -44,7 +56,7 @@
 <div
   transition:fade={{ duration: 100 }}
   bind:this={menuEl}
-  style="top: {y}px; left: {x}px;"
+  style="left: {fixposx(x)}px; top: {fixposy(y)}px; width: 162px; height: 158px;"
   class="rounded bg-night-4 text-storm-1 absolute grid z-[100] shadow border-4 border-night-4 p-2">
   <slot />
 </div>

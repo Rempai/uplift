@@ -39,8 +39,8 @@
   }
 
   function getDimensions(event: CustomEvent) {
-    divWidth = Math.ceil(event.detail.width);
-    divHeight = Math.ceil(event.detail.height);
+    divWidth = event.detail.divWidth;
+    divHeight = event.detail.divHeight;
     maxWidth = event.detail.maxWidth;
     maxHeight = event.detail.maxHeight;
   }
