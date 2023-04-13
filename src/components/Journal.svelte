@@ -108,6 +108,7 @@
     <Form handleSubmit={submitForm} on:back={() => history.back()}>
       <div slot="forms" class="w-full">
         <label class="bg-aurora-orange p-2 !mt-1 !mb-0" for="mainProblem">Main Problem</label>
+        <p>Overwhelmed</p>
         <input
           disabled
           value={resolutionData.mainProblem}
@@ -117,6 +118,7 @@
           required
           class="w-full !rounded-[0px]" />
         <label class="bg-aurora-orange p-2 !mb-0" for="partiesInvolved">Parties Involved</label>
+        <p>My friends and school career would be in trouble.</p>
         <input
           disabled
           value={resolutionData.partiesInvolved}
@@ -126,6 +128,7 @@
           required
           class="w-full !rounded-[0px]" />
         <label class="bg-aurora-orange p-2 !mb-0" for="mainCause">Primary Cause</label>
+        <p>I can't have fun without feeling guilty.</p>
         <input
           disabled
           value={resolutionData.mainCause}

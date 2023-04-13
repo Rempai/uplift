@@ -274,8 +274,6 @@
     }
   };
 
-  $: console.log($emotion);
-
   const textParser = async (text: string) => {
     if (text) {
       if (text.match("{user}")) {
@@ -339,8 +337,6 @@
   const createReview = async () => {
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
-
-    console.log(passage.branch);
 
     var reviewScore = Number(passage.branch.replace(/\D/g, ""));
 
@@ -580,7 +576,7 @@
       {#if page == 1}
         <Phone on:close={togglePhone} on:item={handleClick} menuName="Choose Ride">
           <div slot="content" class="px-4 mt-2">
-            <div class="profile border-b-2 border-night-2 pt-2 pb-2">
+            <div class="profile pt-2 pb-2">
               {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
@@ -590,45 +586,48 @@
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
-                      <div
-                        on:keypress
-                        on:click={() => selectRide(data)}
-                        class="hover:bg-night-2 cursor-pointer rounded">
-                        <div class="gap-3 w-full flex items-center">
-                          <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
-                          <div>
-                            <p class="flex items-center">
-                              <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
-                            </p>
-                            <p class="flex items-center">
-                              <IoIosLocationOutline
-                                font-size="1.2em"
-                                class="mr-2" />{data.fromLocation}
-                            </p>
-                            <p class="flex items-center">
-                              <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
-                            </p>
-                            <p class="flex items-center">
-                              <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
-                            </p>
+                      <div>
+                        <div
+                          on:keypress
+                          on:click={() => selectRide(data)}
+                          class="hover:bg-night-2 cursor-pointer rounded">
+                          <div class="gap-3 w-full flex items-center">
+                            <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                            <div>
+                              <p class="flex items-center">
+                                <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
+                              </p>
+                              <p class="flex items-center">
+                                <IoIosLocationOutline
+                                  font-size="1.2em"
+                                  class="mr-2" />{data.fromLocation}
+                              </p>
+                              <p class="flex items-center">
+                                <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
+                              </p>
+                              <p class="flex items-center">
+                                <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
+                              </p>
+                            </div>
+                          </div>
+                          <div class="flex items-center mt-1 gap-1 justify-center">
+                            <p>Personal best:</p>
+                            <div class="flex">
+                              {#each { length: 5 } as _, i}
+                                {#if i < getReviewStars(data)}
+                                  <IonStar
+                                    font-size="1em"
+                                    class={getReviewStars(data) === 5 && i < 5
+                                      ? "w-5 text-aurora-yellow"
+                                      : "w-5"} />
+                                {:else}
+                                  <IonStarOutline font-size="1em" class="w-5" />
+                                {/if}
+                              {/each}
+                            </div>
                           </div>
                         </div>
-                        <div class="flex items-center mt-1 gap-1 justify-center">
-                          <p>Personal best:</p>
-                          <div class="flex">
-                            {#each { length: 5 } as _, i}
-                              {#if i < getReviewStars(data)}
-                                <IonStar
-                                  font-size="1em"
-                                  class={getReviewStars(data) === 5 && i < 5
-                                    ? "w-5 text-aurora-yellow"
-                                    : "w-5"} />
-                              {:else}
-                                <IonStarOutline font-size="1em" class="w-5" />
-                              {/if}
-                            {/each}
-                          </div>
-                        </div>
+                        <div class="border-b-2 border-night-2 h-2 w-full mt-2" />
                       </div>
                     {/each}
                   {/await}

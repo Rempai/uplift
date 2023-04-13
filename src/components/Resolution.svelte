@@ -2,10 +2,10 @@
   import { createEventDispatcher } from "svelte";
 
   import { CharactersService, type ReviewRead, type RideRead } from "@/lib/client";
+  import { emotion } from "@/lib/stores";
 
   import Button from "@/components/Button.svelte";
   import Modal from "@/components/Modal.svelte";
-  import { emotion } from "@/lib/stores";
 
   export let data: RideRead;
   export let currentRide: RideRead;
@@ -47,25 +47,27 @@
   };
 
   const giveScore = async (data: RideRead, correctReport: RideRead) => {
+    let score = 0;
+
     for (const [property, value] of Object.entries(data)) {
-      property; // Type is string
-      value; // Type is any
-
-      if (typeof correctReport[property] === "string" && value !== "") {
-        if (correctReport[property].includes(value)) {
-          score = score += 1;
+      if (
+        typeof correctReport[property] === "string" &&
+        typeof value === "string" &&
+        value.trim() !== ""
+      ) {
+        const correctAnswers = correctReport[property].split(";").map((s) => s.trim());
+        const userAnswer = value.trim(); // Trim the user's input
+        if (correctAnswers.includes(userAnswer)) {
+          score = score + 2;
         }
-      }
-
-      if (typeof correctReport[property] === "number") {
+      } else if (typeof correctReport[property] === "number") {
         if (correctReport[property] === value) {
-          score = score += 0.5;
+          score = score + 0.5;
         }
       }
-
-      // base score on emotion level
-      score = (score + $emotion / 20) / 2;
     }
+    //base score on emotion level
+    score = (score + $emotion / 50) / 2;
     return score;
   };
 
