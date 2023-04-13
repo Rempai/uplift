@@ -22,6 +22,7 @@ p}Well I have been stressed out, but what about the project and my friends?
 y}I'm sure they will understand.
 p}Well if you say so... Thank you for your help.
 p}<i>Paolo exits the vehicle</i>
+:end
 
 #### don't let yourself be used
 
@@ -30,6 +31,7 @@ p}I realise that now, but what can I do?
 y}You should divide up some of your responsibilities with your friends. Tell them it's too much for you.
 p}I'll give it a shot, thanks for the advice.
 p}<i>Paolo exits the vehicle</i>
+:end
 
 #### confront friends with feelings
 
@@ -37,3 +39,4 @@ y}I think you should confront your friends with how you have been feeling.
 p}Confront them? I'm not sure I can do that...
 y}You can do it! Believe in me, believing in you, Paolo!
 p}<i>Paolo exits the vehicle with a little pep in his step</i>
+:end

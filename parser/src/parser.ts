@@ -18,7 +18,7 @@ class Branch {
   original_location = ""; //for error purposes
 }
 
-export function do_thing(filename: string): [number, string] {
+export function do_thing(filename: string, print_debug: boolean): [number, string] {
   let errors = 0;
 
   const ridedata = { id: -1, name: "" };
@@ -26,9 +26,9 @@ export function do_thing(filename: string): [number, string] {
   const characters: Array<[string, string, number]> = []; //first string is the shortcut used in file, second string is the "game" name. third is attributeID
 
   //any referenced files will be recursively called for parsing by the parse_file function
-  errors += parse_file(filename, ridedata, branches, characters);
-  errors += check_branches(filename, ridedata, branches);
-  const output: string = generate_output(branches, ridedata);
+  errors += parse_file(filename, ridedata, branches, characters, print_debug);
+  errors += check_branches(filename, ridedata, branches, print_debug);
+  const output: string = generate_output(branches, ridedata, print_debug);
   process.stdout.write(output);
   process.stdout.write("\n");
   return [errors, output];
@@ -38,20 +38,25 @@ export function parse_file(
   filename: string,
   ridedata: { id: number; name: string },
   branches: Array<Branch>,
-  characters: Array<[string, string, number]>
+  characters: Array<[string, string, number]>,
+  print_debug: boolean
 ): number {
   let errors = 0;
   let default_character = -1; //index to characters array, defines what character should be used when the line doesn't begin with "charname;"
 
   //log verbose
   function lverb(input: any) {
-    console.log("\x1b[39;49m" + input);
+    if (print_debug) {
+      console.error("\x1b[39;49m" + input);
+    }
   }
 
   //log error
   function lerr(location: string, input: any) {
-    console.log("\x1b[91mERROR at location " + location + ": " + input);
-    errors += 1;
+    if (print_debug) {
+      console.error("\x1b[91mERROR at location " + location + ": " + input);
+      errors += 1;
+    }
   }
 
   const input_data = readFileSync(filename, "utf-8");
@@ -104,12 +109,13 @@ export function parse_file(
         }
         break;
       case ":import":
-        console.log(cur.substring(7));
+        lverb(cur.substring(7));
         parse_file(
           filename.substring(0, filename.lastIndexOf("/") + 1) + cur.substring(7).trimStart(),
           ridedata,
           branches,
-          characters
+          characters,
+          print_debug
         );
         break;
       case ":default":
@@ -342,14 +348,17 @@ export function parse_file(
 function check_branches(
   filename: string,
   ridedata: { id: number; name: string },
-  branches: Array<Branch>
+  branches: Array<Branch>,
+  print_debug: boolean
 ): number {
   let errors = 0;
 
   //log error
   function lerr(location: string, input: any) {
-    console.log("\x1b[91mERROR at location " + location + ": " + input);
-    errors += 1;
+    if (print_debug) {
+      console.error("\x1b[91mERROR at location " + location + ": " + input);
+      errors += 1;
+    }
   }
 
   //check rideid
@@ -429,7 +438,11 @@ function check_branches(
   return errors;
 }
 
-function generate_output(branches: Array<Branch>, ridedata: { id: number; name: string }): string {
+function generate_output(
+  branches: Array<Branch>,
+  ridedata: { id: number; name: string },
+  print_debug: boolean
+): string {
   const output_array: Array<object> = [];
 
   for (let i = 0; i < branches.length; i++) {
@@ -472,6 +485,8 @@ function generate_output(branches: Array<Branch>, ridedata: { id: number; name: 
     }
   }
 
-  console.log(JSON.stringify(output_array, null, 2));
+  if (print_debug) {
+    JSON.stringify(output_array, null, 2);
+  }
   return JSON.stringify(output_array);
 }
