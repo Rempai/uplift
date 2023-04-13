@@ -18,6 +18,7 @@
   let visibleSolution: Array<string> = [];
 
   let score = 0;
+  let color = 0;
 
   //shuffle array based on modern Fisher Yates shuffle - def figured it out by myself
   const shuffleSolutions = async ([...optionArray]) => {
@@ -110,15 +111,17 @@
     "bg-aurora-purple",
   ];
 
-  function randomnumber() {
-    if (ResolutionColors.length > 0) {
-      const index = Math.floor(Math.random() * ResolutionColors.length);
-      const color = ResolutionColors[index];
-      ResolutionColors.splice(index, 1);
-      return color;
+  function nextColor() {
+    let colorcode;
+    if (color != 5) {
+      colorcode = ResolutionColors[color];
+      color++;
     } else {
-      return "bg-frost-4";
+      color = 0;
+      colorcode = ResolutionColors[color];
+      color++;
     }
+    return colorcode;
   }
 </script>
 
@@ -132,7 +135,7 @@
             <Button
               onClick={() => finishRide(solution)}
               text={solution}
-              class="{randomnumber()} !px-8" />
+              class="{nextColor()} !px-8" />
           </div>
         {/each}
       {/await}

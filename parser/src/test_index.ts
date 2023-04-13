@@ -37,7 +37,7 @@ function checkDir(directory: string) {
     } else {
       if (file.startsWith("fail") || file.startsWith("pass")) {
         console.log("\x1b[39;49mchecking file " + file);
-        const returned_data = do_thing(directory + "/" + file);
+        const returned_data = do_thing(directory + "/" + file, true);
         const returned_errors = returned_data[0];
         console.log("\x1b[39;49merrors from file " + file + ": " + returned_errors);
         if (file.startsWith("fail")) {
@@ -57,7 +57,7 @@ function checkOutput(directory: string) {
   files_in_dir.forEach((file) => {
     if (file.endsWith(".md")) {
       console.log("checking file " + file);
-      const output = do_thing(directory + "/" + file);
+      const output = do_thing(directory + "/" + file, true);
       const input_data = readFileSync(
         directory + "/" + file.substring(0, file.lastIndexOf(".md")) + ".json",
         "utf-8"
