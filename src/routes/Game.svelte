@@ -42,8 +42,8 @@
   import IoIosCalendar from "~icons/ion/calendar";
   import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
   import IonStar from "~icons/ion/star";
-
   import Background from "/background.webm";
+  import DriverModal from "@/components/DriverModal.svelte";
 
   let radioSelect: number;
   let ambientNoise = false;
@@ -389,6 +389,8 @@
     dialog = false;
     page = 0;
   };
+
+	let showDriverModal = false;
 </script>
 
 <svelte:head>
@@ -396,6 +398,13 @@
 </svelte:head>
 
 <main>
+  <button class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg" on:click={() => (showDriverModal = true)}>
+   Driver License
+  </button>
+
+  <DriverModal bind:showDriverModal>
+  </DriverModal>
+
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
