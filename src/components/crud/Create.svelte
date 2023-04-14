@@ -22,21 +22,18 @@
   const submitForm = async ({ target }) => {
     const formData = new FormData(target);
     const value = Object.fromEntries(formData.entries());
-
     try {
       await validateData(crudRoute, value, true);
-      const targetValue = formData ? target : value;
-
       for (const [key, value] of formData.entries()) {
         if (value instanceof File) {
           const fileContents = await value.text();
           await service(fileContents);
           push("/admin/");
-        } else {
-          await service(targetValue);
-          push("/admin/" + page);
         }
       }
+      console.log(value);
+      await service(value);
+      push("/admin/" + page);
     } catch (error) {
       validationErrorCheck(error, true);
       $validation = $validation;

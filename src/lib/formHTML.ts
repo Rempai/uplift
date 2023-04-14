@@ -62,6 +62,8 @@ export const reviewHTML = `
   <input required type="number" name="linkedScore" placeholder="3" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum"></textarea>
+  <label for="solution">Solution</label>
+  <input required type="text" name="solution" placeholder="solution" />
   <label for="rideId">Ride id</label>
   <input required type="number" name="rideId" placeholder="1" />
 `;

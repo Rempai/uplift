@@ -49,6 +49,7 @@
           value[x] = parseInt(value[x].toString());
         }
       }
+      console.log(value);
       await service(id, value)
         .then(() => push("/admin/" + page))
         .catch((err) => {

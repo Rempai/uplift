@@ -59,16 +59,15 @@
         const correctAnswers = correctReport[property].split(";").map((s) => s.trim());
         const userAnswer = value.trim(); // Trim the user's input
         if (correctAnswers.includes(userAnswer)) {
-          score = score + 2;
+          score += 2;
         }
       } else if (typeof correctReport[property] === "number") {
         if (correctReport[property] === value) {
-          score = score + 0.5;
+          score += 1;
         }
       }
     }
     //base score on emotion level
-    score = (score + $emotion / 50) / 2;
     return score;
   };
 

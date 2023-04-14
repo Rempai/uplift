@@ -89,6 +89,9 @@
   let allPassages: Array<PassageRead>;
   let passedPassages: Array<string> = [];
 
+  let patienceLost = false;
+  let lostPatienceText: string;
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
@@ -320,7 +323,6 @@
 
   const finishRide = async (event: CustomEvent) => {
     solution = event.detail;
-    // TODO: this won't work for other rides
     nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
     resolution = false;
@@ -338,7 +340,7 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    var reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    var reviewScore = patienceLost ? 0 : Number(passage.branch.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
       userId: parsedJWT.sub,
@@ -371,10 +373,20 @@
     nextPassage($passageName);
   }
 
+  $: if ($emotion <= 90) {
+    losePatience();
+  }
+
   $: if (passage) {
     textParsed = textParser(passage.content);
     updateJournalData();
   }
+
+  const losePatience = () => {
+    patienceLost = true;
+    lostPatienceText = `You pissed off ${currentRide.passenger.name}! Whilst yelling at you he exist the vehicle...`;
+    createReview();
+  };
 
   const clearResolutionData = () => {
     resolutionData = {
@@ -507,7 +519,7 @@
               continueButton={dialog.continueButton}
               user={dialog.speaker}
               dialogColor={dialog.attribute.color}
-              text={parsedText}
+              text={patienceLost ? "Patience lost..." : parsedText}
               font={dialog.attribute.fontFamily}
               fontSize={dialog.attribute.fontSize}
               color={dialog.attribute.color} />
