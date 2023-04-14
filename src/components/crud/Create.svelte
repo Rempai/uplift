@@ -22,22 +22,30 @@
   const submitForm = async ({ target }) => {
     const formData = new FormData(target);
     const value = Object.fromEntries(formData.entries());
-    try {
-      await validateData(crudRoute, value, true);
-      for (const [key, value] of formData.entries()) {
+    await validateData(crudRoute, value, false).then(async () => {
+      for (let x in value) {
+        if (value[x] === "") {
+          delete value[x];
+        }
         if (value instanceof File) {
           const fileContents = await value.text();
           await service(fileContents);
           push("/admin/");
+        } else if (value[x] === "on") {
+          // @ts-ignore
+          value[x] = true;
+        } else if (/^\d+$/.test(value[x].toString())) {
+          // @ts-ignore
+          value[x] = parseInt(value[x].toString());
         }
       }
-      console.log(value);
-      await service(value);
-      push("/admin/" + page);
-    } catch (error) {
-      validationErrorCheck(error, true);
-      $validation = $validation;
-    }
+      await service(value)
+        .then(() => push("/admin/" + page))
+        .catch((error) => {
+          validationErrorCheck(error, true);
+          $validation = $validation;
+        });
+    });
   };
 </script>
 

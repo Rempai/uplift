@@ -90,7 +90,6 @@
   let passedPassages: Array<string> = [];
 
   let patienceLost = false;
-  let lostPatienceText: string;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -340,7 +339,8 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    var reviewScore = patienceLost ? 0 : Number(passage.branch.replace(/\D/g, ""));
+    // TODO: make a 0 star review with number 6 instead of 5...
+    var reviewScore = patienceLost ? 6 : Number(passage.branch.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
       userId: parsedJWT.sub,
@@ -374,7 +374,7 @@
   }
 
   $: if ($emotion <= 90) {
-    losePatience();
+    patienceLost = true;
   }
 
   $: if (passage) {
@@ -383,9 +383,8 @@
   }
 
   const losePatience = () => {
-    patienceLost = true;
-    lostPatienceText = `You pissed off ${currentRide.passenger.name}! Whilst yelling at you he exist the vehicle...`;
     createReview();
+    quitRide();
   };
 
   const clearResolutionData = () => {
@@ -407,6 +406,7 @@
     dialog = false;
     filledjournal = true;
     page = 0;
+    patienceLost = false;
   };
 
   const getReviewStars = (data: RideRead) => {
@@ -514,15 +514,26 @@
       <div in:fade class="absolute left-0 right-0 top-1/3 m-auto">
         {#await passage then dialog}
           {#await textParsed then parsedText}
-            <Dialog
-              on:next={nextPassageName}
-              continueButton={dialog.continueButton}
-              user={dialog.speaker}
-              dialogColor={dialog.attribute.color}
-              text={patienceLost ? "Patience lost..." : parsedText}
-              font={dialog.attribute.fontFamily}
-              fontSize={dialog.attribute.fontSize}
-              color={dialog.attribute.color} />
+            {#if !patienceLost}
+              <Dialog
+                on:next={nextPassageName}
+                continueButton={dialog.continueButton}
+                user={dialog.speaker}
+                dialogColor={dialog.attribute.color}
+                text={parsedText}
+                font={dialog.attribute.fontFamily}
+                fontSize={dialog.attribute.fontSize}
+                color={dialog.attribute.color} />
+            {:else}
+              <!-- dialogColor = aurora red, color = Nord's snow color. -->
+              <Dialog
+                on:next={losePatience}
+                continueButton={true}
+                text="You pissed off {currentRide.passenger
+                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                dialogColor="#BF616A"
+                color="#e5e9f0" />
+            {/if}
           {/await}
         {/await}
       </div>
