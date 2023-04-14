@@ -688,12 +688,15 @@
                       </p>
                       <div class="inline-flex items-center">
                         {#each Array(data.stars) as _}
-                          <span class="w-5 mr-2 text-frost-3"><IonStar font-size="1.2em" /></span>
+                          {#if data.stars === 5}
+                            <IonStar font-size="1.2em" class="w-5 mr-2 text-aurora-yellow" />
+                          {:else}
+                            <IonStar class="w-5 mr-2" font-size="1.2em" />
+                          {/if}
                         {/each}
                         {#if data.stars < 5}
                           {#each Array(5 - data.stars) as _}
-                            <span class="w-5 mr-2 text-frost-3"
-                              ><IoIosStarOutline font-size="1.2em" /></span>
+                            <IoIosStarOutline class="w-5 mr-2 text-frost-3" font-size="1.2em" />
                           {/each}
                         {/if}
                       </div>
