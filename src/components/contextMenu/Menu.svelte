@@ -11,7 +11,7 @@
   let maxHeight = window.innerHeight;
   let width = 11;
   let height = 10;
-  let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue('font-size'));
+  let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue("font-size"));
 
   const dispatch = createEventDispatcher();
 
@@ -26,12 +26,12 @@
   }
 
   function fixposx(x) {
-    if (x > maxWidth - (width*fontsize)) x = maxWidth - (width*fontsize);
+    if (x > maxWidth - width * fontsize) x = maxWidth - width * fontsize;
     return x;
   }
 
   function fixposy(y) {
-    if (y > maxHeight - (height*fontsize)) y = maxHeight - (height*fontsize);
+    if (y > maxHeight - height * fontsize) y = maxHeight - height * fontsize;
     return y;
   }
 </script>
