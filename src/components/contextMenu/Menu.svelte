@@ -11,7 +11,7 @@
   let maxHeight = window.innerHeight;
   let width = 11;
   let height = 10;
-  let fontsize = 17.6;
+  let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue('font-size'));
 
   const dispatch = createEventDispatcher();
 
