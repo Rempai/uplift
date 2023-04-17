@@ -339,7 +339,6 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    // TODO: make a 0 star review with number 6 instead of 5...
     var reviewScore = patienceLost ? 6 : Number(passage.branch.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
@@ -368,6 +367,8 @@
       clearResolutionData();
     }
   });
+
+  $: console.log(reviewList);
 
   $: if ($passageName !== "") {
     nextPassage($passageName);
