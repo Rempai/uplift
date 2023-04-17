@@ -2,7 +2,6 @@
   import { createEventDispatcher } from "svelte";
 
   import { CharactersService, type ReviewRead, type RideRead } from "@/lib/client";
-  import { emotion } from "@/lib/stores";
 
   import Button from "@/components/Button.svelte";
   import Modal from "@/components/Modal.svelte";
