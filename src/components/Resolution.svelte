@@ -55,8 +55,11 @@
         typeof value === "string" &&
         value.trim() !== ""
       ) {
-        const correctAnswers = correctReport[property].split(";").map((s) => s.trim());
-        const userAnswer = value.trim(); // Trim the user's input
+        const correctAnswers = correctReport[property]
+          .toLowerCase()
+          .split(";")
+          .map((s) => s.trim());
+        const userAnswer = value.trim().toLowerCase(); // Trim the user's input
         if (correctAnswers.includes(userAnswer)) {
           score += 2;
         }
@@ -100,6 +103,7 @@
   $: if (resolution) {
     getData();
   }
+  $: console.log(score);
 
   let ResolutionColors = [
     "bg-aurora-red",
