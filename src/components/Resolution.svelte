@@ -103,7 +103,6 @@
   $: if (resolution) {
     getData();
   }
-  $: console.log(score);
 
   let ResolutionColors = [
     "bg-aurora-red",

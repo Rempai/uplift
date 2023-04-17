@@ -378,6 +378,7 @@
   }
 
   $: if (passage) {
+    filledjournal = false;
     textParsed = textParser(passage.content);
     updateJournalData();
   }
