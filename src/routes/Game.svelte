@@ -374,11 +374,11 @@
   }
 
   $: if ($emotion <= 90) {
+    filledjournal = false;
     patienceLost = true;
   }
 
   $: if (passage) {
-    filledjournal = false;
     textParsed = textParser(passage.content);
     updateJournalData();
   }
