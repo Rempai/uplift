@@ -186,6 +186,8 @@
     dialog = true;
     showPhoneButton = true;
     ambientNoise = true;
+    const video = document.querySelector("video");
+    video.play();
     page = 0;
     passedPassages = [];
     emotion.set(100);
