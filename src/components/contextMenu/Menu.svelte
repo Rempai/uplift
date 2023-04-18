@@ -42,6 +42,6 @@
   transition:fade={{ duration: 100 }}
   bind:this={menuEl}
   style="left: {fixposx(x)}px; top: {fixposy(y)}px; width: {width}em; height: {height}em;"
-  class="rounded bg-night-4 text-storm-1 absolute justify-center grid z-[100] shadow border-4 border-night-4 p-2">
+  class="rounded bg-night-4 text-storm-1 absolute justify-center grid z-[100] shadow border-4 border-night-2 py-0.5">
   <slot />
 </div>

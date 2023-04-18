@@ -23,7 +23,7 @@
   class:disabled={isDisabled}
   on:click={handleClick}
   on:keypress
-  class="cursor-pointer gap-2 flex items-center py-2 hover:bg-night-3 disabled:text-night-1 disabled:bg-night-2 disabled:cursor-not-allowed">
+  class="rounded cursor-pointer gap-2 flex items-center px-5 hover:bg-night-3 disabled:text-night-1 disabled:bg-night-2 disabled:cursor-not-allowed">
   {#if text}
     {text}
   {:else}
