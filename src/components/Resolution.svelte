@@ -47,23 +47,29 @@
   };
 
   const giveScore = async (data: RideRead, correctReport: RideRead) => {
-    for (const [property, value] of Object.entries(data)) {
-      property; // Type is string
-      value; // Type is any
+    let score = 0;
 
-      if (typeof correctReport[property] === "string") {
-        let workplease = correctReport[property];
-        if (workplease.includes(value) && value >= 11) {
-          score = score + 2;
-          console.log(score);
+    for (const [property, value] of Object.entries(data)) {
+      if (
+        typeof correctReport[property] === "string" &&
+        typeof value === "string" &&
+        value.trim() !== ""
+      ) {
+        const correctAnswers = correctReport[property]
+          .toLowerCase()
+          .split(";")
+          .map((s) => s.trim());
+        const userAnswer = value.trim().toLowerCase(); // Trim the user's input
+        if (correctAnswers.includes(userAnswer)) {
+          score += 2;
+        }
+      } else if (typeof correctReport[property] === "number") {
+        if (correctReport[property] === value) {
+          score += 1;
         }
       }
-
-      if (value === correctReport[property] && typeof data[property] === "number") {
-        score = score + 1;
-        console.log(score);
-      }
     }
+    //base score on emotion level
     return score;
   };
 
