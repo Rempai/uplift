@@ -374,7 +374,7 @@
     nextPassage($passageName);
   }
 
-  $: if ($emotion <= 90) {
+  $: if ($emotion <= 70) {
     filledjournal = false;
     patienceLost = true;
   }
