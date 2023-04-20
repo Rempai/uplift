@@ -9,6 +9,9 @@
 
   let maxWidth = window.innerWidth;
   let maxHeight = window.innerHeight;
+  let width = 12;
+  let height = 10;
+  let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue("font-size"));
 
   const dispatch = createEventDispatcher();
 
@@ -22,23 +25,13 @@
     dispatch("clickoutside");
   }
 
-  $: if (menuEl) {
-    const rect = menuEl.getBoundingClientRect();
-    dispatch("dimensions", {
-      divWidth: Math.ceil(rect.width),
-      divHeight: Math.ceil(rect.height),
-      maxWidth: maxWidth,
-      maxHeight: maxHeight,
-    });
-  }
-
   function fixposx(x) {
-    if (x > maxWidth - 162) x = maxWidth - 162;
+    if (x > maxWidth - width * fontsize) x = maxWidth - width * fontsize;
     return x;
   }
 
   function fixposy(y) {
-    if (y > maxHeight - 158) y = maxHeight - 158;
+    if (y > maxHeight - height * fontsize) y = maxHeight - height * fontsize;
     return y;
   }
 </script>
@@ -48,7 +41,7 @@
 <div
   transition:fade={{ duration: 100 }}
   bind:this={menuEl}
-  style="left: {fixposx(x)}px; top: {fixposy(y)}px; width: 162px; height: 158px;"
-  class="rounded bg-night-4 text-storm-1 absolute grid z-[100] shadow border-4 border-night-4 p-2">
+  style="left: {fixposx(x)}px; top: {fixposy(y)}px; width: {width}em; height: {height}em;"
+  class="rounded bg-night-4 text-storm-1 absolute justify-center grid z-[100] shadow border-4 border-night-2 py-0.5">
   <slot />
 </div>

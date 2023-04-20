@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation } from "@/lib/stores";
+  import { passageName, validation, emotion } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validationErrorCheck } from "@/lib/validation";
   import { radios } from "@/lib/radio";
@@ -87,7 +87,9 @@
   let filledjournal = true;
 
   let user;
-  let averageReviews = 0;
+  let allPassages: Array<PassageRead>;
+  let passedPassages: Array<string> = [];
+  let patienceLost = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -175,6 +177,7 @@
     }
 
     await PassageHandlingService.getPassages(undefined, ride.id)
+      .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
       .catch((err) => showError(err));
 
@@ -182,7 +185,11 @@
     dialog = true;
     showPhoneButton = true;
     ambientNoise = true;
+    const video = document.querySelector("video");
+    video.play();
     page = 0;
+    passedPassages = [];
+    emotion.set(100);
   };
 
   const showError = (err: string) => {
@@ -251,25 +258,24 @@
   };
 
   const nextPassage = (name: string) => {
-    PassageHandlingService.getPassages(name)
-      .then((res) => {
-        // TODO: This should be done inside resolution probably.
-        // Quick hack to get reviews working for the boys
-        if (res === undefined) {
-          CharactersService.getReviews(parsedJWT.sub)
-            .then((res) => {
-              reviewList = res;
-              passage = undefined;
-              ambientNoise = false;
-              const video = document.querySelector("video");
-              video.pause();
-            })
-            .catch((err) => showError(err));
-        } else {
-          Array.isArray(res) ? ([passage] = res) : (passage = res);
-        }
-      })
-      .catch((err) => showError(err));
+    passage = allPassages.find((p) => p.passage === name);
+
+    if (passage && !passedPassages.includes(passage.passage)) {
+      emotion.update((e) => e + passage.emotion);
+      passedPassages = [...passedPassages, passage.passage];
+    }
+
+    if (passage == undefined) {
+      CharactersService.getReviews(parsedJWT.sub)
+        .then((res) => {
+          reviewList = res;
+          passage = undefined;
+          ambientNoise = false;
+          const video = document.querySelector("video");
+          video.pause();
+        })
+        .catch((err) => showError(err));
+    }
   };
 
   const textParser = async (text: string) => {
@@ -318,8 +324,7 @@
 
   const finishRide = async (event: CustomEvent) => {
     solution = event.detail;
-    // TODO: this won't work for other rides
-    nextPassage("Paolo" + solution + "You" + 1);
+    nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -336,7 +341,7 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    var reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    var reviewScore = patienceLost ? 6 : Number(passage.branch.replace(/\D/g, ""));
 
     const input: ReviewedUserCreate = {
       userId: parsedJWT.sub,
@@ -374,14 +379,26 @@
     }
   });
 
+  $: console.log(reviewList);
+
   $: if ($passageName !== "") {
     nextPassage($passageName);
+  }
+
+  $: if ($emotion <= 70) {
+    filledjournal = false;
+    patienceLost = true;
   }
 
   $: if (passage) {
     textParsed = textParser(passage.content);
     updateJournalData();
   }
+
+  const losePatience = () => {
+    createReview();
+    quitRide();
+  };
 
   const clearResolutionData = () => {
     resolutionData = {
@@ -402,6 +419,7 @@
     dialog = false;
     filledjournal = true;
     page = 0;
+    patienceLost = false;
   };
 
 	let showDriverModal = false;
@@ -522,15 +540,26 @@
       <div in:fade class="absolute left-0 right-0 top-1/3 m-auto">
         {#await passage then dialog}
           {#await textParsed then parsedText}
-            <Dialog
-              on:next={nextPassageName}
-              continueButton={dialog.continueButton}
-              user={dialog.speaker}
-              dialogColor={dialog.attribute.color}
-              text={parsedText}
-              font={dialog.attribute.fontFamily}
-              fontSize={dialog.attribute.fontSize}
-              color={dialog.attribute.color} />
+            {#if !patienceLost}
+              <Dialog
+                on:next={nextPassageName}
+                continueButton={dialog.continueButton}
+                user={dialog.speaker}
+                dialogColor={dialog.attribute.color}
+                text={parsedText}
+                font={dialog.attribute.fontFamily}
+                fontSize={dialog.attribute.fontSize}
+                color={dialog.attribute.color} />
+            {:else}
+              <!-- dialogColor = aurora red, color = Nord's snow color. -->
+              <Dialog
+                on:next={losePatience}
+                continueButton={true}
+                text="You pissed off {currentRide.passenger
+                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                dialogColor="#BF616A"
+                color="#e5e9f0" />
+            {/if}
           {/await}
         {/await}
       </div>
@@ -597,7 +626,7 @@
       {#if page == 1}
         <Phone on:close={togglePhone} on:item={handleClick} menuName="Choose Ride">
           <div slot="content" class="px-4 mt-2">
-            <div class="profile border-b-2 border-night-2 pt-2 pb-2">
+            <div class="profile pt-2 pb-2">
               {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
@@ -609,45 +638,48 @@
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
-                      <div
-                        on:keypress
-                        on:click={() => selectRide(data)}
-                        class="hover:bg-night-2 cursor-pointer rounded">
-                        <div class="gap-3 w-full flex items-center">
-                          <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
-                          <div>
-                            <p class="flex items-center">
-                              <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
-                            </p>
-                            <p class="flex items-center">
-                              <IoIosLocationOutline
-                                font-size="1.2em"
-                                class="mr-2" />{data.fromLocation}
-                            </p>
-                            <p class="flex items-center">
-                              <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
-                            </p>
-                            <p class="flex items-center">
-                              <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
-                            </p>
+                      <div>
+                        <div
+                          on:keypress
+                          on:click={() => selectRide(data)}
+                          class="hover:bg-night-2 cursor-pointer rounded">
+                          <div class="gap-3 w-full flex items-center">
+                            <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                            <div>
+                              <p class="flex items-center">
+                                <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
+                              </p>
+                              <p class="flex items-center">
+                                <IoIosLocationOutline
+                                  font-size="1.2em"
+                                  class="mr-2" />{data.fromLocation}
+                              </p>
+                              <p class="flex items-center">
+                                <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
+                              </p>
+                              <p class="flex items-center">
+                                <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
+                              </p>
+                            </div>
+                          </div>
+                          <div class="flex items-center mt-1 gap-1 justify-center">
+                            <p>Personal best:</p>
+                            <div class="flex">
+                              {#each { length: 5 } as _, i}
+                                {#if i < getReviewStars(data)}
+                                  <IonStar
+                                    font-size="1em"
+                                    class={getReviewStars(data) === 5 && i < 5
+                                      ? "w-5 text-aurora-yellow"
+                                      : "w-5"} />
+                                {:else}
+                                  <IonStarOutline font-size="1em" class="w-5" />
+                                {/if}
+                              {/each}
+                            </div>
                           </div>
                         </div>
-                        <div class="flex items-center mt-1 gap-1 justify-center">
-                          <p>Personal best:</p>
-                          <div class="flex">
-                            {#each { length: 5 } as _, i}
-                              {#if i < getReviewStars(data)}
-                                <IonStar
-                                  font-size="1em"
-                                  class={getReviewStars(data) === 5 && i < 5
-                                    ? "w-5 text-aurora-yellow"
-                                    : "w-5"} />
-                              {:else}
-                                <IonStarOutline font-size="1em" class="w-5" />
-                              {/if}
-                            {/each}
-                          </div>
-                        </div>
+                        <div class="border-b-2 border-night-2 h-2 w-full mt-2" />
                       </div>
                     {/each}
                   {/await}
@@ -693,12 +725,15 @@
                       </p>
                       <div class="inline-flex items-center">
                         {#each Array(data.stars) as _}
-                          <span class="w-5 mr-2 text-frost-3"><IonStar font-size="1.2em" /></span>
+                          {#if data.stars === 5}
+                            <IonStar font-size="1.2em" class="w-5 mr-2 text-aurora-yellow" />
+                          {:else}
+                            <IonStar class="w-5 mr-2" font-size="1.2em" />
+                          {/if}
                         {/each}
                         {#if data.stars < 5}
                           {#each Array(5 - data.stars) as _}
-                            <span class="w-5 mr-2 text-frost-3"
-                              ><IoIosStarOutline font-size="1.2em" /></span>
+                            <IoIosStarOutline class="w-5 mr-2 text-frost-3" font-size="1.2em" />
                           {/each}
                         {/if}
                       </div>
