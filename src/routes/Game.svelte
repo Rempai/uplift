@@ -457,7 +457,8 @@
   {#if ambientNoise}
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
-  <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
+  <div
+    class="rounded h-screen relative bg-[url('/dashboard_stationary.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
