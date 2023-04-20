@@ -14,7 +14,7 @@ export type PassageRead = {
   branch: string;
   continueButton: boolean;
   speaker: string;
-  trunk: boolean;
+  emotion: number;
   attributeId: number;
   rideId: number;
 };

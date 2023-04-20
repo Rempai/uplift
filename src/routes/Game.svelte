@@ -42,6 +42,7 @@
   import IoIosCalendar from "~icons/ion/calendar";
   import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
   import IonStar from "~icons/ion/star";
+  import IonStarOutline from "~icons/ion/star-outline";
   import Background from "/background.webm";
   import DriverModal from "@/components/DriverModal.svelte";
 
@@ -84,6 +85,9 @@
   let parsedJWT: jwtObject;
 
   let filledjournal = true;
+
+  let user;
+  let averageReviews = 0;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -349,6 +353,14 @@
     showPhoneButton = false;
   };
 
+  function getMe(){
+  UserService.getMe().then((response) => {
+      user = response.username;
+  }).catch((error) => {
+      console.error(error);
+  });
+}
+
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
@@ -356,6 +368,7 @@
     } else {
       welcome = true;
     }
+
     if (!resolutionData) {
       clearResolutionData();
     }
@@ -387,10 +400,26 @@
     journalData = [];
     clearResolutionData();
     dialog = false;
+    filledjournal = true;
     page = 0;
   };
 
 	let showDriverModal = false;
+  const getReviewStars = (data: RideRead) => {
+    const review = reviewList.reduce((prevReview, currentReview) => {
+      if (currentReview.ride.passenger.name === data.passenger.name) {
+        if (!prevReview) {
+          return currentReview;
+        }
+        if (currentReview.stars > prevReview.stars) {
+          return currentReview;
+        }
+      }
+      return prevReview;
+    }, null);
+
+    return review ? review.stars : null;
+  };
 </script>
 
 <svelte:head>
@@ -398,13 +427,18 @@
 </svelte:head>
 
 <main>
-  <button class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg" on:click={() => (showDriverModal = true)}>
-   Driver License
-  </button>
 
-  <DriverModal bind:showDriverModal>
-  </DriverModal>
-
+{#if parsedJWT}
+  <button class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg" on:click={() => {
+    (showDriverModal = true)
+    getMe();
+    }}>
+    Driver License
+   </button>
+{/if}
+   {#if reviewList}
+    <DriverModal bind:showDriverModal username={user} {reviewList}/>
+    {/if}
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
@@ -447,7 +481,7 @@
                 class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
               <Button
                 onClick={() => {
-                  togglePhone();
+                  if (showPhoneButton === true) togglePhone();
                   settingsPlane = "";
                 }}
                 text="Cancel"
@@ -459,7 +493,7 @@
               backButton={true}
               on:back={() => {
                 settingsPlane = "";
-                togglePhone();
+                if (showPhoneButton === true) togglePhone();
               }}>
               <div slot="forms">
                 <input hidden required name="role" value={parsedJWT.role} />
@@ -562,37 +596,57 @@
     {:else if page}
       {#if page == 1}
         <Phone on:close={togglePhone} on:item={handleClick} menuName="Choose Ride">
-          <div slot="content" class="px-4 mt-3">
-            <div class="profile">
+          <div slot="content" class="px-4 mt-2">
+            <div class="profile border-b-2 border-night-2 pt-2 pb-2">
               {#if riderList.length}
                 {#if passage}
                   <p class="text-center w-full">You are already in a ride.</p>
-                  <div class="flex flex-col mb-3 mt-3">
-                    <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
-                  </div>
+                  {#if filledjournal && !journal}
+                    <div class="flex flex-col mb-3 mt-3">
+                      <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
+                    </div>
+                  {/if}
                 {:else}
                   {#await riderList then rider}
                     {#each rider as data}
                       <div
-                        class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
                         on:keypress
-                        on:click={() => selectRide(data)}>
-                        <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
-                        <div>
-                          <p class="flex items-center">
-                            <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
-                          </p>
-                          <p class="flex items-center">
-                            <IoIosLocationOutline
-                              font-size="1.2em"
-                              class="mr-2" />{data.fromLocation}
-                          </p>
-                          <p class="flex items-center">
-                            <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
-                          </p>
-                          <p class="flex items-center">
-                            <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
-                          </p>
+                        on:click={() => selectRide(data)}
+                        class="hover:bg-night-2 cursor-pointer rounded">
+                        <div class="gap-3 w-full flex items-center">
+                          <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                          <div>
+                            <p class="flex items-center">
+                              <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
+                            </p>
+                            <p class="flex items-center">
+                              <IoIosLocationOutline
+                                font-size="1.2em"
+                                class="mr-2" />{data.fromLocation}
+                            </p>
+                            <p class="flex items-center">
+                              <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
+                            </p>
+                            <p class="flex items-center">
+                              <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
+                            </p>
+                          </div>
+                        </div>
+                        <div class="flex items-center mt-1 gap-1 justify-center">
+                          <p>Personal best:</p>
+                          <div class="flex">
+                            {#each { length: 5 } as _, i}
+                              {#if i < getReviewStars(data)}
+                                <IonStar
+                                  font-size="1em"
+                                  class={getReviewStars(data) === 5 && i < 5
+                                    ? "w-5 text-aurora-yellow"
+                                    : "w-5"} />
+                              {:else}
+                                <IonStarOutline font-size="1em" class="w-5" />
+                              {/if}
+                            {/each}
+                          </div>
                         </div>
                       </div>
                     {/each}
@@ -630,12 +684,11 @@
                     <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
                     <div class="overflow-x-hidden whitespace-nowrap">
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"><IoIosCard font-size="1.2em" /></span>
+                        <IoIosCard font-size="1.2em" class="mr-2" />
                         {data.ride.passenger.name}
                       </p>
                       <p class="flex items-center">
-                        <span class="w-5 mr-2 text-frost-3"
-                          ><IoIosCalendar font-size="1.2em" /></span>
+                        <IoIosCalendar font-size="1.2em" class="mr-2" />
                         {formatDate(data.date)}
                       </p>
                       <div class="inline-flex items-center">
@@ -700,7 +753,7 @@
               <Button
                 onClick={() => (radioSelect = 0)}
                 text="Stop"
-                class="bg-transparent border border-aurora-red hover:bg-aurora-red" />
+                class="!border-aurora-red hover:bg-aurora-red" />
             {/if}
           </div>
         </Phone>
@@ -720,6 +773,7 @@
               <Button
                 onClick={() => {
                   localStorage.clear();
+                  parsedJWT = null;
                   showPhoneButton = false;
                   welcome = true;
                   dialog = false;

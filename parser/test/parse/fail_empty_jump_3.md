@@ -1,9 +1,14 @@
 :character y You 1
 :character p Paolo 2
-:default p
+:default paolo
 :rideid 1
+:ridename a
 
 # start
 
-text
+text [:]
+
+## branch2
+
+text2
 :end

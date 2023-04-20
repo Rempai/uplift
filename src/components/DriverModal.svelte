@@ -1,54 +1,95 @@
 <script lang="ts">
+  import type { ReviewRead } from "@/lib/client";
   import IoIosChevronBackOutline from "~icons/ion/chevron-back-outline";
   import IoIosChevronForwardOutline from "~icons/ion/chevron-forward-outline";
-  import IoIosStarOutline from "~icons/ion/star-outline";
+  import IonStar from "~icons/ion/star";
+  import IonStarOutline from "~icons/ion/star-outline";
+  import IonHalfStar from "~icons/ion/star-half";
 
 	export let showDriverModal;
+  export let username: string;
+  export let reviewList: Array<ReviewRead>;
+
 
 	let dialog;
+	let rate;
 
 	$: if (dialog && showDriverModal) dialog.showModal();
 
-  const colors = ['#BF616A', '#D08770', '#EBCB8B', '#A3BE8C', '#B48EAD']; // array of predefined colors
-  let currentColorIndex = 0;
+  let colors = ['aurora-red', 'aurora-orange', 'aurora-yellow', 'aurora-green', 'aurora-purple']; // array of predefined colors
+  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
 
   function changeColor(direction) {
-    if (direction === 'left') {
+    if (direction === "left") {
       currentColorIndex = (currentColorIndex - 1 + colors.length) % colors.length;
     } else {
       currentColorIndex = (currentColorIndex + 1) % colors.length;
     }
+
+    localStorage.setItem("currentColorIndex", currentColorIndex.toString());
   }
+
+  $: bgColor = colors[currentColorIndex];
+
+  const getReviewAverage = () => {
+   const totalReviews = reviewList.reduce((acc,curr)=>{
+    return acc+curr.stars;
+   },0);
+   const avg = totalReviews / reviewList.length;
+    rate = Math.round(avg * 2) / 2;
+  }
+
+  $: if (reviewList) getReviewAverage();
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog
 	bind:this={dialog}
 	on:close={() => (showDriverModal = false)}
 	on:click|self={() => dialog.close()}
-  class='card before:bg-[{colors[currentColorIndex]}]'
+  class='lg:h-2/5 lg:w-[35%] min-w-fit bg-{bgColor} before:bg-[url("/rijbewijs_feedback_noarrows.png")] before:bg-cover before:absolute before:inset-0 before:z-[-99] select-none rounded-[39px]'
 >
+<div class="flex flex-col h-full">
 	<div class="flex justify-between items-center h-full" on:click|stopPropagation>
-    <div class="leftArrow ml-[-3.1%]">
+    <div class="flex-initial leftArrow ml-[-3.1%]">
       <button on:click|preventDefault={() => changeColor('left')} type="button"><IoIosChevronBackOutline font-size="1.7em" /></button>
     </div>
-    <div class="licenseContent flex flex-col ml-[10%] text-2xl">
-      <span>Name: xxx</span>
-      <span>Age: xxx</span>
-      <span>Country: xx</span>
-      <span>Achievements: x/x</span>
+    <div class="licenseContent flex flex-col ml-[15%] text-2xl">
+      <span>Name: {username}</span>
+      <span>Age: 23</span>
+      <span>Country: NL</span>
+      <span>Achievements: 3/5</span>
 		<button class="w-32 mt-3 border-2 rounded border-black bg-slate-300 text-xl px-0" on:click={() => dialog.close()}>Close menu</button>
     </div>
     <div class="rightArrow">
       <button on:click|preventDefault={() => changeColor('right')} type="button"><IoIosChevronForwardOutline font-size="1.7em" /></button>
     </div>
 	</div>
+  <div class="flex flex-row justify-end w-4/5 text-xl">
+    <span class="mr-1">AVG. Rating:</span>
+    <span class="flex flex-row">
+      {#each { length: 5 } as _, i}
+  {#if i < Math.floor(rate)}
+    <IonStar
+      font-size="1em"
+      class={rate === 5 && i < 5
+        ? "w-5 text-aurora-yellow"
+        : "w-5"} />
+  {:else if i === Math.floor(rate) && rate % 1 !== 0}
+    <IonHalfStar font-size="1em" class="w-5" />
+  {:else}
+    <IonStarOutline font-size="1em" class="w-5" />
+  {/if}
+{/each}
+
+    </span>
+  </div>
+</div>
 </dialog>
 
 <style>
   dialog::backdrop {
 		background: rgba(0, 0, 0, 0.6);
 	}
-  /* transitions */
 	dialog[open] {
 		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
@@ -71,27 +112,5 @@
 			opacity: 1;
 		}
 	}
-
-  .card{
-    height: 40%;
-    width: 35%;
-    border-radius: 38px;
-    position: relative;
-    user-select: none;
-  }
-
-  .card::before {
-    content: '';
-    background-image: url('/rijbewijs_feedback_noarrows.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    z-index: -99;
-  }
 
 </style>

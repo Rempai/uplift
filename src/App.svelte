@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Router from "svelte-spa-router";
   import { wrap } from "svelte-spa-router/wrap";
   import NotFound from "@/routes/NotFound.svelte";
@@ -106,7 +106,6 @@
   };
 
   const fetchOriginal = window.fetch;
-
   window.fetch = async function (url, options) {
     const headers = new Headers(options.headers);
     const access_token = localStorage.getItem("access_token");
@@ -120,8 +119,9 @@
       headers,
     });
 
-    if (response.status === 401) {
+    if (response.status === 401 || response.statusText === "Unauthorized") {
       const refreshToken = localStorage.getItem("refresh_token");
+
       if (refreshToken) {
         const refreshResponse = await fetchOriginal(OpenAPI.BASE + "/api/auth/refresh/", {
           method: "POST",
@@ -143,21 +143,19 @@
             headers,
           });
           return retryResponse;
-        } else {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("refresh_token");
-          window.location.reload();
         }
-        console.log(refreshResponse);
-      } else {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        window.location.reload();
       }
-    } else {
-      return response;
+      clearLocalStorage();
+      return;
     }
+    return response;
   };
+
+  function clearLocalStorage() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    window.location.reload();
+  }
 </script>
 
 <Router {routes} restoreScrollState={true} />

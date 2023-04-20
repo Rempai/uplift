@@ -2,13 +2,6 @@
 :character p Paolo 2
 :default p
 :rideid 1
+:ridename a
 
-# start
-
-text
-
-## branch1
-
-text
-
-## branch1
+:import multifile_1_sub.md

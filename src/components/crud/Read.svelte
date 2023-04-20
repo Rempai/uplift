@@ -95,7 +95,6 @@
 
     showModal = false;
     // TODO: filter/reduce instead of reloading
-    // also, fix brokey
     window.location.reload();
   };
 
@@ -126,6 +125,14 @@
 
   onMount(async () => {
     let data = await getData(crudRoute);
+
+    for (const row of data) {
+      for (const prop in row) {
+        if (row[prop] === null) {
+          row[prop] = "null";
+        }
+      }
+    }
 
     handler = new DataHandler(data, { rowsPerPage: 10 });
     rows = handler.getRows();
@@ -165,7 +172,7 @@
     {#await rows}
       <Loader />
     {:then}
-      <div class="flex justify-between py-2">
+      <div class="flex justify-between py-2 flex-col md:flex-row">
         <Search {handler} />
         <RowsPerPage {handler} />
       </div>
@@ -239,7 +246,7 @@
           </tbody>
         </table>
       </div>
-      <div class="flex justify-between py-2">
+      <div class="flex justify-between py-2 flex-col md:flex-row">
         <RowCount {handler} />
         <Pagination {handler} />
       </div>

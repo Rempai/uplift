@@ -45,6 +45,12 @@ export const rideHTML = `
   <input required type="number" name="integrity" placeholder="5" />
   <label for="enthusiasm">Enthusiasm</label>
   <input required type="number" name="enthusiasm" placeholder="5" />
+  <label for="mainProblem">Main Problem</label>
+  <textarea required name="mainProblem"></textarea>
+  <label for="mainCause">Main Cause</label>
+  <textarea required name="mainCause"></textarea>
+  <label for="partiesInvolved">Parties Involved</label>
+  <textarea required name="partiesInvolved"></textarea>
   <label for="passengerId">passengerId</label>
   <input required type="number" name="passengerId" placeholder="1" />
 `;
@@ -52,6 +58,8 @@ export const rideHTML = `
 export const reviewHTML = `
   <label for="stars">Stars</label>
   <input required type="number" name="stars" placeholder="3" />
+  <label for="linkedScore">Linked Score</label>
+  <input required type="number" name="linkedScore" placeholder="3" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum"></textarea>
   <label for="rideId">Ride id</label>
@@ -69,8 +77,6 @@ export const passageHTML = `
   <input type="text" name="speaker" />
   <label for="continueButton">Continue Button</label>
   <input type="checkbox" name="continueButton" />
-  <label for="trunk">Trunk</label>
-  <input type="checkbox" name="trunk" />
   <label for="rideId">Ride id</label>
   <input required type="number" name="rideId" placeholder="1" />
   <label for="attributeId">Attributes id</label>
@@ -87,7 +93,8 @@ export const attributeHTML = `
 `;
 
 export const passageBulkHTML = `
-  <input type="file" name="passageBuld">
+  <label for="passageBulk">Passage Bulk</label>
+  <input type="file" name="passageBulk">
 `;
 
 export function userEditHTML(data: UserUpdate): string {
@@ -156,6 +163,12 @@ export function rideEditHTML(data: RideUpdate): string {
   <input required type="number" name="integrity" placeholder="5" value="${data.integrity}" />
   <label for="enthusiasm">Enthusiasm</label>
   <input required type="number" name="enthusiasm" placeholder="5" value="${data.enthusiasm}" />
+  <label for="mainProblem">Main Problem</label>
+  <textarea required name="mainProblem">${data.mainProblem}</textarea>
+  <label for="mainCause">Main Cause</label>
+  <textarea required name="mainCause">${data.mainCause}</textarea>
+  <label for="partiesInvolved">Parties Involved</label>
+  <textarea required name="partiesInvolved">${data.partiesInvolved}</textarea>
   <label for="passengerId">passenger id</label>
   <input required type="number" name="passengerId" placeholder="1" value="${data.passengerId}" />
   `;
@@ -165,6 +178,8 @@ export function reviewEditHTML(data: ReviewUpdate): string {
   return `
   <label for="stars">Stars</label>
   <input required type="number" name="stars" placeholder="3" value="${data.stars}" />
+  <label for="linkedScore">Linked Score</label>
+  <input required type="number" name="linkedScore" placeholder="3" value="${data.linkedScore}" />
   <label for="description">Description</label>
   <textarea required name="description" placeholder="Lorem ipsum">${data.description}</textarea>
   <label for="rideId">RideId</label>
@@ -184,8 +199,6 @@ export function passageEditHTML(data: PassageUpdate): string {
   <input required type="text" name="speaker" placeholder="You" value="${data.speaker}" />
   <label for="continueButton">Continue Button</label>
   <input type="checkbox" name="continueButton" checked="${data.continueButton}" />
-  <label for="trunk">Trunk</label>
-  <input type="checkbox" name="trunk" checked="${data.trunk}" />
   <label for="attributeId">Attributes id</label>
   <input required type="number" name="attributeId" placeholder="1" value="${data.attributeId}" />
   <label for="rideId">Ride id</label>

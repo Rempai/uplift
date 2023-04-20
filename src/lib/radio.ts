@@ -34,10 +34,4 @@ export const radios = [
     name: "Arabnights Radio",
     source: "http://arabnights-prod.live-streams.nl:8020/live",
   },
-  {
-    id: 7,
-    name: "85.2 FM",
-    source:
-      "https://www.soundboard.com/handler/DownLoadTrack.ashx?cliptitle=Still+alive+(Radio+loop)&filename=mt/MTE5NDI3NjUzMTE5NDQ4_dln0fNzdWkI.mp3",
-  },
 ];
