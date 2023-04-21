@@ -9,7 +9,7 @@
 
   let maxWidth = window.innerWidth;
   let maxHeight = window.innerHeight;
-  let width = 11;
+  let width = 12;
   let height = 10;
   let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue("font-size"));
 
