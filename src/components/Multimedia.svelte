@@ -4,7 +4,7 @@
 
   export let passage: PassageRead | null = null;
 
-  let dialogToggled: boolean = false;
+  let dialogToggled = false;
   const dispatch = createEventDispatcher();
 
   const forward = (detail: number) => {
