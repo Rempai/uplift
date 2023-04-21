@@ -45,6 +45,7 @@
   import IonStarOutline from "~icons/ion/star-outline";
 
   import Background from "/background.webm";
+  import Multimedia from "@/components/Multimedia.svelte";
 
   let radioSelect: number;
   let ambientNoise = false;
@@ -437,6 +438,7 @@
 <main>
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
+  <Multimedia on:item={handleClick} on:dialog={toggleDialog} {passage} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
