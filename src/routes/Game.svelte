@@ -383,6 +383,26 @@
 
   $: if (passage) {
     textParsed = textParser(passage.content);
+    console.log(JSON.stringify({
+        string: passage.content
+      }));
+    fetch('https://audio.appelsapje.net/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        string: passage.content
+      })
+    })
+      .then(response => response.blob())
+      .then(blob => {
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(blob);
+        audio.playbackRate = 3.5;
+        audio.play();
+      })
+      .catch(error => console.error(error));
     updateJournalData();
   }
 
