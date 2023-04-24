@@ -606,8 +606,8 @@
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">
-            <Button onClick={triggerRegister} class="bg-frost-4" text="Continue" />
-            <Button onClick={skipAndLogin} class="bg-frost-1" text="Skip and login" />
+            <Button onClick={triggerRegister} class="bg-frost-4" text="New player" />
+            <Button onClick={skipAndLogin} class="bg-frost-1" text="Returning player" />
           </div>
         </div>
       </Phone>
