@@ -429,6 +429,12 @@
 
     return review ? review.stars : null;
   };
+
+  const phonebutton = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) return true;
+    else return false;
+  };
 </script>
 
 <svelte:head>
@@ -555,11 +561,13 @@
       </div>
     {/if}
     {#if showPhoneButton}
-      <button
-        class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
-        on:click={togglePhone}>
-        <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
-      </button>
+      {#if !phonebutton()}
+        <button
+          class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
+          on:click={togglePhone}>
+          <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
+        </button>
+      {/if}
     {:else if login}
       <Phone on:close={togglePhone} on:item={handleClick} menuName="Login">
         <div slot="content" class="px-4 mt-3">
