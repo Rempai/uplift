@@ -359,34 +359,6 @@
     showPhoneButton = false;
   };
 
-  onMount(async () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) {
-      startGame();
-    } else {
-      welcome = true;
-    }
-    if (!resolutionData) {
-      clearResolutionData();
-    }
-  });
-
-  $: console.log(reviewList);
-
-  $: if ($passageName !== "") {
-    nextPassage($passageName);
-  }
-
-  $: if ($emotion <= 70) {
-    filledjournal = false;
-    patienceLost = true;
-  }
-
-  $: if (passage) {
-    textParsed = textParser(passage.content);
-    updateJournalData();
-  }
-
   const losePatience = () => {
     createReview();
     quitRide();
@@ -429,6 +401,34 @@
 
     return review ? review.stars : null;
   };
+
+  onMount(async () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      startGame();
+    } else {
+      welcome = true;
+    }
+    if (!resolutionData) {
+      clearResolutionData();
+    }
+  });
+
+  $: console.log(reviewList);
+
+  $: if ($passageName !== "") {
+    nextPassage($passageName);
+  }
+
+  $: if ($emotion <= 70) {
+    filledjournal = false;
+    patienceLost = true;
+  }
+
+  $: if (passage) {
+    textParsed = textParser(passage.content);
+    updateJournalData();
+  }
 </script>
 
 <svelte:head>
