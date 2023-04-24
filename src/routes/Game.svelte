@@ -45,6 +45,7 @@
   import IonStarOutline from "~icons/ion/star-outline";
 
   import Background from "/background.webm";
+  import Multimedia from "@/components/Multimedia.svelte";
 
   let radioSelect: number;
   let ambientNoise = false;
@@ -428,6 +429,12 @@
 
     return review ? review.stars : null;
   };
+
+  const phonebutton = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) return true;
+    else return false;
+  };
 </script>
 
 <svelte:head>
@@ -437,6 +444,7 @@
 <main>
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
+  <Multimedia on:item={handleClick} on:dialog={toggleDialog} {passage} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
@@ -458,7 +466,7 @@
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
   <div
-    class="h-screen relative bg-[url('/dashboard.png')] bg-repeat bg-cover bg-center">
+    class="rounded h-screen relative bg-[url('/dashboard_stationary.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
@@ -553,11 +561,13 @@
       </div>
     {/if}
     {#if showPhoneButton}
-      <button
-        class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
-        on:click={togglePhone}>
-        <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
-      </button>
+      {#if !phonebutton()}
+        <button
+          class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
+          on:click={togglePhone}>
+          <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
+        </button>
+      {/if}
     {:else if login}
       <Phone on:close={togglePhone} on:item={handleClick} menuName="Login">
         <div slot="content" class="px-4 mt-3">
