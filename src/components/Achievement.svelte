@@ -3,13 +3,12 @@
   import { fly } from "svelte/transition";
   import { tweened } from "svelte/motion";
 
-  export let achievementTitle = "Congratulations! You're a trans!";
-  export let iconImage = "icon.png";
+  export let achievementTitle = "Congratulations! You did something right!";
+  export let iconImage = "icon-outline.png";
   export let triggered = false;
-  export let achievementDescription = "You're officially the worst person in the world!";
-
+  // export let achievementDescription = "You're officially the worst person in the world!";
+  // export let achievementId;
   const rotationAngle = tweened(0);
-  const volume = tweened(0);
   const audio = new Audio("achievement-sylized-fx-2.wav");
 
   $: console.log("triggered", triggered);
@@ -20,10 +19,9 @@
   $: if (triggered) {
     rotationAngle.set(360, { duration: 3750, easing: cubicOut });
     audio.play();
-    volume.set(1);
   } else {
     rotationAngle.set(0);
-    volume.set(0);
+    audio.pause();
   }
 </script>
 
@@ -50,4 +48,4 @@
   </div>
 {/if}
 
-<button on:click={() => (triggered = !triggered)}>transition</button>
+<button class="absolute z-50" on:click={() => (triggered = !triggered)}>transition</button>
