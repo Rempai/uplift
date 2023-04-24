@@ -370,8 +370,6 @@
     }
   });
 
-  $: console.log(reviewList);
-
   $: if ($passageName !== "") {
     nextPassage($passageName);
   }
