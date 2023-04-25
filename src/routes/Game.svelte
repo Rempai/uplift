@@ -91,6 +91,9 @@
 
   let patienceLost = false;
 
+  let allowAudioCall = true;
+  let audio;
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
@@ -238,7 +241,7 @@
 
   const nextPassageName = () => {
     let text = passage.passage;
-
+    allowAudioCall = true;
     if (passage.speaker === "You" && !passage.branch.includes("FinishNow")) {
       text = text.replace("You", "");
     } else {
@@ -382,25 +385,29 @@
   }
 
   $: if (passage) {
-    textParsed = textParser(passage.content);
-    fetch("https://audio.appelsapje.net/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        string: passage.content,
-      }),
-    })
-      .then((response) => response.blob())
-      .then((blob) => {
-        const audio = new Audio();
-        audio.src = URL.createObjectURL(blob);
-        audio.playbackRate = 3.5;
-        audio.play();
+    if(allowAudioCall)
+    {
+      textParsed = textParser(passage.content);
+      fetch("https://audio.appelsapje.net/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          string: passage.content,
+        }),
       })
-      .catch((error) => console.error(error));
-    updateJournalData();
+        .then((response) => response.blob())
+        .then((blob) => {
+          allowAudioCall = false;
+          audio = new Audio();
+          audio.src = URL.createObjectURL(blob);
+          audio.playbackRate = 3.5;
+          audio.play();
+        })
+        .catch((error) => console.error(error));
+      updateJournalData();
+    }
   }
 
   const losePatience = () => {
