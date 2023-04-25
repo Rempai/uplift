@@ -425,6 +425,12 @@
 
     return review ? review.stars : null;
   };
+
+  const phonebutton = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) return true;
+    else return false;
+  };
 </script>
 
 <svelte:head>
@@ -464,8 +470,7 @@
   {#if ambientNoise}
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
-  <div
-    class="rounded h-screen relative bg-[url('/dashboard_stationary.png')] bg-repeat bg-cover bg-center">
+  <div class="rounded h-screen relative bg-[url('/dashboard.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
@@ -560,11 +565,13 @@
       </div>
     {/if}
     {#if showPhoneButton}
-      <button
-        class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
-        on:click={togglePhone}>
-        <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
-      </button>
+      {#if !phonebutton()}
+        <button
+          class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
+          on:click={togglePhone}>
+          <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
+        </button>
+      {/if}
     {:else if login}
       <Phone on:close={togglePhone} on:item={handleClick} menuName="Login">
         <div slot="content" class="px-4 mt-3">
@@ -603,8 +610,8 @@
             <p class="text-frost-1 text-3xl mb-3">Uplift</p>
           </div>
           <div class="gap-5 flex flex-col items-center mt-5">
-            <Button onClick={triggerRegister} class="bg-frost-4" text="Continue" />
-            <Button onClick={skipAndLogin} class="bg-frost-1" text="Skip and login" />
+            <Button onClick={triggerRegister} class="bg-frost-4" text="New player" />
+            <Button onClick={skipAndLogin} class="bg-frost-1" text="Returning player" />
           </div>
         </div>
       </Phone>
