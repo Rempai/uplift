@@ -358,13 +358,15 @@
     showPhoneButton = false;
   };
 
-  function getMe(){
-  UserService.getMe().then((response) => {
-      user = response.username;
-  }).catch((error) => {
-      console.error(error);
-  });
-}
+  function getMe() {
+    UserService.getMe()
+      .then((response) => {
+        user = response.username;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
@@ -422,7 +424,7 @@
     patienceLost = false;
   };
 
-	let showDriverModal = false;
+  let showDriverModal = false;
   const getReviewStars = (data: RideRead) => {
     const review = reviewList.reduce((prevReview, currentReview) => {
       if (currentReview.ride.passenger.name === data.passenger.name) {
@@ -445,18 +447,19 @@
 </svelte:head>
 
 <main>
-
-{#if parsedJWT}
-  <button class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg" on:click={() => {
-    (showDriverModal = true)
-    getMe();
-    }}>
-    Driver License
-   </button>
-{/if}
-   {#if reviewList}
-    <DriverModal bind:showDriverModal username={user} {reviewList}/>
-    {/if}
+  {#if parsedJWT}
+    <button
+      class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg"
+      on:click={() => {
+        showDriverModal = true;
+        getMe();
+      }}>
+      Driver License
+    </button>
+  {/if}
+  {#if reviewList}
+    <DriverModal bind:showDriverModal username={user} {reviewList} />
+  {/if}
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
