@@ -400,6 +400,8 @@
         .then((response) => response.blob())
         .then((blob) => {
           allowAudioCall = false;
+          if(audio)
+            audio.pause();
           audio = new Audio();
           audio.src = URL.createObjectURL(blob);
           audio.playbackRate = 3.5;
