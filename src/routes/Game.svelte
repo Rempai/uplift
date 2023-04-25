@@ -440,6 +440,10 @@
 
     return review ? review.stars : null;
   };
+
+  $: if (showDriverModal){
+    getMe();
+  }
 </script>
 
 <svelte:head>
@@ -452,7 +456,6 @@
       class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg"
       on:click={() => {
         showDriverModal = true;
-        getMe();
       }}>
       Driver License
     </button>
