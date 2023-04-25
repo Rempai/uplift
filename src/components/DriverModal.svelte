@@ -46,21 +46,21 @@
 	bind:this={dialog}
 	on:close={() => (showDriverModal = false)}
 	on:click|self={() => dialog.close()}
-  class='lg:h-2/5 lg:w-[35%] min-w-fit bg-{bgColor} before:bg-[url("/rijbewijs_feedback_noarrows.png")] before:bg-cover before:absolute before:inset-0 before:z-[-99] select-none rounded-[39px]'
+  class='w-max h-2/5 bg-{bgColor} before:bg-[url("/rijbewijs_feedback_noarrows.png")] before:bg-cover before:absolute before:inset-0 before:z-[-99] select-none rounded-[39px]'
 >
 <div class="flex flex-col h-full">
 	<div class="flex justify-between items-center h-full" on:click|stopPropagation>
-    <div class="flex-initial leftArrow ml-[-3.1%]">
+    <div class="flex-initial leftArrow ml-[-1rem]">
       <button on:click|preventDefault={() => changeColor('left')} type="button"><IoIosChevronBackOutline font-size="1.7em" /></button>
     </div>
-    <div class="licenseContent flex flex-col ml-[15%] text-2xl">
+    <div class="licenseContent flex flex-col ml-36 text-xl ml-40">
       <span>Name: {username}</span>
       <span>Age: 23</span>
       <span>Country: NL</span>
       <span>Achievements: 3/5</span>
 		<button class="w-32 mt-3 border-2 rounded border-black bg-slate-300 text-xl px-0" on:click={() => dialog.close()}>Close menu</button>
     </div>
-    <div class="rightArrow">
+    <div class="rightArrow ml-28">
       <button on:click|preventDefault={() => changeColor('right')} type="button"><IoIosChevronForwardOutline font-size="1.7em" /></button>
     </div>
 	</div>
