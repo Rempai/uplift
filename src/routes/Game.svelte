@@ -172,7 +172,8 @@
     reviewText = review.description;
   };
 
-  const selectRide = async (ride: RideRead) => {
+  const selectRide = async (event: CustomEvent) => {
+    const ride: RideRead = event.detail;
     if (passage) {
       return;
     }
@@ -333,11 +334,6 @@
     filledjournal = false;
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-BR", { dateStyle: "short", timeStyle: "short", hour12: false });
-  };
-
   const createReview = async () => {
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
@@ -444,7 +440,16 @@
 <main>
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
-  <Multimedia on:item={handleClick} on:dialog={toggleDialog} {passage} />
+  <Multimedia
+    on:item={handleClick}
+    on:dialog={toggleDialog}
+    on:select={selectRide}
+    on:quitide={quitRide}
+    {passage}
+    {reviewList}
+    {riderList}
+    {filledjournal}
+    {journal} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
@@ -692,7 +697,7 @@
           </div>
         </Phone>
       {:else if page == 3}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Reviews">
+        <!-- <Phone on:close={togglePhone} on:item={handleClick} menuName="Reviews">
           <div slot="content" class="px-4 mt-3">
             {#if reviewList.length}
               {#await reviewList then reviewer}
@@ -739,7 +744,7 @@
               </p>
             {/if}
           </div>
-        </Phone>
+        </Phone> -->
       {:else if page == 4}
         <Phone on:close={togglePhone} on:item={handleClick} menuName="Dashboard">
           <div slot="content" class="px-4 mt-3 flex justify-around">
