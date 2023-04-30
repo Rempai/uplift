@@ -7,6 +7,9 @@ export { OpenAPI } from "./core/OpenAPI";
 export type { OpenAPIConfig } from "./core/OpenAPI";
 
 export type { AccessToken } from "./models/AccessToken";
+export type { AchievementCreate } from "./models/AchievementCreate";
+export type { AchievementRead } from "./models/AchievementRead";
+export type { AchievementUpdate } from "./models/AchievementUpdate";
 export type { AttributeCreate } from "./models/AttributeCreate";
 export type { AttributeRead } from "./models/AttributeRead";
 export type { AttributeUpdate } from "./models/AttributeUpdate";
@@ -29,6 +32,7 @@ export type { RideCreate } from "./models/RideCreate";
 export type { RideRead } from "./models/RideRead";
 export type { RideUpdate } from "./models/RideUpdate";
 export type { Token } from "./models/Token";
+export type { UserAchievementCreate } from "./models/UserAchievementCreate";
 export { UserCreate } from "./models/UserCreate";
 export { UserRead } from "./models/UserRead";
 export { UserUpdate } from "./models/UserUpdate";

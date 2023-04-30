@@ -49,7 +49,7 @@
       text="✏ Main Problem" />
     <MenuOption
       on:click={() => dispatchClick({ text: selectedText, type: "partiesInvolved" })}
-      text="✏ Involved Party" />
+      text="✏ Parties Involved" />
     <MenuOption
       on:click={() => dispatchClick({ text: selectedText, type: "mainCause" })}
       text="✏ Primary Cause" />
