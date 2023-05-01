@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { radios } from "@/lib/radio";
   import type { PassageRead, ReviewRead, RideRead } from "@/lib/client";
   import { createEventDispatcher } from "svelte";
   import Modal from "./Modal.svelte";
@@ -18,6 +19,7 @@
     passenger: "",
     text: "",
   };
+  let radioSelect: number;
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -61,11 +63,14 @@
     }
   };
 
+  $: console.log(modalOpened);
+
   const quit = () => {
-    dispatch("quitide");
+    dispatch("quitride");
   };
 
   const select = (data: RideRead) => {
+    modalOpened = false;
     dispatch("select", data);
   };
 
@@ -97,6 +102,10 @@
       ? "multimedia/Dialogue_green_icon.png"
       : "multimedia/Dialogue_red_icon.png";
 </script>
+
+{#if radioSelect}
+  <audio class="hidden" autoplay controls loop src={radios[radioSelect].source} />
+{/if}
 
 <Modal showModal={modalOpened} on:click={handleModal} {modalHeader}>
   {#if activeContent === "Achievements"}
@@ -155,7 +164,9 @@
           You have no reviews, please <span
             class="text-aurora-orange cursor-pointer"
             on:keypress
-            on:click={() => (page = 1)}>select a ride</span>
+            on:click={() => {
+              handleModal(), forward(0, "Contacts");
+            }}>select a ride</span>
         </p>
       {/if}
     </div>
@@ -226,6 +237,44 @@
       </div>
     </div>
   {/if}
+  {#if activeContent === "Radio"}
+    <div class="px-4 mt-3 flex flex-col items-center">
+      <select name="station" bind:value={radioSelect} class="my-5 p-3 bg-frost-4 rounded">
+        {#each radios as radio}
+          <option value={radio.id}>{radio.name}</option>
+        {/each}
+      </select>
+      {#if radioSelect}
+        <Button
+          onClick={() => (radioSelect = 0)}
+          text="Stop"
+          class="!border-aurora-red hover:bg-aurora-red" />
+      {/if}
+    </div>
+  {/if}
+  {#if activeContent === "Settings"}
+    <div class="px-4 mt-3">
+      <p class="text-center text-3xl text-frost-1">Account</p>
+      <div class="flex flex-col items-center gap-5 mt-6 mx-12">
+        <Button
+          onClick={() => dispatch("changeAccount", "username")}
+          text="Username"
+          class="bg-aurora-purple w-full" />
+        <Button
+          onClick={() => dispatch("changeAccount", "password")}
+          text="Password"
+          class="bg-aurora-orange w-full" />
+        <Button onClick={() => dispatch("logout")} text="Logout" class="bg-aurora-green w-full" />
+        <Button
+          onClick={() => dispatch("changeAccount", "Delete")}
+          text="Delete account"
+          class="bg-aurora-red w-full" />
+      </div>
+    </div>
+  {/if}
+  {#if activeContent === "Notes"}
+    <p>TODO: Journal etc here</p>
+  {/if}
   {#if activeContent === "SingleReview"}
     <p>{singleReviewData.text}</p>
   {/if}
@@ -275,7 +324,7 @@
         src="multimedia/Music_icon.png"
         alt="music"
         class="w-full h-full cursor-pointer"
-        on:click={() => forward(4, "Music")}
+        on:click={() => forward(4, "Radio")}
         on:keydown />
     </div>
     <div class="flex gap-2 p-2">
