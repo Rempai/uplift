@@ -14,6 +14,7 @@
   let activeContent: string;
   let modalHeader = "Menu";
   let modalOpened = false;
+  let login = false;
   let singleReviewData = {
     passenger: "",
     text: "",
@@ -33,10 +34,13 @@
   const dispatch = createEventDispatcher();
 
   const forward = (clickedPage: number, pressedItem: string, headerTitle?: string) => {
-    page = clickedPage + 1;
-    activeContent = pressedItem;
-    modalHeader = headerTitle || pressedItem || "Menu";
-    handleModal();
+    checkAccess();
+    if (login) {
+      page = clickedPage + 1;
+      activeContent = pressedItem;
+      modalHeader = headerTitle || pressedItem || "Menu";
+      handleModal();
+    }
   };
 
   const handleModal = () => {
@@ -96,6 +100,13 @@
       : passage
       ? "multimedia/Dialogue_green_icon.png"
       : "multimedia/Dialogue_red_icon.png";
+
+  const checkAccess = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken != null) {
+      login = true;
+    }
+  };
 </script>
 
 <Modal showModal={modalOpened} on:click={handleModal} {modalHeader}>
@@ -178,6 +189,7 @@
                   <div
                     on:keypress
                     on:click={() => select(data)}
+                    on:click={handleModal}
                     class="hover:bg-night-2 cursor-pointer rounded">
                     <div class="gap-3 w-full flex items-center">
                       <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
