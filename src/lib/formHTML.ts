@@ -1,5 +1,5 @@
 import type {
-    AchievementUpdate,
+  AchievementUpdate,
   AttributeUpdate,
   PassageUpdate,
   PassengerUpdate,

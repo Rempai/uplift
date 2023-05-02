@@ -28,7 +28,7 @@ import IoIosStarOutline from "~icons/ion/star-outline";
 import IoIosDocOutline from "~icons/ion/document-text-outline";
 import IoIosAttach from "~icons/ion/attach-outline";
 import IonGitMergeOutline from "~icons/ion/git-merge-outline";
-import IonStatsChartOutline from '~icons/ion/stats-chart-outline'
+import IonStatsChartOutline from "~icons/ion/stats-chart-outline";
 
 export interface route {
   route: string;
