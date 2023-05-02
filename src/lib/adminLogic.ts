@@ -2,6 +2,8 @@ import { push } from "svelte-spa-router";
 
 import { parseJwt } from "@/lib/jwtParser";
 import {
+  achievementEditHTML,
+  achievementHTML,
   attributeEditHTML,
   attributeHTML,
   passageBulkHTML,
@@ -26,6 +28,7 @@ import IoIosStarOutline from "~icons/ion/star-outline";
 import IoIosDocOutline from "~icons/ion/document-text-outline";
 import IoIosAttach from "~icons/ion/attach-outline";
 import IonGitMergeOutline from "~icons/ion/git-merge-outline";
+import IonStatsChartOutline from '~icons/ion/stats-chart-outline'
 
 export interface route {
   route: string;
@@ -46,6 +49,13 @@ export const routes: Array<route> = [
     icon: IoIosPersonCircleOutline,
     service: UserService.deleteUser,
     role: "Admin",
+  },
+  {
+    route: "/admin/achievement",
+    call: "/user/achievement/achievements",
+    icon: IonStatsChartOutline,
+    service: UserService.deleteAchievement,
+    role: "Writer",
   },
   {
     route: "/admin/passenger",
@@ -90,6 +100,13 @@ export const routes: Array<route> = [
     html: userHTML,
     service: UserService.postUser,
     role: "Admin",
+  },
+  {
+    route: "/admin/achievement/create",
+    call: "/user/achevement/",
+    html: achievementHTML,
+    service: UserService.postAchievement,
+    role: "Writer",
   },
   {
     route: "/admin/passenger/create",
@@ -142,6 +159,13 @@ export const routes: Array<route> = [
     call: "/user/",
     html: userEditHTML,
     service: UserService.updateUser,
+    role: "Admin",
+  },
+  {
+    route: "/admin/achievement/edit",
+    call: "/user/achievement/",
+    html: achievementEditHTML,
+    service: UserService.updateAchievement,
     role: "Admin",
   },
   {

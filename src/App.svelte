@@ -29,6 +29,10 @@
       asyncComponent: () => import("@/routes/AdminRead.svelte"),
     }),
 
+    "/admin/achievement": wrap({
+      asyncComponent: () => import("@/routes/AdminRead.svelte"),
+    }),
+
     "/admin/passenger": wrap({
       asyncComponent: () => import("@/routes/AdminRead.svelte"),
     }),
@@ -50,6 +54,10 @@
     }),
 
     "/admin/user/create": wrap({
+      asyncComponent: () => import("@/routes/AdminCreate.svelte"),
+    }),
+
+    "/admin/achievement/create": wrap({
       asyncComponent: () => import("@/routes/AdminCreate.svelte"),
     }),
 
@@ -78,6 +86,10 @@
     }),
 
     "/admin/user/edit/:id": wrap({
+      asyncComponent: () => import("@/routes/AdminEdit.svelte"),
+    }),
+
+    "/admin/achievement/edit/:id": wrap({
       asyncComponent: () => import("@/routes/AdminEdit.svelte"),
     }),
 
