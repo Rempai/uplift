@@ -28,7 +28,7 @@
   import TiTime from "~icons/typcn/time";
   import FaRoute from "~icons/fa6-solid/route";
   import IoIosCalendar from "~icons/ion/calendar";
-  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
+  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp"; // not in use?
   import IonStar from "~icons/ion/star";
   import IonStarOutline from "~icons/ion/star-outline";
   import Button from "./Button.svelte";
@@ -78,7 +78,9 @@
   };
 
   const toggleJournal = () => {
-    dispatch("journalPressed");
+    if (buttonAccess) {
+      dispatch("journalPressed");
+    }
   };
 
   const formatDate = (dateString: string) => {

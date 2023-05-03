@@ -416,12 +416,6 @@
       phonebutton = true;
     }
   };
-
-  const phonebutton = () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken) return true;
-    else return false;
-  };
 </script>
 
 <svelte:head>
@@ -609,6 +603,5 @@
     {:else}
       <Phone on:close={togglePhone} on:item={handleClick} />
     {/if}
-    <Phone on:close={togglePhone} on:item={handleClick} />
   </div>
 </main>
