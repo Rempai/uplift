@@ -5,7 +5,6 @@
   import { passageName, validation, emotion } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validationErrorCheck } from "@/lib/validation";
-  import { radios } from "@/lib/radio";
   import {
     loginForAccessToken,
     registerForAccessToken,
@@ -42,6 +41,7 @@
   let ambientNoise = false;
 
   let showPhoneButton = true;
+  let phonebutton = true;
 
   let loader = true;
 
@@ -85,6 +85,7 @@
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
+      checkPhoneButton();
       startGame();
     } else {
       $validation = $validation;
@@ -356,6 +357,7 @@
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
+      checkPhoneButton();
       startGame();
     } else {
       welcome = true;
@@ -406,10 +408,13 @@
     patienceLost = false;
   };
 
-  const phonebutton = () => {
+  const checkPhoneButton = () => {
     const accessToken = localStorage.getItem("access_token");
-    if (accessToken) return true;
-    else return false;
+    if (accessToken != null) {
+      phonebutton = false;
+    } else {
+      phonebutton = true;
+    }
   };
 </script>
 
@@ -545,7 +550,7 @@
       </div>
     {/if}
     {#if showPhoneButton}
-      {#if !phonebutton()}
+      {#if phonebutton}
         <button
           class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
           on:click={togglePhone}>
@@ -595,6 +600,8 @@
           </div>
         </div>
       </Phone>
+    {:else}
+      <Phone on:close={togglePhone} on:item={handleClick} />
     {/if}
     <Phone on:close={togglePhone} on:item={handleClick} />
   </div>

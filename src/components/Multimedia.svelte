@@ -20,6 +20,7 @@
     text: "",
   };
   let radioSelect: number;
+  let buttonAccess = false;
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -35,10 +36,13 @@
   const dispatch = createEventDispatcher();
 
   const forward = (clickedPage: number, pressedItem: string, headerTitle?: string) => {
-    page = clickedPage + 1;
-    activeContent = pressedItem;
-    modalHeader = headerTitle || pressedItem || "Menu";
-    handleModal();
+    checkAccess();
+    if (buttonAccess) {
+      page = clickedPage + 1;
+      activeContent = pressedItem;
+      modalHeader = headerTitle || pressedItem || "Menu";
+      handleModal();
+    }
   };
 
   const handleModal = () => {
@@ -104,6 +108,13 @@
       : passage
       ? "multimedia/Dialogue_green_icon.png"
       : "multimedia/Dialogue_red_icon.png";
+
+  const checkAccess = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken != null) {
+      buttonAccess = true;
+    }
+  };
 </script>
 
 {#if radioSelect}
