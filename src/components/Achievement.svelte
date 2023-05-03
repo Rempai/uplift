@@ -1,17 +1,14 @@
 <script lang="ts">
-  import { cubicOut } from "svelte/easing";
+  import { cubicOut, cubicInOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { tweened } from "svelte/motion";
-
   export let achievementTitle = "Congratulations! You did something right!";
   export let iconImage = "icon-outline.png";
   export let triggered = false;
   // export let achievementDescription = "You're officially the worst person in the world!";
-  // export let achievementId;
   const rotationAngle = tweened(0);
   const audio = new Audio("achievement-sylized-fx-2.wav");
 
-  $: console.log("triggered", triggered);
   $: setInterval(() => {
     triggered = false;
   }, 10000);
@@ -28,7 +25,7 @@
 {#if triggered}
   <div
     class="w-80 h-20 top-0 right-0 absolute z-50 mt-4 mr-4"
-    in:fly={{ x: 125, duration: 700, easing: cubicOut }}
+    in:fly={{ x: 525, duration: 700, easing: cubicInOut }}
     out:fly={{ x: 125, duration: 700, easing: cubicOut }}>
     <div id="background" class="bg-white rounded h-full">
       <div
