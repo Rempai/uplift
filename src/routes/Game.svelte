@@ -136,10 +136,6 @@
     showPhoneButton = !showPhoneButton;
   };
 
-  const toggleAmbient = () => {
-    ambientNoise = !ambientNoise;
-  };
-
   const toggleJournal = () => {
     journal = !journal;
     dialog = false;
@@ -148,10 +144,6 @@
   const toggleDialog = () => {
     dialog = !dialog;
     journal = false;
-  };
-
-  const handleClick = (event: CustomEvent) => {
-    // page = event.detail;
   };
 
   const skipAndLogin = () => {
@@ -164,12 +156,6 @@
     $validation.length = 0;
     welcome = !welcome;
     register = true;
-  };
-
-  const toggleModal = (review: ReviewRead) => {
-    modalHeader = review.ride.passenger.name + "'s review";
-    showModal = !showModal;
-    reviewText = review.description;
   };
 
   const selectRide = async (event: CustomEvent) => {
@@ -426,7 +412,6 @@
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Multimedia
-    on:item={handleClick}
     on:dialog={toggleDialog}
     on:select={selectRide}
     on:quitride={quitRide}
@@ -558,7 +543,7 @@
         </button>
       {/if}
     {:else if login}
-      <Phone on:close={togglePhone} on:item={handleClick} menuName="Login">
+      <Phone on:close={togglePhone} menuName="Login">
         <div slot="content" class="px-4 mt-3">
           <p class="text-center text-3xl text-frost-1">Login</p>
           <Form
@@ -573,7 +558,7 @@
         </div>
       </Phone>
     {:else if register}
-      <Phone on:close={togglePhone} on:item={handleClick} menuName="Register">
+      <Phone on:close={togglePhone} menuName="Register">
         <div slot="content" class="px-4 mt-3">
           <p class="text-center text-3xl text-frost-1">Register</p>
           <Form
@@ -587,7 +572,7 @@
         </div>
       </Phone>
     {:else if welcome}
-      <Phone on:close={togglePhone} on:item={handleClick} menuName="Welcome">
+      <Phone on:close={togglePhone} menuName="Welcome">
         <div slot="content" class="px-4 mt-3">
           <div class="flex flex-col items-center gap-6">
             <p class="text-3xl">Welcome to</p>
@@ -601,8 +586,7 @@
         </div>
       </Phone>
     {:else}
-      <Phone on:close={togglePhone} on:item={handleClick} />
+      <Phone on:close={togglePhone} />
     {/if}
-    <Phone on:close={togglePhone} on:item={handleClick} />
   </div>
 </main>
