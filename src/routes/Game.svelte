@@ -40,7 +40,6 @@
 
   let ambientNoise = false;
 
-  let page: number;
   let showPhoneButton = true;
   let phonebutton = true;
 
@@ -152,7 +151,7 @@
   };
 
   const handleClick = (event: CustomEvent) => {
-    page = event.detail;
+    // page = event.detail;
   };
 
   const skipAndLogin = () => {
@@ -433,6 +432,7 @@
     on:quitride={quitRide}
     on:changeAccount={changeAccount}
     on:logout={handleLogout}
+    on:journalPressed={toggleJournal}
     {passage}
     {reviewList}
     {riderList}
@@ -541,7 +541,7 @@
       </div>
     {/if}
     {#if journal}
-      <div in:fade class="w-9/12">
+      <div in:fade class="w-9/12 z-30">
         <Journal
           {journalData}
           {resolutionData}
@@ -603,5 +603,6 @@
     {:else}
       <Phone on:close={togglePhone} on:item={handleClick} />
     {/if}
+    <Phone on:close={togglePhone} on:item={handleClick} />
   </div>
 </main>
