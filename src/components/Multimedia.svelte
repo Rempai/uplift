@@ -20,6 +20,7 @@
     text: "",
   };
   let radioSelect: number;
+  let buttonAccess = false;
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -35,14 +36,18 @@
   const dispatch = createEventDispatcher();
 
   const forward = (clickedPage: number, pressedItem: string, headerTitle?: string) => {
-    page = clickedPage + 1;
-    activeContent = pressedItem;
-    modalHeader = headerTitle || pressedItem || "Menu";
-    handleModal();
+    checkAccess();
+    if (buttonAccess) {
+      page = clickedPage + 1;
+      activeContent = pressedItem;
+      modalHeader = headerTitle || pressedItem || "Menu";
+      handleModal();
+    }
   };
 
   const handleModal = () => {
     if (modalOpened === true) activeContent = null;
+    journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
     modalOpened = !modalOpened;
   };
@@ -63,8 +68,6 @@
     }
   };
 
-  $: console.log(modalOpened);
-
   const quit = () => {
     dispatch("quitride");
   };
@@ -72,6 +75,10 @@
   const select = (data: RideRead) => {
     modalOpened = false;
     dispatch("select", data);
+  };
+
+  const toggleJournal = () => {
+    dispatch("journalPressed");
   };
 
   const formatDate = (dateString: string) => {
@@ -101,6 +108,13 @@
       : passage
       ? "multimedia/Dialogue_green_icon.png"
       : "multimedia/Dialogue_red_icon.png";
+
+  const checkAccess = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken != null) {
+      buttonAccess = true;
+    }
+  };
 </script>
 
 {#if radioSelect}
@@ -273,7 +287,7 @@
     </div>
   {/if}
   {#if activeContent === "Notes"}
-    <p>TODO: Journal etc here</p>
+    {toggleJournal()}
   {/if}
   {#if activeContent === "SingleReview"}
     <p>{singleReviewData.text}</p>
@@ -332,7 +346,7 @@
         src="multimedia/Notes_icon.png"
         alt="notes"
         class="w-full h-full cursor-pointer"
-        on:click={() => forward(3, "Notes")}
+        on:click={toggleJournal}
         on:keydown />
       <!-- drivers license hier? -->
       <img
