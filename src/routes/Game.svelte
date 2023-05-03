@@ -427,6 +427,7 @@
     on:quitride={quitRide}
     on:changeAccount={changeAccount}
     on:logout={handleLogout}
+    on:journalPressed={toggleJournal}
     {passage}
     {reviewList}
     {riderList}
@@ -535,7 +536,7 @@
       </div>
     {/if}
     {#if journal}
-      <div in:fade class="w-9/12">
+      <div in:fade class="w-9/12 z-30">
         <Journal
           {journalData}
           {resolutionData}
