@@ -1,7 +1,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { AchievementCreate } from "../models/AchievementCreate";
+import type { AchievementRead } from "../models/AchievementRead";
+import type { AchievementUpdate } from "../models/AchievementUpdate";
 import type { Response } from "../models/Response";
+import type { UserAchievementCreate } from "../models/UserAchievementCreate";
 import type { UserCreate } from "../models/UserCreate";
 import type { UserRead } from "../models/UserRead";
 import type { UserUpdate } from "../models/UserUpdate";
@@ -126,6 +130,145 @@ export class UserService {
     return __request(OpenAPI, {
       method: "POST",
       url: "/api/user/",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Get Achievements
+   * @param limit
+   * @param offset
+   * @param userId
+   * @returns AchievementRead Successful Response
+   * @throws ApiError
+   */
+  public static getAchievements(
+    limit?: number,
+    offset?: number,
+    userId?: number
+  ): CancelablePromise<Array<AchievementRead>> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/user/achievement/achievements/",
+      query: {
+        limit: limit,
+        offset: offset,
+        userId: userId,
+      },
+      errors: {
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Get Achievement By Id
+   * @param id
+   * @returns AchievementRead Successful Response
+   * @throws ApiError
+   */
+  public static getAchievementById(id: number): CancelablePromise<AchievementRead> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/user/achievement/{id}/",
+      path: {
+        id: id,
+      },
+      errors: {
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Delete Achievement
+   * @param id
+   * @returns Response Successful Response
+   * @throws ApiError
+   */
+  public static deleteAchievement(id: number): CancelablePromise<Response> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/user/achievement/{id}/",
+      path: {
+        id: id,
+      },
+      errors: {
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Update Achievement
+   * @param id
+   * @param requestBody
+   * @returns AchievementUpdate Successful Response
+   * @throws ApiError
+   */
+  public static updateAchievement(
+    id: number,
+    requestBody: AchievementUpdate
+  ): CancelablePromise<AchievementUpdate> {
+    return __request(OpenAPI, {
+      method: "PATCH",
+      url: "/api/user/achievement/{id}/",
+      path: {
+        id: id,
+      },
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        404: `Not Found`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Post Achievement
+   * @param requestBody
+   * @returns Response Created Resource
+   * @throws ApiError
+   */
+  public static postAchievement(requestBody: AchievementCreate): CancelablePromise<Response> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/user/achievement/",
+      body: requestBody,
+      mediaType: "application/json",
+      errors: {
+        400: `Bad Request`,
+        401: `Unauthorized`,
+        500: `Internal Server Error`,
+      },
+    });
+  }
+
+  /**
+   * Post UserAchievement
+   * @param requestBody
+   * @returns Response Created Resource
+   * @throws ApiError
+   */
+  public static postUserAchievement(
+    requestBody: UserAchievementCreate
+  ): CancelablePromise<Response> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/user/user_achievement/",
       body: requestBody,
       mediaType: "application/json",
       errors: {
