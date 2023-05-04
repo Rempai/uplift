@@ -33,6 +33,7 @@
   import Journal from "@/components/Journal.svelte";
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
+  import Popup from "@/components/Popup.svelte";
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -90,6 +91,9 @@
   let passedPassages: Array<string> = [];
 
   let patienceLost = false;
+
+  let progression = 0;
+  let showPopup = true;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -262,7 +266,9 @@
 
     if (passage && !passedPassages.includes(passage.passage)) {
       emotion.update((e) => e + passage.emotion);
-      passedPassages = [...passedPassages, passage.passage];
+      if (!passage.branch.includes("Finish") && !(passage.emotion < 0))
+        passedPassages = [...passedPassages, passage.passage];
+      console.log(passedPassages);
     }
 
     if (passage == undefined) {
@@ -456,6 +462,9 @@
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
   <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
+        {#if showPopup}
+          <Popup {showPopup} {progression} {allPassages} {passedPassages} />
+        {/if}
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
