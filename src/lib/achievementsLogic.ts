@@ -7,6 +7,7 @@ type achievementObj = {
   reviewList?: ReviewRead[] | null;
   riderList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
+  resolutionData?: RideRead | null;
   currentRadio?: number | null;
   tutorialCompleted?: boolean | null;
 };
@@ -17,6 +18,7 @@ export const isAchieved = ({
   userId,
   achievementId,
   reviewList = null,
+  resolutionData = null,
   currentRadio = null,
   tutorialCompleted = null,
   riderList = null,
@@ -29,7 +31,6 @@ export const isAchieved = ({
         postUserAchievement(userId, achievementId);
         return true;
       }
-      console.log("already unlocked");
       return false;
     case 2:
       if (!IdUnlockedAchievements.includes(achievementId)) {
@@ -39,7 +40,6 @@ export const isAchieved = ({
           return true;
         }
       }
-      console.log("already unlocked");
       return false;
     case 4:
       if (!IdUnlockedAchievements.includes(achievementId)) {
@@ -51,8 +51,19 @@ export const isAchieved = ({
         postUserAchievement(userId, achievementId);
         return true;
       }
-      console.log("already unlocked");
       return false;
+
+    case 7: {
+      if (!IdUnlockedAchievements.includes(achievementId)) {
+        if (
+          resolutionData.mainProblem === "Overwhelmed" &&
+          resolutionData.partiesInvolved === "My friends and school career would be in trouble." &&
+          (resolutionData.mainCause = "I can't have fun without feeling guilty.")
+        ) {
+          return true;
+        }
+      }
+    }
     case 9:
       if (!IdUnlockedAchievements.includes(achievementId)) {
         if (riderList && reviewList) {
@@ -67,7 +78,6 @@ export const isAchieved = ({
           }
         }
       }
-      console.log("already unlocked");
       return false;
     default:
       return false;
