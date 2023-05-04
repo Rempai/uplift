@@ -11,7 +11,7 @@
     registerForAccessToken,
     updateUserAccount,
   } from "@/lib/authProcesses";
-
+  import { isAchieved, IdUnlockedAchievements } from "@/lib/achievementsLogic";
   import {
     CharactersService,
     OpenAPI,
@@ -21,6 +21,7 @@
     type ReviewRead,
     type RideRead,
     type ReviewedUserCreate,
+    type AchievementRead,
   } from "@/lib/client";
 
   import Dialog from "@/components/Dialog.svelte";
@@ -92,6 +93,14 @@
 
   let patienceLost = false;
 
+  let triggerAchievement = false;
+  let unlockedAchievement = "";
+
+  let allAchievements: Array<AchievementRead> = [];
+  let unlockedAchievements = [];
+
+  let tutorialCompleted = false;
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
@@ -129,6 +138,14 @@
 
     await CharactersService.getReviews(parsedJWT.sub)
       .then((res) => (reviewList = res))
+      .catch((err) => showError(err));
+
+    await UserService.getAchievements()
+      .then((res) => (allAchievements = res))
+      .catch((err) => showError(err));
+
+    await UserService.getAchievements(0, 0, parsedJWT.sub)
+      .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
   };
 
@@ -349,10 +366,21 @@
       reviewId: reviewScore,
       date: currentTime,
     };
-
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+
+    // Achievement: Completed all rides
+    handleAchievement(9);
+
+    //Achievement: 4,5 stars on a Ride
+    if (reviewList.length === 1) {
+      if (reviewList[0].stars >= 4) {
+        handleAchievement(4);
+      }
+    }
+    //Achievement: Completed first ride
+    handleAchievement(1);
 
     page = 3;
     togglePhone();
@@ -402,6 +430,29 @@
     return review ? review.stars : null;
   };
 
+  const handleAchievement = (achievementId: number) => {
+    // TODO: Achievement emotion meter: emotion stays above level whole game
+    //TODO: Achievement journal correctly first time
+    // TODO: Change license
+
+    unlockedAchievements.forEach((item) => {
+      if (!IdUnlockedAchievements.includes(item.achievementId)) {
+        IdUnlockedAchievements.push(item.achievementId);
+      }
+    });
+
+    triggerAchievement = isAchieved({
+      userId: parsedJWT.sub,
+      achievementId: achievementId,
+      reviewList: reviewList,
+      currentRadio: radioSelect,
+      tutorialCompleted: tutorialCompleted,
+      riderList: riderList,
+    });
+    unlockedAchievement = allAchievements[achievementId - 1].name;
+    console.log(IdUnlockedAchievements, "idunlocked");
+  };
+
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
@@ -413,8 +464,6 @@
       clearResolutionData();
     }
   });
-
-  $: console.log(reviewList);
 
   $: if ($passageName !== "") {
     nextPassage($passageName);
@@ -429,6 +478,13 @@
     textParsed = textParser(passage.content);
     updateJournalData();
   }
+  //Add already achieved check
+  $: if (radioSelect === 4) {
+    handleAchievement(5);
+  }
+  $: console.log(allAchievements, "all");
+  $: console.log(unlockedAchievements, "unlocked");
+  $: console.log(IdUnlockedAchievements, "id");
 </script>
 
 <svelte:head>
@@ -436,7 +492,7 @@
 </svelte:head>
 
 <main>
-  <Achievement />
+  <Achievement achievementTitle={unlockedAchievement} triggered={triggerAchievement} />
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
