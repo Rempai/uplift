@@ -9,7 +9,7 @@
   const rotationAngle = tweened(0);
   const audio = new Audio("achievement-sylized-fx-2.wav");
 
-  $: setInterval(() => {
+  $: setTimeout(() => {
     triggered = false;
   }, 10000);
 
