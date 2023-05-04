@@ -10,7 +10,6 @@
   export let filledjournal: boolean;
   export let journal: boolean;
 
-  let page: number;
   let dialogToggled = false;
   let activeContent: string;
   let modalHeader = "Menu";
@@ -37,7 +36,6 @@
   const forward = (clickedPage: number, pressedItem: string, headerTitle?: string) => {
     checkAccess();
     if (buttonAccess) {
-      page = clickedPage + 1;
       activeContent = pressedItem;
       modalHeader = headerTitle || pressedItem || "Menu";
       handleModal();
@@ -280,7 +278,10 @@
           onClick={() => dispatch("changeAccount", "password")}
           text="Password"
           class="bg-aurora-orange w-full" />
-        <Button onClick={() => dispatch("logout")} text="Logout" class="bg-aurora-green w-full" />
+        <Button
+          onClick={(() => dispatch("logout"))}
+          text="Logout"
+          class="bg-aurora-green w-full" />
         <Button
           onClick={() => dispatch("changeAccount", "Delete")}
           text="Delete account"
