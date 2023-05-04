@@ -332,6 +332,9 @@
     } else if (event.detail.type === "mainCause") {
       resolutionData.mainCause = event.detail.text;
     }
+
+    // Achievement : Perfect journal for Ride Paolo
+    handleAchievement(7);
   };
 
   const gotoBranch = async (event: CustomEvent) => {
@@ -373,12 +376,11 @@
     // Achievement: Completed all rides
     handleAchievement(9);
 
-    //Achievement: 4,5 stars on a Ride
-    if (reviewList.length === 1) {
-      if (reviewList[0].stars >= 4) {
-        handleAchievement(4);
-      }
+    //Achievement: 5 stars on a Ride Paolo
+    if (reviewList[0].stars === 5 && reviewList[0].rideId === 1) {
+      handleAchievement(4);
     }
+
     //Achievement: Completed first ride
     handleAchievement(1);
 
@@ -432,7 +434,6 @@
 
   const handleAchievement = (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    //TODO: Achievement journal correctly first time
     // TODO: Change license
 
     unlockedAchievements.forEach((item) => {
@@ -450,7 +451,6 @@
       riderList: riderList,
     });
     unlockedAchievement = allAchievements[achievementId - 1].name;
-    console.log(IdUnlockedAchievements, "idunlocked");
   };
 
   onMount(async () => {
@@ -478,13 +478,10 @@
     textParsed = textParser(passage.content);
     updateJournalData();
   }
-  //Add already achieved check
+
   $: if (radioSelect === 4) {
     handleAchievement(5);
   }
-  $: console.log(allAchievements, "all");
-  $: console.log(unlockedAchievements, "unlocked");
-  $: console.log(IdUnlockedAchievements, "id");
 </script>
 
 <svelte:head>
