@@ -142,24 +142,24 @@ export class UserService {
 
   /**
    * Get Achievements
+   * @param userId
    * @param limit
    * @param offset
-   * @param userId
    * @returns AchievementRead Successful Response
    * @throws ApiError
    */
   public static getAchievements(
+    userId?: number,
     limit?: number,
-    offset?: number,
-    userId?: number
+    offset?: number
   ): CancelablePromise<Array<AchievementRead>> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/api/user/achievement/achievements/",
       query: {
+        userId: userId,
         limit: limit,
         offset: offset,
-        userId: userId,
       },
       errors: {
         500: `Internal Server Error`,
