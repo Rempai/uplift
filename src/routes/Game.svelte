@@ -137,6 +137,10 @@
     showPhoneButton = !showPhoneButton;
   };
 
+  const toggleAmbient = () => {
+    ambientNoise = !ambientNoise;
+  };
+
   const toggleJournal = () => {
     journal = !journal;
     dialog = false;
@@ -415,6 +419,7 @@
     on:changeAccount={changeAccount}
     on:logout={handleLogout}
     on:journalPressed={toggleJournal}
+    on:toggleAmbient={toggleAmbient}
     on:unauthenticated={() => showError("Log je in om het menu te gebruiken!")}
     {passage}
     {reviewList}

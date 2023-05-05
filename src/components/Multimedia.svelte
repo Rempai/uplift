@@ -267,6 +267,12 @@
           text="Stop"
           class="!border-aurora-red hover:bg-aurora-red" />
       {/if}
+      <Button
+        onClick={() => {
+          dispatch("toggleAmbient");
+        }}
+        text="Toggle Ambient Noise"
+        class="my-5 p-3 bg-frost-4 w-full rounded" />
     </div>
   {/if}
   {#if activeContent === "Settings"}
@@ -313,7 +319,7 @@
   <div class="bg-night-1 h-[8.68em] w-[13.1em] rounded -md flex flex-row">
     <div
       class="flex flex-col items-center justify-evenly w-12 bg-white/10 mr-2"
-      style="border-radius: 6px"> <!-- maybe make 10px radius so it doesn't overlap-->
+      style="border-radius: 10px">
       <img
         src="multimedia/Home_icon.png"
         alt="info"
