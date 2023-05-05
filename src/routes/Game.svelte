@@ -111,6 +111,7 @@
     dialog = false;
     journal = false;
     settingsPlane = "";
+    togglePhone();
   };
 
   const startGame = async () => {
@@ -218,6 +219,7 @@
       })
       .catch((err) => showError(err));
     pausevideo();
+    togglePhone();
   };
 
   const nextPassageName = () => {
@@ -426,7 +428,7 @@
     <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
   </Modal>
   <video
-    class="fixed h-screen w-screen object-fill rounded"
+    class="fixed h-screen w-screen object-fill"
     loop
     muted
     autoplay={typeof passage === "object"}>
@@ -436,7 +438,7 @@
   {#if ambientNoise}
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
-  <div class="rounded h-screen relative bg-[url('/dashboard.png')] bg-repeat bg-cover bg-center">
+  <div class="h-screen relative bg-[url('/dashboard.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div
