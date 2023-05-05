@@ -113,6 +113,8 @@
     const accessToken = localStorage.getItem("access_token");
     if (accessToken != null) {
       buttonAccess = true;
+    } else {
+      buttonAccess = false;
     }
   };
 </script>
@@ -278,7 +280,11 @@
           onClick={() => dispatch("changeAccount", "password")}
           text="Password"
           class="bg-aurora-orange w-full" />
-        <Button onClick={() => dispatch("logout")} text="Logout" class="bg-aurora-green w-full" />
+        <Button
+          onClick={() => dispatch("logout")}
+          on:click={checkAccess}
+          text="Logout"
+          class="bg-aurora-green w-full" />
         <Button
           onClick={() => dispatch("changeAccount", "Delete")}
           text="Delete account"
