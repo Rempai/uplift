@@ -106,6 +106,7 @@
 
   const handleLogout = () => {
     localStorage.clear();
+    pausevideo();
     checkPhoneButton();
     welcome = true;
     dialog = false;
@@ -192,6 +193,7 @@
     settingsPlane = event.detail;
     dialog = false;
     journal = false;
+    pausevideo();
   };
 
   const updateAccount = async ({ target }) => {
@@ -216,6 +218,7 @@
         settingsPlane = "";
       })
       .catch((err) => showError(err));
+    pausevideo();
   };
 
   const nextPassageName = () => {
@@ -253,8 +256,7 @@
           reviewList = res;
           passage = undefined;
           ambientNoise = false;
-          const video = document.querySelector("video");
-          video.pause();
+          pausevideo();
         })
         .catch((err) => showError(err));
     }
@@ -375,8 +377,7 @@
   const quitRide = () => {
     passage = undefined;
     ambientNoise = false;
-    const video = document.querySelector("video");
-    video.pause();
+    pausevideo();
     journalData = [];
     clearResolutionData();
     dialog = false;
@@ -391,6 +392,11 @@
     } else {
       phonebutton = true;
     }
+  };
+
+  const pausevideo = () => {
+    const video = document.querySelector("video");
+    video.pause();
   };
 </script>
 
