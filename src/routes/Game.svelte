@@ -92,7 +92,6 @@
       showError(await validationErrorCheck(login, false));
     }
   };
-
   const submitRegister = async ({ target }) => {
     const register = await registerForAccessToken(target);
     if (register === true) {
@@ -418,6 +417,7 @@
     on:changeAccount={changeAccount}
     on:logout={handleLogout}
     on:journalPressed={toggleJournal}
+    on:unauthenticated={() => showError("Log je in om het menu te gebruiken!")}
     {passage}
     {reviewList}
     {riderList}

@@ -115,6 +115,7 @@
       buttonAccess = true;
     } else {
       buttonAccess = false;
+      dispatch("unauthenticated");
     }
   };
 </script>
