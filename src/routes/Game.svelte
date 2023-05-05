@@ -96,7 +96,6 @@
   const submitRegister = async ({ target }) => {
     const register = await registerForAccessToken(target);
     if (register === true) {
-      checkPhoneButton();
       startGame();
     } else {
       $validation = $validation;
@@ -106,8 +105,7 @@
 
   const handleLogout = () => {
     localStorage.clear();
-    pausevideo();
-    checkPhoneButton();
+    showPhoneButton = false;
     welcome = true;
     dialog = false;
     journal = false;
@@ -115,7 +113,6 @@
   };
 
   const startGame = async () => {
-    showPhoneButton = true;
     const token = localStorage.getItem("access_token");
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
@@ -123,6 +120,8 @@
     loader = false;
     login = false;
     register = false;
+    showPhoneButton = false;
+    //page = 0;
 
     await CharactersService.getRides()
       .then((res) => (riderList = res))
@@ -172,9 +171,11 @@
 
     currentRide = ride;
     dialog = true;
+    showPhoneButton = true;
     ambientNoise = true;
     const video = document.querySelector("video");
     video.play();
+    // page = 0;
     passedPassages = [];
     emotion.set(100);
   };
@@ -184,6 +185,7 @@
   };
 
   const showResolution = ({ detail }) => {
+    togglePhone();
     journal = false;
     resolution = true;
     resolutionData = detail;
@@ -192,8 +194,8 @@
   const changeAccount = async (event: CustomEvent) => {
     settingsPlane = event.detail;
     dialog = false;
+    togglePhone();
     journal = false;
-    pausevideo();
   };
 
   const updateAccount = async ({ target }) => {
@@ -201,6 +203,7 @@
     if (update === true) {
       settingsPlane = "";
       journal = false;
+      togglePhone();
     } else {
       showError(update);
     }
@@ -213,12 +216,11 @@
       })
       .then(() => {
         showError("Deleted User");
-        checkPhoneButton();
+        showPhoneButton = false;
         welcome = true;
         settingsPlane = "";
       })
       .catch((err) => showError(err));
-    pausevideo();
   };
 
   const nextPassageName = () => {
@@ -256,7 +258,8 @@
           reviewList = res;
           passage = undefined;
           ambientNoise = false;
-          pausevideo();
+          const video = document.querySelector("video");
+          video.pause();
         })
         .catch((err) => showError(err));
     }
@@ -331,6 +334,10 @@
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+
+    // page = 3;
+    togglePhone();
+    showPhoneButton = false;
   };
 
   onMount(async () => {
@@ -377,11 +384,13 @@
   const quitRide = () => {
     passage = undefined;
     ambientNoise = false;
-    pausevideo();
+    const video = document.querySelector("video");
+    video.pause();
     journalData = [];
     clearResolutionData();
     dialog = false;
     filledjournal = true;
+    // page = 0;
     patienceLost = false;
   };
 
@@ -392,11 +401,6 @@
     } else {
       phonebutton = true;
     }
-  };
-
-  const pausevideo = () => {
-    const video = document.querySelector("video");
-    video.pause();
   };
 </script>
 
@@ -439,7 +443,8 @@
   <div class="rounded h-screen relative bg-[url('/dashboard.png')] bg-repeat bg-cover bg-center">
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
-        <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
+        <div
+          class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6 z-20">
           {#if settingsPlane === "Delete"}
             <p class="text-3xl text-frost-1">{settingsPlane} account</p>
           {:else}
@@ -456,6 +461,7 @@
                 class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
               <Button
                 onClick={() => {
+                  if (showPhoneButton === true) togglePhone();
                   settingsPlane = "";
                 }}
                 text="Cancel"
@@ -467,6 +473,7 @@
               backButton={true}
               on:back={() => {
                 settingsPlane = "";
+                if (showPhoneButton === true) togglePhone();
               }}>
               <div slot="forms">
                 <input hidden required name="role" value={parsedJWT.role} />

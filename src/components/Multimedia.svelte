@@ -273,20 +273,28 @@
       <p class="text-center text-3xl text-frost-1">Account</p>
       <div class="flex flex-col items-center gap-5 mt-6 mx-12">
         <Button
-          onClick={() => dispatch("changeAccount", "username")}
+          onClick={() => {
+            dispatch("changeAccount", "username"), (modalOpened = false);
+          }}
           text="Username"
           class="bg-aurora-purple w-full" />
         <Button
-          onClick={() => dispatch("changeAccount", "password")}
+          onClick={() => {
+            dispatch("changeAccount", "password"), (modalOpened = false);
+          }}
           text="Password"
           class="bg-aurora-orange w-full" />
         <Button
-          onClick={() => dispatch("logout")}
+          onClick={() => {
+            dispatch("logout"), (modalOpened = false);
+          }}
           on:click={checkAccess}
           text="Logout"
           class="bg-aurora-green w-full" />
         <Button
-          onClick={() => dispatch("changeAccount", "Delete")}
+          onClick={() => {
+            dispatch("changeAccount", "Delete"), (modalOpened = false);
+          }}
           text="Delete account"
           class="bg-aurora-red w-full" />
       </div>
