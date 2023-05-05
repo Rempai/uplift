@@ -27,10 +27,12 @@
         if (value[x] === "") {
           delete value[x];
         }
-        if (value instanceof File) {
-          const fileContents = await value.text();
+        if (value[x] instanceof File) {
+          // @ts-ignore
+          const fileContents = await value[x].text();
           await service(fileContents);
           push("/admin/");
+          return;
         } else if (value[x] === "on") {
           // @ts-ignore
           value[x] = true;
