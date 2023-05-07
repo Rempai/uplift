@@ -93,7 +93,8 @@
   let patienceLost = false;
 
   let progression = 0;
-  let showPopup = true;
+  let showPopup = false;
+  let branchData: Array<PassageRead>;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -268,7 +269,6 @@
       emotion.update((e) => e + passage.emotion);
       if (!passage.branch.includes("Finish") && !(passage.emotion < 0))
         passedPassages = [...passedPassages, passage.passage];
-      console.log(passedPassages);
     }
 
     if (passage == undefined) {
@@ -462,9 +462,7 @@
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
   <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
-        {#if showPopup}
-          <Popup {showPopup} {progression} {allPassages} {passedPassages} />
-        {/if}
+    <Popup {showPopup} {progression} {allPassages} {passedPassages} {branchData} />
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">
