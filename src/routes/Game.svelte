@@ -441,7 +441,7 @@
     return review ? review.stars : null;
   };
 
-  $: if (showDriverModal){
+  $: if (showDriverModal) {
     getMe();
   }
 </script>
