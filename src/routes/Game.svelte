@@ -94,7 +94,6 @@
 
   let progression = 0;
   let showPopup = false;
-  let branchData: Array<PassageRead>;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -462,7 +461,7 @@
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
   <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
-    <Popup {showPopup} {progression} {allPassages} {passedPassages} {branchData} />
+    <Popup {showPopup} {progression} {allPassages} {passedPassages} />
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">

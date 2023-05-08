@@ -6,24 +6,29 @@
   export let progression: number;
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
-  export let branchData: Array<PassageRead>;
 
+  let d: Array<PassageRead> = [];
   let knownBranches: Array<string> = [];
-  let possibleBranches = [];
+  let possibleBranches: Array<string> = [];
 
-  const fontcare = () => {
-    console.log("fuck");
-    branchData.forEach((obj) => {
-      console.log(knownBranches);
-
-      if (knownBranches.length == 0) {
-        knownBranches[0] = "test";
-        console.log(knownBranches);
+  const branches = () => {
+    allPassages.forEach((obj) => {
+      if (!possibleBranches.find((e) => e === obj.branch) && !obj.branch.includes("Finish")) {
+        possibleBranches.push(obj.branch);
       }
     });
+
+    d.forEach((obj) => {
+      if (!knownBranches.find((e) => e === obj.branch) && !obj.branch.includes("Finish")) {
+        knownBranches.push(obj.branch);
+      }
+    });
+    console.log(knownBranches);
+    console.log(possibleBranches);
   };
 
   const calcProgression = () => {
+    console.log(allPassages);
     let totalPassages = allPassages.length - 1;
     let seenPassages = passedPassages.length;
 
@@ -45,7 +50,7 @@
   <div class="flex flex-col items-center">
     <div
       class="absolute bg-aurora-red p-8 w-fit rounded top-14 "
-      on:mouseenter={fontcare}
+      on:mouseenter={branches}
       on:mouseenter={popup}
       on:mouseleave={popup}
       on:click={calcProgression}
