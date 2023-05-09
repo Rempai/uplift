@@ -76,7 +76,7 @@
 
   const toggleJournal = () => {
     checkAccess();
-    if (buttonAccess) {
+    if (buttonAccess && passage && filledjournal) {
       dispatch("journalPressed");
     }
   };
@@ -194,7 +194,7 @@
         {#if riderList?.length}
           {#if passage}
             <p class="text-center w-full">You are already in a ride.</p>
-            {#if filledjournal && !journal}
+            {#if filledjournal}
               <div class="flex flex-col mb-3 mt-3">
                 <Button onClick={quit} text="Quit ride" class="bg-aurora-red" />
               </div>
@@ -256,7 +256,15 @@
   {/if}
   {#if activeContent === "Radio"}
     <div class="px-4 mt-3 flex flex-col items-center">
-      <select name="station" bind:value={radioSelect} class="my-5 p-3 bg-frost-4 rounded">
+      <Button
+        onClick={() => {
+          if (passage) {
+            dispatch("toggleAmbient");
+          }
+        }}
+        text="Toggle Ambient Noise"
+        class="mt-5 p-3 bg-frost-4 hover:brightness-110 rounded" />
+      <select name="station" bind:value={radioSelect} class="mt-5 p-3 bg-frost-4 rounded">
         {#each radios as radio}
           <option value={radio.id}>{radio.name}</option>
         {/each}
@@ -265,14 +273,8 @@
         <Button
           onClick={() => (radioSelect = 0)}
           text="Stop"
-          class="!border-aurora-red hover:bg-aurora-red" />
+          class="mt-5 p-3 !border-aurora-red hover:bg-aurora-red" />
       {/if}
-      <Button
-        onClick={() => {
-          dispatch("toggleAmbient");
-        }}
-        text="Toggle Ambient Noise"
-        class="my-5 p-3 bg-frost-4 w-full rounded" />
     </div>
   {/if}
   {#if activeContent === "Settings"}
@@ -295,7 +297,6 @@
           onClick={() => {
             dispatch("logout"), (modalOpened = false);
           }}
-          on:click={checkAccess}
           text="Logout"
           class="bg-aurora-green w-full" />
         <Button
@@ -306,9 +307,6 @@
           class="bg-aurora-red w-full" />
       </div>
     </div>
-  {/if}
-  {#if activeContent === "Notes"}
-    {toggleJournal()}
   {/if}
   {#if activeContent === "SingleReview"}
     <p>{singleReviewData.text}</p>
