@@ -313,8 +313,8 @@
   {/if}
 </Modal>
 
-<div class="absolute inset-0 flex justify-center items-center top-[60%] z-10">
-  <div class="bg-night-1 h-[8.68em] w-[13.1em] rounded -md flex flex-row">
+<div class="flex justify-center items-end h-full -translate-y-11">
+  <div class="bg-night-1 h-36 w-[13.2rem] rounded -md flex flex-row">
     <div
       class="flex flex-col items-center justify-evenly w-12 bg-white/10 mr-2"
       style="border-radius: 10px">

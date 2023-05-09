@@ -412,20 +412,7 @@
 <main>
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
-  <Multimedia
-    on:dialog={toggleDialog}
-    on:select={selectRide}
-    on:quitride={quitRide}
-    on:changeAccount={changeAccount}
-    on:logout={handleLogout}
-    on:journalPressed={toggleJournal}
-    on:toggleAmbient={toggleAmbient}
-    on:unauthenticated={() => showError("Log je in om het menu te gebruiken!")}
-    {passage}
-    {reviewList}
-    {riderList}
-    {filledjournal}
-    {journal} />
+
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
@@ -590,5 +577,19 @@
     {:else}
       <Phone on:close={togglePhone} />
     {/if}
+    <Multimedia
+      on:dialog={toggleDialog}
+      on:select={selectRide}
+      on:quitride={quitRide}
+      on:changeAccount={changeAccount}
+      on:logout={handleLogout}
+      on:journalPressed={toggleJournal}
+      on:toggleAmbient={toggleAmbient}
+      on:unauthenticated={() => showError("Log je in om het menu te gebruiken!")}
+      {passage}
+      {reviewList}
+      {riderList}
+      {filledjournal}
+      {journal} />
   </div>
 </main>
