@@ -1,4 +1,5 @@
 import type {
+  AchievementUpdate,
   AttributeUpdate,
   PassageUpdate,
   PassengerUpdate,
@@ -21,6 +22,15 @@ export const userHTML = `
     <option value="User" selected>User</option>
     <option value="Admin">Admin</option>
   </select>
+`;
+
+export const achievementHTML = `
+  <label for="name">Name</label>
+  <input required type="text" name="name" placeholder="Got 5 stars" />
+  <label for="description">Description</label>
+  <input required type="text" name="description" placeholder="You got 5 stars" />
+  <label for="icon">Icon</label>
+  <input required type="text" name="icon" placeholder="paolo.png" />
 `;
 
 export const passengerHTML = `
@@ -138,6 +148,17 @@ export function userEditHTML(data: UserUpdate): string {
   }
 
   return str + option;
+}
+
+export function achievementEditHTML(data: AchievementUpdate): string {
+  return `
+  <label for="name">Name</label>
+  <input required type="text" name="name" placeholder="Got 5 stars" value="${data.name}" />
+  <label for="description">Description</label>
+  <input required type="text" name="description" placeholder="You got 5 stars" value="${data.description}" />
+  <label for="icon">Icon</label>
+  <input required type="text" name="icon" placeholder="paolo.png" value="${data.icon}" />
+  `;
 }
 
 export function passengerEditHTML(data: PassengerUpdate): string {
