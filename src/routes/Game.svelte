@@ -144,7 +144,7 @@
       .then((res) => (allAchievements = res))
       .catch((err) => showError(err));
 
-    await UserService.getAchievements(0, 0, parsedJWT.sub)
+    await UserService.getAchievements(parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
   };
@@ -374,7 +374,7 @@
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
 
     // Achievement: Completed all rides
-    handleAchievement(9);
+    //handleAchievement(9);
 
     //Achievement: 5 stars on a Ride Paolo
     if (reviewList[0].stars === 5 && reviewList[0].rideId === 1) {
@@ -382,8 +382,9 @@
     }
 
     //Achievement: Completed first ride
-    handleAchievement(1);
-
+    if (reviewList.length === 1) {
+      handleAchievement(1);
+    }
     page = 3;
     togglePhone();
     showPhoneButton = false;
@@ -447,8 +448,10 @@
       achievementId: achievementId,
       reviewList: reviewList,
       currentRadio: radioSelect,
+      currentRide: currentRide,
       tutorialCompleted: tutorialCompleted,
       riderList: riderList,
+      resolutionData: resolutionData,
     });
     unlockedAchievement = allAchievements[achievementId - 1].name;
   };
@@ -489,7 +492,7 @@
 </svelte:head>
 
 <main>
-  <Achievement achievementTitle={unlockedAchievement} triggered={triggerAchievement} />
+  <Achievement triggered={triggerAchievement} achievementTitle={unlockedAchievement} />
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />

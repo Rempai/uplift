@@ -4,6 +4,7 @@ import { UserService } from "@/lib/client";
 type achievementObj = {
   userId: number;
   achievementId: number;
+  currentRide?: RideRead | null;
   reviewList?: ReviewRead[] | null;
   riderList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
@@ -17,6 +18,7 @@ export let IdUnlockedAchievements: Array<number> = [];
 export const isAchieved = ({
   userId,
   achievementId,
+  currentRide = null,
   reviewList = null,
   resolutionData = null,
   currentRadio = null,
@@ -54,14 +56,14 @@ export const isAchieved = ({
       return false;
 
     case 7: {
-      if (!IdUnlockedAchievements.includes(achievementId)) {
-        if (
-          resolutionData.mainProblem === "Overwhelmed" &&
-          resolutionData.partiesInvolved === "My friends and school career would be in trouble." &&
-          (resolutionData.mainCause = "I can't have fun without feeling guilty.")
-        ) {
-          return true;
-        }
+      const { mainProblem, mainCause, partiesInvolved } = currentRide;
+      if (
+        resolutionData.mainCause === mainCause &&
+        resolutionData.mainProblem === mainProblem &&
+        resolutionData.partiesInvolved === partiesInvolved
+      ) {
+        postUserAchievement(userId, achievementId);
+        return true;
       }
     }
     case 9:
