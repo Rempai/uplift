@@ -2,16 +2,15 @@
   import { cubicOut, cubicInOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { tweened } from "svelte/motion";
-  export let achievementTitle = "Congratulations! You did something right!";
+  export let achievementTitle = "Congratulations! You've done it!";
   export let iconImage = "icon-outline.png";
   export let triggered = false;
-  // export let achievementDescription = "You're officially the worst person in the world!";
   const rotationAngle = tweened(0);
   const audio = new Audio("achievement-sylized-fx-2.wav");
 
-  $: setTimeout(() => {
+  $: setInterval(() => {
     triggered = false;
-  }, 10000);
+  }, 7500);
 
   $: if (triggered) {
     rotationAngle.set(360, { duration: 3750, easing: cubicOut });
@@ -24,21 +23,23 @@
 
 {#if triggered}
   <div
-    class="w-80 h-20 top-0 right-0 absolute z-50 mt-4 mr-4"
+    class="top-0 right-0 absolute z-50 mt-4 mr-4 w-96 h-24"
     in:fly={{ x: 525, duration: 700, easing: cubicInOut }}
     out:fly={{ x: 125, duration: 700, easing: cubicOut }}>
-    <div id="background" class="bg-white rounded h-full">
+    <div id="background" class="bg-night-1 rounded h-full">
       <div
+        on:click={() => (triggered = !triggered)}
+        on:keypress
         id="border"
-        class="border-8 border-storm-1 rounded outline outline-8 outline-offset-0 outline-aurora-purple flex h-full w-full pl-3 items-center">
+        class="border-8 border-frost-3 rounded outline outline-8 outline-offset-0 outline-storm-4 flex h-full w-full pl-3 items-center">
         <img
           src={iconImage}
           class="w-16"
           alt="a11y"
           style="transform: rotateY({$rotationAngle * 3}deg);" />
-        <div class="flex flex-col justify-center h-full pl-3 leading-none">
-          <p class="text-night-3 text-md">Achievement Unlocked:</p>
-          <p class="text-night-3 text-sm flex">{achievementTitle}</p>
+        <div class="flex flex-col justify-center items-center h-full leading-none flex-1">
+          <p class="text-storm-3 text-lg">Achievement Unlocked:</p>
+          <p class="text-storm-3 text-md flex p-1 align-middle">{achievementTitle}</p>
         </div>
       </div>
     </div>
