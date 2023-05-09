@@ -460,7 +460,7 @@
   {#if ambientNoise}
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
-  <div class="rounded h-screen relative bg-[url('/gamebg.png')] bg-repeat bg-cover bg-center">
+  <div class="rounded h-screen relative bg-[url('/bg+meter.png')] bg-repeat bg-cover bg-center">
     <Popup {showPopup} {progression} {allPassages} {passedPassages} />
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
