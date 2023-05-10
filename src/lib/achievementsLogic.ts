@@ -9,11 +9,10 @@ type achievementObj = {
   riderList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
   resolutionData?: RideRead | null;
-  currentRadio?: number | null;
   tutorialCompleted?: boolean | null;
 };
 
-export let IdUnlockedAchievements: Array<number> = [];
+export const IdUnlockedAchievements: Array<number> = [];
 
 export const isAchieved = ({
   userId,
@@ -21,12 +20,9 @@ export const isAchieved = ({
   currentRide = null,
   reviewList = null,
   resolutionData = null,
-  currentRadio = null,
   tutorialCompleted = null,
   riderList = null,
 }: achievementObj) => {
-  console.log(IdUnlockedAchievements, "achievementunlcoked");
-
   switch (achievementId) {
     case 1:
       if (!IdUnlockedAchievements.includes(achievementId)) {
@@ -48,6 +44,7 @@ export const isAchieved = ({
         postUserAchievement(userId, achievementId);
         return true;
       }
+      return false;
     case 5:
       if (!IdUnlockedAchievements.includes(achievementId)) {
         postUserAchievement(userId, achievementId);
@@ -57,14 +54,24 @@ export const isAchieved = ({
 
     case 7: {
       const { mainProblem, mainCause, partiesInvolved } = currentRide;
+
+      const correctMainCauses = currentRide.mainCause.match(/(?<=;)[^;]+(?=;)/g);
+      const correctMainProblems = currentRide.mainProblem.match(/(?<=;)[^;]+(?=;)/g);
+      const correctPartiesInvolved = currentRide.partiesInvolved.match(/(?<=;)[^;]+(?=;)/g);
+
       if (
-        resolutionData.mainCause === mainCause &&
-        resolutionData.mainProblem === mainProblem &&
-        resolutionData.partiesInvolved === partiesInvolved
+        correctMainCauses.includes(mainCause) &&
+        correctMainProblems.includes(mainProblem) &&
+        correctPartiesInvolved.includes(partiesInvolved) &&
+        currentRide.bravery === resolutionData.bravery &&
+        currentRide.enthusiasm === resolutionData.enthusiasm &&
+        currentRide.integrity === resolutionData.integrity &&
+        currentRide.perseverance === resolutionData.perseverance
       ) {
         postUserAchievement(userId, achievementId);
         return true;
       }
+      return false;
     }
     case 9:
       if (!IdUnlockedAchievements.includes(achievementId)) {
@@ -114,7 +121,7 @@ export const isAchieved = ({
 // return false;
 
 const postUserAchievement = async (userId: number, achievementId: number) => {
-  let currentTime = new Date().toISOString();
+  const currentTime = new Date().toISOString();
   const input: UserAchievementCreate = {
     date: currentTime,
     userId: userId,
