@@ -74,7 +74,7 @@
 </script>
 
 <div
-  class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
+  class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-3 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1 z-20">
   <div class="overflow-x-auto flex flex-col flex-wrap basis-11/12">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
     <Button
