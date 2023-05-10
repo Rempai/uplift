@@ -27,7 +27,7 @@
 <div class={containerClasses}>
   {#each message as msg, i}
     <button class={alertClasses} on:click={() => removeMessage(i)}>
-      <div class="flex justify-between">
+      <div class="flex justify-between gap-2">
         <p class="break-words">{msg}</p>
         <span class="">&times;</span>
       </div>
