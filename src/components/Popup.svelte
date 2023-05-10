@@ -8,43 +8,17 @@
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
 
-  let knownBranches: Array<string> = [];
   let possibleBranches: Array<string> = [];
-  let branch;
-
-  let ding;
 
   const branches = () => {
     allPassages.forEach((obj) => {
       if (!possibleBranches.find((e) => e === obj.branch) && !obj.branch.includes("Finish")) {
         possibleBranches.push(obj.branch);
       }
-
-      if (!possibleBranches.find((e) => e === obj.passage) && !obj.branch.includes("Finish")) {
-        ding.push(obj.passage);
-      }
     });
-
-    possibleBranches.forEach((str) => {
-      allPassages.forEach((obj) => {
-        if (obj.branch.includes(str)) {
-        }
-      });
-    });
-    // passedPassages.forEach((str) => {
-    //   if (!knownBranches.find((e) => e === str)) {
-    //     if () {
-
-    //     }
-    //     knownBranches.push(str);
-    //   }
-    // });
-
-    console.log(knownBranches);
   };
 
   const calcProgression = () => {
-    console.log(allPassages);
     let totalPassages = allPassages.length - 1;
     let seenPassages = passedPassages.length;
 
@@ -61,13 +35,13 @@
     showPopup = !showPopup;
   };
 
-  const progress1 = tweened(0, { duration: 100 });
+  const progress = tweened(0, { duration: 100 });
 
   $: {
+    progress.set(progression);
+
     if (showPopup) {
-      progress1.set(47);
-    } else {
-      progress1.set(0);
+      progress.set(47);
     }
   }
 </script>
@@ -79,7 +53,7 @@
       on:mouseenter={branches}
       on:mouseenter={popup}
       on:mouseleave={popup}
-      on:click={calcProgression}
+      on:mouseenter={calcProgression}
       on:keypress>
       {progression}%
     </div>
@@ -91,7 +65,7 @@
             <progress
               class="bg-night-4 rounded-[80em] top-5 w-full p-1"
               max="100"
-              value={$progress1} />
+              value={$progress} />
             <p>{branch}</p>
           </div>
         {/each}
