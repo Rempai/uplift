@@ -82,6 +82,9 @@
 
   let patienceLost = false;
 
+  let volumeAmbient = 1;
+  let audioAmbient;
+
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
@@ -403,6 +406,10 @@
     const video = document.querySelector("video");
     video.pause();
   };
+
+  function handleAudioLoadedAmbient() {
+    audioAmbient = this;
+  }
 </script>
 
 <svelte:head>
@@ -412,7 +419,6 @@
 <main>
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
-
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
   <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
@@ -428,7 +434,14 @@
     <source src={Background} />
   </video>
   {#if ambientNoise}
-    <audio class="hidden" autoplay controls loop src="ambient.mp3" />
+    <audio
+      class="hidden"
+      autoplay
+      controls
+      loop
+      src="ambient.mp3"
+      on:loadedmetadata={handleAudioLoadedAmbient}
+      volume={volumeAmbient} />
   {/if}
   <div
     class="h-screen relative bg-[url('/dashboard.png')] w-full min-w-full max-w-full bg-no-repeat bg-cover bg-center">
@@ -591,6 +604,9 @@
       {reviewList}
       {riderList}
       {filledjournal}
-      {journal} />
+      {journal}
+      {volumeAmbient}
+      {audioAmbient}
+      {ambientNoise} />
   </div>
 </main>
