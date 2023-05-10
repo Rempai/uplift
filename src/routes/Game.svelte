@@ -333,6 +333,7 @@
     clearResolutionData();
     dialog = true;
     filledjournal = false;
+    allowAudioCall = true;
   };
 
   const formatDate = (dateString: string) => {
@@ -385,8 +386,7 @@
   }
 
   $: if (passage) {
-    if(allowAudioCall)
-    {
+    if (allowAudioCall) {
       textParsed = textParser(passage.content);
       fetch("https://audio.appelsapje.net/", {
         method: "POST",
@@ -400,8 +400,7 @@
         .then((response) => response.blob())
         .then((blob) => {
           allowAudioCall = false;
-          if(audio)
-            audio.pause();
+          if (audio) audio.pause();
           audio = new Audio();
           audio.src = URL.createObjectURL(blob);
           audio.playbackRate = 3.5;
