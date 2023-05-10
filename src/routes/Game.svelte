@@ -408,6 +408,7 @@
   };
 
   function handleAudioLoadedAmbient() {
+    // eslint-disable-next-line  @typescript-eslint/no-this-alias
     audioAmbient = this;
   }
 </script>

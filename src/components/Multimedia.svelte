@@ -141,6 +141,7 @@
   }
 
   function handleAudioLoadedRadio() {
+    // eslint-disable-next-line  @typescript-eslint/no-this-alias
     audioRadio = this;
   }
 </script>
