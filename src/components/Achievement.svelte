@@ -8,13 +8,14 @@
   const rotationAngle = tweened(0);
   const audio = new Audio("achievement-sylized-fx-2.wav");
 
-  $: setInterval(() => {
+  const resetTrigger = () => {
     triggered = false;
-  }, 7500);
+  };
 
   $: if (triggered) {
     rotationAngle.set(360, { duration: 3750, easing: cubicOut });
     audio.play();
+    setTimeout(resetTrigger, 8000);
   } else {
     rotationAngle.set(0);
     audio.pause();
@@ -28,7 +29,7 @@
     out:fly={{ x: 125, duration: 700, easing: cubicOut }}>
     <div id="background" class="bg-night-1 rounded h-full">
       <div
-        on:click={() => (triggered = !triggered)}
+        on:click="{resetTrigger}"
         on:keypress
         id="border"
         class="border-8 border-frost-3 rounded outline outline-8 outline-offset-0 outline-storm-4 flex h-full w-full pl-3 items-center">
@@ -45,5 +46,3 @@
     </div>
   </div>
 {/if}
-
-<button class="absolute z-50" on:click={() => (triggered = !triggered)}>transition</button>
