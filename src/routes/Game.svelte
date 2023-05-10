@@ -147,6 +147,8 @@
     await UserService.getAchievements(parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
+    console.log(unlockedAchievements);
+    console.log(allAchievements);
   };
 
   const togglePhone = () => {
@@ -215,6 +217,9 @@
   };
 
   const showResolution = ({ detail }) => {
+    // Achievement : Perfect journal for Ride Paolo
+    handleAchievement(7);
+
     togglePhone();
     journal = false;
     resolution = true;
@@ -332,9 +337,6 @@
     } else if (event.detail.type === "mainCause") {
       resolutionData.mainCause = event.detail.text;
     }
-
-    // Achievement : Perfect journal for Ride Paolo
-    handleAchievement(7);
   };
 
   const gotoBranch = async (event: CustomEvent) => {
@@ -376,11 +378,15 @@
     // Achievement: Completed all rides
     //handleAchievement(9);
 
-    //Achievement: 5 stars on a Ride Paolo
-    if (reviewList[0].stars === 5 && reviewList[0].rideId === 1) {
+    // Achievement: 4 stars on a Ride Paolo
+    if (reviewList[reviewList.length - 1].stars === 4) {
       handleAchievement(4);
     }
 
+    // Achievement: 5 stars on a Ride Paolo
+    if (reviewList[reviewList.length - 1].stars === 5) {
+      handleAchievement(4);
+    }
     //Achievement: Completed first ride
     if (reviewList.length === 1) {
       handleAchievement(1);
@@ -447,7 +453,6 @@
       userId: parsedJWT.sub,
       achievementId: achievementId,
       reviewList: reviewList,
-      currentRadio: radioSelect,
       currentRide: currentRide,
       tutorialCompleted: tutorialCompleted,
       riderList: riderList,
