@@ -32,6 +32,7 @@
   import Journal from "@/components/Journal.svelte";
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
+  import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
 
   import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
@@ -255,7 +256,8 @@
 
     if (passage && !passedPassages.includes(passage.passage)) {
       emotion.update((e) => e + passage.emotion);
-      passedPassages = [...passedPassages, passage.passage];
+      if (!passage.branch.includes("Finish") && !(passage.emotion < 0))
+        passedPassages = [...passedPassages, passage.passage];
     }
 
     if (passage == undefined) {
@@ -445,7 +447,8 @@
       volume={volumeAmbient} />
   {/if}
   <div
-    class="h-screen relative bg-[url('/dashboard.png')] w-full min-w-full max-w-full bg-no-repeat bg-cover bg-center">
+    class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10">
+    <Progress {allPassages} {passedPassages} />
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div

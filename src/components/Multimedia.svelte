@@ -366,11 +366,10 @@
     <p>{singleReviewData.text}</p>
   {/if}
 </Modal>
-
 <div class="flex justify-center items-end h-screen">
   <div
-    class="bg-night-1 h-[23.5%] rounded -md flex flex-row absolute z-10"
-    style="top:{screenHeight / 1.44}px; width: {screenHeight / 2.9}px">
+    class="bg-night-1 h-[23.5%] rounded -md flex flex-row absolute"
+    style="top:{screenHeight / 1.425}px; width: {screenHeight / 2.8}px">
     <div
       class="flex flex-col items-center justify-evenly w-12 bg-white/10 mr-2"
       style="border-radius: 10px">
