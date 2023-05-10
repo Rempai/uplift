@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PassageRead } from "@/lib/client";
+  import Modal from "./Modal.svelte";
 
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
@@ -8,9 +9,7 @@
   let branchProgress: Record<string, number> = {};
 
   let progression = 0;
-  let showPopup = false;
-
-  let isHovered = false;
+  let showModal = false;
 
   const branches = () => {
     allPassages.forEach((obj) => {
@@ -47,7 +46,7 @@
   };
 
   const popup = () => {
-    showPopup = !showPopup;
+    showModal = !showModal;
   };
 
   let screenHeight: number = window.innerHeight;
@@ -57,64 +56,46 @@
     screenHeight = window.innerHeight;
     screenWidth = window.innerWidth;
   });
+
+  $: if (passedPassages && passedPassages.length > 0) {
+    branches();
+    calcProgression();
+  }
 </script>
 
-<!-- <div class="flex justify-center">
-  <div class="flex flex-col w-fit h-full items-center">
-    <div
-      class="absolute bg-aurora-red p-2 w-fit rounded top-20"
-      on:mouseenter={branches}
-      on:mouseenter={popup}
-      on:mouseleave={popup}
-      on:mouseenter={calcProgression}
-      on:keypress>
-      {progression}%
-    </div>
-    {#if showPopup}
-      <div
-        class="flex bg-frost-3 justify-around flex-wrap w-1/2 rounded-[3em] p-4 border-2 border-storm-3">
-        {#each possibleBranches as branch}
-          <div class="flex flex-col items-center w-32 mb-6">
-            <progress
-              class="bg-night-4 rounded-[80em] top-5 w-full p-1"
-              max="100"
-              value={branchProgress[branch] ?? 0} />
-            <p>{branch}</p>
-          </div>
-        {/each}
-      </div>
-    {/if}
-  </div>
-</div> -->
 <div>
-  <div
-    class="flex justify-center h-full"
-    on:mouseenter={branches}
-    on:mouseenter={popup}
-    on:mouseleave={popup}
-    on:mouseenter={calcProgression}
-    on:keypress>
-    <div
-      class="bg-night-1 h-[4.9%] -md flex justify-center items-center absolute translate-x-60"
-      style="top:{screenHeight / 1.44}px; width: {screenHeight / 5.5}px;">
-      {progression}%
+  {#if allPassages && allPassages.length > 0}
+    <div class="flex justify-center h-full cursor-pointer" on:click={popup} on:keypress>
+      <div
+        class="hover:bg-night-2 transition bg-night-1 h-[4.9%] -md flex justify-center items-center absolute"
+        style="top:{screenHeight / 1.43}px; width: {screenHeight / 5.5}px;
+    transform: translateX({screenHeight / 2.75}%)">
+        {progression}%
+      </div>
     </div>
-  </div>
-  {#if showPopup}
-    <div
-      class="flex bg-frost-3 justify-around flex-wrap w-1/2 rounded-[3em] p-4 border-2 border-storm-3">
-      {#each possibleBranches as branch}
-        <div class="flex flex-col items-center w-32 mb-6">
-          <progress
-            class="bg-night-4 rounded-[80em] top-5 w-full p-1"
-            max="100"
-            value={branchProgress[branch] ?? 0} />
-          <p>{branch}</p>
-        </div>
-      {/each}
+  {:else}
+    <div class="flex justify-center h-full">
+      <div
+        class="bg-night-1 h-[4.9%] -md flex justify-center items-center absolute"
+        style="top:{screenHeight / 1.43}px; width: {screenHeight / 5.5}px;
+    transform: translateX({screenHeight / 2.75}%)" />
     </div>
   {/if}
 </div>
+
+<Modal {showModal} on:click={() => (showModal = !showModal)} modalHeader="Branch progress">
+  <div class=" flex  justify-around flex-wrap p-4 ">
+    {#each possibleBranches as branch}
+      <div class="flex flex-col items-center w-32 mb-6">
+        <progress
+          class="bg-night-1 rounded-[80em] top-5 w-full p-1"
+          max="100"
+          value={branchProgress[branch] ?? 0} />
+        <p class="pt-2">{branch}</p>
+      </div>
+    {/each}
+  </div>
+</Modal>
 
 <style>
   progress::-moz-progress-bar {
