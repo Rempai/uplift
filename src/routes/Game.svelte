@@ -447,7 +447,7 @@
       volume={volumeAmbient} />
   {/if}
   <div
-    class="h-screen relative bg-[url('/dashboard.png')] w-full min-w-full max-w-full bg-no-repeat bg-cover bg-center">
+    class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10">
     <Progress {allPassages} {passedPassages} />
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
