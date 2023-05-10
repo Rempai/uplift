@@ -85,6 +85,8 @@
 
   let volumeAmbient = 1;
   let audioAmbient;
+  let allowAudioCall = true;
+  let audio;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -153,6 +155,7 @@
   const toggleDialog = () => {
     dialog = !dialog;
     journal = false;
+    allowAudioCall = dialog;
   };
 
   const skipAndLogin = () => {
@@ -232,7 +235,6 @@
 
   const nextPassageName = () => {
     let text = passage.passage;
-
     if (passage.speaker === "You" && !passage.branch.includes("FinishNow")) {
       text = text.replace("You", "");
     } else {
@@ -270,6 +272,7 @@
         })
         .catch((err) => showError(err));
     }
+    allowAudioCall = true;
   };
 
   const textParser = async (text: string) => {
@@ -366,8 +369,29 @@
   }
 
   $: if (passage) {
-    textParsed = textParser(passage.content);
-    updateJournalData();
+    if (allowAudioCall) {
+      textParsed = textParser(passage.content);
+      fetch("https://audio.appelsapje.net/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          string: passage.content,
+        }),
+      })
+        .then((response) => response.blob())
+        .then((blob) => {
+          allowAudioCall = false;
+          if (audio) audio.pause();
+          audio = new Audio();
+          audio.src = URL.createObjectURL(blob);
+          audio.playbackRate = 3.5;
+          audio.play();
+        })
+        .catch((error) => console.error(error));
+      updateJournalData();
+    }
   }
 
   const losePatience = () => {
