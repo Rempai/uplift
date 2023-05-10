@@ -150,6 +150,7 @@
   const toggleDialog = () => {
     dialog = !dialog;
     journal = false;
+    allowAudioCall = dialog;
   };
 
   const handleClick = (event: CustomEvent) => {
@@ -241,7 +242,6 @@
 
   const nextPassageName = () => {
     let text = passage.passage;
-    allowAudioCall = true;
     if (passage.speaker === "You" && !passage.branch.includes("FinishNow")) {
       text = text.replace("You", "");
     } else {
@@ -279,6 +279,7 @@
         })
         .catch((err) => showError(err));
     }
+    allowAudioCall = true;
   };
 
   const textParser = async (text: string) => {
@@ -323,7 +324,6 @@
     journal = false;
     toggleDialog();
     nextPassage(event.detail.passage);
-    allowAudioCall = true;
   };
 
   const finishRide = async (event: CustomEvent) => {
@@ -334,7 +334,6 @@
     clearResolutionData();
     dialog = true;
     filledjournal = false;
-    allowAudioCall = true;
   };
 
   const formatDate = (dateString: string) => {
