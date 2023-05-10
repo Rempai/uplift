@@ -431,7 +431,7 @@
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
   <div
-    class="h-screen relative bg-[url('/dashboard.png')] w-full min-w-full max-w-full bg-no-repeat bg-cover bg-center z-50">
+    class="h-screen relative bg-[url('/dashboard.png')] w-full min-w-full max-w-full bg-no-repeat bg-cover bg-center">
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div
@@ -488,7 +488,7 @@
       </div>
     {/if}
     {#if dialog}
-      <div in:fade class="absolute left-0 right-0 top-1/3 m-auto">
+      <div in:fade class="absolute left-0 right-0 top-1/3 m-auto z-20">
         {#await passage then dialog}
           {#await textParsed then parsedText}
             {#if !patienceLost}
