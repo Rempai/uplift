@@ -118,6 +118,12 @@
       dispatch("unauthenticated");
     }
   };
+
+  let screenHeight: number = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    screenHeight = window.innerHeight;
+  });
 </script>
 
 {#if radioSelect}
@@ -313,8 +319,10 @@
   {/if}
 </Modal>
 
-<div class="flex justify-center items-end h-full -translate-y-11">
-  <div class="bg-night-1 h-36 w-[13.2rem] rounded -md flex flex-row">
+<div class="flex justify-center items-end h-screen z-10">
+  <div
+    class="bg-night-1 h-[22.9%] rounded -md flex flex-row absolute z-10"
+    style="top:{screenHeight / 1.43}px; width: {screenHeight / 2.9}px">
     <div
       class="flex flex-col items-center justify-evenly w-12 bg-white/10 mr-2"
       style="border-radius: 10px">
