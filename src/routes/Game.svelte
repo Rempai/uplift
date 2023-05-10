@@ -323,6 +323,7 @@
     journal = false;
     toggleDialog();
     nextPassage(event.detail.passage);
+    allowAudioCall = true;
   };
 
   const finishRide = async (event: CustomEvent) => {
