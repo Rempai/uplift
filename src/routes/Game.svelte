@@ -33,7 +33,7 @@
   import Journal from "@/components/Journal.svelte";
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
-  import Popup from "@/components/Popup.svelte";
+  import Progress from "@/components/Progress.svelte";
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -91,9 +91,6 @@
   let passedPassages: Array<string> = [];
 
   let patienceLost = false;
-
-  let progression = 0;
-  let showPopup = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -460,8 +457,8 @@
   {#if ambientNoise}
     <audio class="hidden" autoplay controls loop src="ambient.mp3" />
   {/if}
-  <div class="rounded h-screen relative bg-[url('/bg+meter.png')] bg-repeat bg-cover bg-center">
-    <Popup {showPopup} {progression} {allPassages} {passedPassages} />
+  <div class="rounded h-screen relative bg-[url('/dashboard.png')] bg-repeat bg-cover bg-center">
+    <Progress {allPassages} {passedPassages} />
     {#if settingsPlane}
       <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
         <div class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6">

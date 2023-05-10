@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { tweened } from "svelte/motion";
-
   import type { PassageRead } from "@/lib/client";
 
-  export let showPopup: boolean;
-  export let progression: number;
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
 
   let possibleBranches: Array<string> = [];
+  let branchProgress: Record<string, number> = {};
+
+  let progression = 0;
+  let showPopup = false;
 
   const branches = () => {
     allPassages.forEach((obj) => {
@@ -19,34 +19,39 @@
   };
 
   const calcProgression = () => {
-    let totalPassages = allPassages.length - 1;
-    let seenPassages = passedPassages.length;
+    possibleBranches.forEach((branch) => {
+      const passagesWithBranch = allPassages.filter((obj) => obj.branch === branch);
+      const totalBranchPassages = passagesWithBranch.length;
 
-    allPassages.forEach((x) => {
-      if (x.branch.includes("Finish") || x.emotion < 0) {
-        totalPassages = totalPassages - 1;
+      if (totalBranchPassages > 0) {
+        const seenBranchPassages = passedPassages.filter((passage) =>
+          passagesWithBranch.some((obj) => obj.passage === passage)
+        ).length;
+
+        branchProgress[branch] = Math.round((seenBranchPassages / totalBranchPassages) * 100);
+      } else {
+        branchProgress[branch] = 0;
       }
     });
 
-    progression = Math.round((seenPassages / totalPassages) * 100);
+    const calculateAverage = (progress: Record<string, number>): number => {
+      const branchValues = Object.values(progress);
+      const sum = branchValues.reduce((acc, value) => acc + value, 0);
+      const average = sum / branchValues.length;
+      return Math.round(average);
+    };
+
+    progression = calculateAverage(branchProgress);
   };
 
   const popup = () => {
     showPopup = !showPopup;
   };
 
-  const progress = tweened(0, { duration: 100 });
-
-  $: {
-    progress.set(progression);
-
-    if (showPopup) {
-      progress.set(47);
-    }
-  }
+  $: console.log(branchProgress);
 </script>
 
-<div class="flex justify-center mt-5">
+<div class="flex justify-center">
   <div class="flex flex-col w-fit h-full items-center">
     <div
       class="absolute bg-aurora-red p-2 w-fit rounded top-20"
@@ -65,7 +70,7 @@
             <progress
               class="bg-night-4 rounded-[80em] top-5 w-full p-1"
               max="100"
-              value={$progress} />
+              value={branchProgress[branch] ?? 0} />
             <p>{branch}</p>
           </div>
         {/each}
