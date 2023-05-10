@@ -29,7 +29,7 @@
     out:fly={{ x: 125, duration: 700, easing: cubicOut }}>
     <div id="background" class="bg-night-1 rounded h-full">
       <div
-        on:click="{resetTrigger}"
+        on:click={resetTrigger}
         on:keypress
         id="border"
         class="border-8 border-frost-3 rounded outline outline-8 outline-offset-0 outline-storm-4 flex h-full w-full pl-3 items-center">

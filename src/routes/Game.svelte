@@ -385,7 +385,6 @@
     showPhoneButton = false;
   };
 
-
   const losePatience = () => {
     createReview();
     quitRide();
