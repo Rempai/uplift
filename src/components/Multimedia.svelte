@@ -9,6 +9,9 @@
   export let riderList: Array<RideRead>;
   export let filledjournal: boolean;
   export let journal: boolean;
+  export let volumeAmbient;
+  export let audioAmbient;
+  export let ambientNoise;
 
   let dialogToggled = false;
   let activeContent: string;
@@ -20,6 +23,8 @@
   };
   let radioSelect: number;
   let buttonAccess = false;
+  let volumeRadio = 1;
+  let audioRadio;
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -124,10 +129,31 @@
   window.addEventListener("resize", () => {
     screenHeight = window.innerHeight;
   });
+
+  function handleVolumeChangeAmbient(event) {
+    volumeAmbient = event.target.value;
+    audioAmbient.volume = volumeAmbient;
+  }
+
+  function handleVolumeChangeRadio(event) {
+    volumeRadio = event.target.value;
+    audioRadio.volume = volumeRadio;
+  }
+
+  function handleAudioLoadedRadio() {
+    audioRadio = this;
+  }
 </script>
 
 {#if radioSelect}
-  <audio class="hidden" autoplay controls loop src={radios[radioSelect].source} />
+  <audio
+    class="hidden"
+    autoplay
+    controls
+    loop
+    src={radios[radioSelect].source}
+    on:loadedmetadata={handleAudioLoadedRadio}
+    volume={volumeRadio} />
 {/if}
 
 <Modal showModal={modalOpened} on:click={handleModal} {modalHeader}>
@@ -269,13 +295,34 @@
           }
         }}
         text="Toggle Ambient Noise"
-        class="mt-5 p-3 bg-frost-4 hover:brightness-110 rounded" />
+        class="p-3 bg-frost-4 hover:brightness-110 rounded" />
+      {#if ambientNoise}
+        <input
+          class="mt-5"
+          type="range"
+          id="volume-slider"
+          min="0"
+          max="1"
+          step="0.1"
+          value={1}
+          on:input={handleVolumeChangeAmbient} />
+      {/if}
+      <hr class="mt-5 w-96" />
       <select name="station" bind:value={radioSelect} class="mt-5 p-3 bg-frost-4 rounded">
         {#each radios as radio}
           <option value={radio.id}>{radio.name}</option>
         {/each}
       </select>
       {#if radioSelect}
+        <input
+          class="mt-5"
+          type="range"
+          id="volume-slider"
+          min="0"
+          max="1"
+          step="0.1"
+          value={1}
+          on:input={handleVolumeChangeRadio} />
         <Button
           onClick={() => (radioSelect = 0)}
           text="Stop"
@@ -392,3 +439,19 @@
     </div>
   </div>
 </div>
+
+<style>
+  /* barretje tussen 2 delen */
+  input[type="range"] {
+    -webkit-appearance: none !important;
+    appearance: none;
+    background: #8fbcbb;
+    height: 1em;
+    width: 15em;
+    border-radius: 99em;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    background-color: #434c5e;
+  }
+</style>
