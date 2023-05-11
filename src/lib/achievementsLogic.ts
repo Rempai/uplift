@@ -53,7 +53,7 @@ export const isAchieved = ({
       return false;
 
     case 7: {
-      const { mainProblem, mainCause, partiesInvolved } = currentRide;
+      const { mainProblem, mainCause, partiesInvolved } = resolutionData;
 
       const correctMainCauses = currentRide.mainCause.match(/(?<=;)[^;]+(?=;)/g);
       const correctMainProblems = currentRide.mainProblem.match(/(?<=;)[^;]+(?=;)/g);
@@ -62,11 +62,7 @@ export const isAchieved = ({
       if (
         correctMainCauses.includes(mainCause) &&
         correctMainProblems.includes(mainProblem) &&
-        correctPartiesInvolved.includes(partiesInvolved) &&
-        currentRide.bravery === resolutionData.bravery &&
-        currentRide.enthusiasm === resolutionData.enthusiasm &&
-        currentRide.integrity === resolutionData.integrity &&
-        currentRide.perseverance === resolutionData.perseverance
+        correctPartiesInvolved.includes(partiesInvolved)
       ) {
         postUserAchievement(userId, achievementId);
         return true;

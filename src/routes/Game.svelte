@@ -154,9 +154,6 @@
     await UserService.getAchievements(parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
-
-    console.log(allAchievements);
-    console.log(unlockedAchievements);
   };
 
   const togglePhone = () => {
@@ -215,9 +212,6 @@
   };
 
   const showResolution = ({ detail }) => {
-    // Achievement : Perfect journal for Ride Paolo
-    handleAchievement(7);
-
     togglePhone();
     journal = false;
     resolution = true;
@@ -353,6 +347,9 @@
     // if (reviewList[reviewList.length - 1].stars === 5) {
     //   handleAchievement(5);
     // }
+
+    // Achievement : Perfect journal for Ride Paolo
+    handleAchievement(7);
     solution = event.detail;
     nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
@@ -360,6 +357,7 @@
     clearResolutionData();
     dialog = true;
     filledjournal = false;
+    showPhoneButton = true;
   };
 
   const createReview = async () => {
@@ -385,7 +383,7 @@
       handleAchievement(1);
     }
     togglePhone();
-    showPhoneButton = false;
+    showPhoneButton = true;
   };
 
   const losePatience = () => {
@@ -411,6 +409,7 @@
     dialog = false;
     filledjournal = true;
     patienceLost = false;
+    showPhoneButton = true;
   };
 
   const checkPhoneButton = () => {

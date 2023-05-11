@@ -67,18 +67,18 @@
   {#if allPassages && allPassages.length > 0}
     <div class="flex justify-center h-full cursor-pointer" on:click={popup} on:keypress>
       <div
-        class="hover:bg-night-2 transition bg-night-1 h-[4.9%] -md flex justify-center items-center absolute"
-        style="top:{screenHeight / 1.43}px; width: {screenHeight / 5.5}px;
-    transform: translateX({screenHeight / 2.75}%)">
+        class="hover:bg-night-2 transition bg-night-1 h-[4.95%] -md flex justify-center items-center absolute"
+        style="top:{screenHeight / 1.435}px; width: {screenHeight / 5.51}px;
+    transform: translateX({screenHeight / 3.25}%)">
         {progression}%
       </div>
     </div>
   {:else}
     <div class="flex justify-center h-full">
       <div
-        class="bg-night-1 h-[4.9%] -md flex justify-center items-center absolute"
-        style="top:{screenHeight / 1.43}px; width: {screenHeight / 5.5}px;
-    transform: translateX({screenHeight / 2.75}%)" />
+        class="bg-night-1 h-[4.95%] -md flex justify-center items-center absolute"
+        style="top:{screenHeight / 1.435}px; width: {screenHeight / 5.51}px;
+    transform: translateX({screenHeight / 3.25}%)" />
     </div>
   {/if}
 </div>
