@@ -155,8 +155,8 @@
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
 
-      console.log(allAchievements);
-      console.log(unlockedAchievements);
+    console.log(allAchievements);
+    console.log(unlockedAchievements);
   };
 
   const togglePhone = () => {
@@ -344,16 +344,15 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
-
     // Achievement: 4 stars on a Ride Paolo
-        if (reviewList[reviewList.length - 1].stars === 4) {
-        handleAchievement(4);
-        }
+    // if (reviewList[reviewList.length - 1].stars === 4) {
+    // handleAchievement(4);
+    // }
 
     // Achievement: 5 stars on a Ride Paolo
-    if (reviewList[reviewList.length - 1].stars === 5) {
-      handleAchievement(5);
-    }
+    // if (reviewList[reviewList.length - 1].stars === 5) {
+    //   handleAchievement(5);
+    // }
     solution = event.detail;
     nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
