@@ -10,7 +10,7 @@
     registerForAccessToken,
     updateUserAccount,
   } from "@/lib/authProcesses";
-
+  import { isAchieved, IdUnlockedAchievements } from "@/lib/achievementsLogic";
   import {
     CharactersService,
     OpenAPI,
@@ -20,6 +20,7 @@
     type ReviewRead,
     type RideRead,
     type ReviewedUserCreate,
+    type AchievementRead,
   } from "@/lib/client";
 
   import Dialog from "@/components/Dialog.svelte";
@@ -32,6 +33,7 @@
   import Journal from "@/components/Journal.svelte";
   import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
+  import Achievement from "@/components/Achievement.svelte";
   import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
 
@@ -83,6 +85,13 @@
 
   let patienceLost = false;
 
+  let triggerAchievement = false;
+  let unlockedAchievement = "";
+
+  let allAchievements: Array<AchievementRead> = [];
+  let unlockedAchievements = [];
+
+  let tutorialCompleted = false;
   let volumeAmbient = 1;
   let audioAmbient;
   let allowAudioCall = true;
@@ -137,6 +146,17 @@
     await CharactersService.getReviews(parsedJWT.sub)
       .then((res) => (reviewList = res))
       .catch((err) => showError(err));
+
+    await UserService.getAchievements()
+      .then((res) => (allAchievements = res))
+      .catch((err) => showError(err));
+
+    await UserService.getAchievements(parsedJWT.sub)
+      .then((res) => (unlockedAchievements = res))
+      .catch((err) => showError(err));
+
+    console.log(allAchievements);
+    console.log(unlockedAchievements);
   };
 
   const togglePhone = () => {
@@ -195,6 +215,10 @@
   };
 
   const showResolution = ({ detail }) => {
+    // Achievement : Perfect journal for Ride Paolo
+    handleAchievement(7);
+
+    togglePhone();
     journal = false;
     resolution = true;
     resolutionData = detail;
@@ -320,6 +344,15 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
+    // Achievement: 4 stars on a Ride Paolo
+    // if (reviewList[reviewList.length - 1].stars === 4) {
+    // handleAchievement(4);
+    // }
+
+    // Achievement: 5 stars on a Ride Paolo
+    // if (reviewList[reviewList.length - 1].stars === 5) {
+    //   handleAchievement(5);
+    // }
     solution = event.detail;
     nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
@@ -340,10 +373,85 @@
       reviewId: reviewScore,
       date: currentTime,
     };
-
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+
+    // Achievement: Completed all rides
+    //handleAchievement(9);
+
+    //Achievement: Completed first ride
+    if (reviewList.length === 1) {
+      handleAchievement(1);
+    }
+    togglePhone();
+    showPhoneButton = false;
+  };
+
+  const losePatience = () => {
+    createReview();
+    quitRide();
+  };
+
+  const clearResolutionData = () => {
+    resolutionData = {
+      ...resolutionData,
+      mainCause: "",
+      mainProblem: "",
+      partiesInvolved: "",
+    };
+  };
+
+  const quitRide = () => {
+    passage = undefined;
+    ambientNoise = false;
+    pausevideo();
+    journalData = [];
+    clearResolutionData();
+    dialog = false;
+    filledjournal = true;
+    patienceLost = false;
+  };
+
+  const checkPhoneButton = () => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken != null) {
+      phonebutton = false;
+    } else {
+      phonebutton = true;
+    }
+  };
+
+  const pausevideo = () => {
+    const video = document.querySelector("video");
+    video.pause();
+  };
+
+  function handleAudioLoadedAmbient() {
+    // eslint-disable-next-line  @typescript-eslint/no-this-alias
+    audioAmbient = this;
+  }
+
+  const handleAchievement = (achievementId: number) => {
+    // TODO: Achievement emotion meter: emotion stays above level whole game
+    // TODO: Change license
+
+    unlockedAchievements.forEach((item) => {
+      if (!IdUnlockedAchievements.includes(item.achievementId)) {
+        IdUnlockedAchievements.push(item.achievementId);
+      }
+    });
+
+    triggerAchievement = isAchieved({
+      userId: parsedJWT.sub,
+      achievementId: achievementId,
+      reviewList: reviewList,
+      currentRide: currentRide,
+      tutorialCompleted: tutorialCompleted,
+      riderList: riderList,
+      resolutionData: resolutionData,
+    });
+    unlockedAchievement = allAchievements[achievementId - 1].name;
   };
 
   onMount(async () => {
@@ -394,48 +502,18 @@
     }
   }
 
-  const losePatience = () => {
-    createReview();
-    quitRide();
-  };
+  $: if ($passageName !== "") {
+    nextPassage($passageName);
+  }
 
-  const clearResolutionData = () => {
-    resolutionData = {
-      ...resolutionData,
-      mainCause: "",
-      mainProblem: "",
-      partiesInvolved: "",
-    };
-  };
+  $: if ($emotion <= 70) {
+    filledjournal = false;
+    patienceLost = true;
+  }
 
-  const quitRide = () => {
-    passage = undefined;
-    ambientNoise = false;
-    pausevideo();
-    journalData = [];
-    clearResolutionData();
-    dialog = false;
-    filledjournal = true;
-    patienceLost = false;
-  };
-
-  const checkPhoneButton = () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken != null) {
-      phonebutton = false;
-    } else {
-      phonebutton = true;
-    }
-  };
-
-  const pausevideo = () => {
-    const video = document.querySelector("video");
-    video.pause();
-  };
-
-  function handleAudioLoadedAmbient() {
-    // eslint-disable-next-line  @typescript-eslint/no-this-alias
-    audioAmbient = this;
+  $: if (passage) {
+    textParsed = textParser(passage.content);
+    updateJournalData();
   }
 </script>
 
@@ -444,6 +522,7 @@
 </svelte:head>
 
 <main>
+  <Achievement triggered={triggerAchievement} achievementTitle={unlockedAchievement} />
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
