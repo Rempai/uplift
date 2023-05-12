@@ -128,24 +128,27 @@ export function parse_file(
         //TODO error checking
         break;
       case ":patience":
-        if(in_branch) {
-          if(branches.slice(-1)[0].passages.length != 1){
+        if (in_branch) {
+          if (branches.slice(-1)[0].passages.length != 1) {
             branches.slice(-1)[0].passages.slice(-1)[0].emotion = parseInt(cur_split[1]);
+          } else {
+            lerr(
+              location,
+              "tried to give patience to a passage, but there's no passage in this branch yet."
+            );
           }
-          else {
-            lerr(location, "tried to give patience to a passage, but there's no passage in this branch yet.");
-          }
-        }
-        else {
+        } else {
           lerr(location, "tried to patience to a passage, but we're not currently in a branch");
         }
         break;
       case ":finish":
-        if(in_branch) {
+        if (in_branch) {
           branches.slice(-1)[0].finish_number = parseInt(cur_split[1]);
-        }
-        else {
-          lerr(location, "tried to give the branch a finish number, but we're not currently in a branch");
+        } else {
+          lerr(
+            location,
+            "tried to give the branch a finish number, but we're not currently in a branch"
+          );
         }
         break;
       case ":ridename":

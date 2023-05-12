@@ -1,5 +1,5 @@
-import { generate_output } from "./parser_generate.js"
-import { parse_file } from "./parser_file.js"
+import { generate_output } from "./parser_generate.js";
+import { parse_file } from "./parser_file.js";
 
 export class Passage {
   text = "";
@@ -34,8 +34,6 @@ export function do_thing(filename: string, print_debug: boolean): [number, strin
   process.stdout.write("\n");
   return [errors, output];
 }
-
-
 
 //filename is the filename of the root file
 function check_branches(
@@ -130,4 +128,3 @@ function check_branches(
   }
   return errors;
 }
-
