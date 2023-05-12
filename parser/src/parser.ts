@@ -7,7 +7,7 @@ export class Passage {
   attributeID = -1; //attributeID used
   links_to: Array<string> = [];
   original_location = ""; //just for giving the user a line number when an error occurs
-  emotion: number = 0;
+  emotion = 0;
 }
 export class Branch {
   name = "";
@@ -16,7 +16,7 @@ export class Branch {
   fallthrough: boolean | null = null; //if branch should continue to the next branch (in branches array) when it reaches the end
   requires_linking = true; //if branch should be checked for linking (ending branches don't have this - the rest does)
   original_location = ""; //for error purposes
-  finish_number: number = -1;
+  finish_number = -1;
 }
 
 export function do_thing(filename: string, print_debug: boolean): [number, string] {

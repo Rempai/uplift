@@ -1,15 +1,14 @@
-import { parseArgs } from "util";
-import { Branch, Passage } from "./parser.js";
+import { Branch } from "./parser.js";
 
 class OutputObject {
-  branch: string = "Trunk";
-  passage: string = "";
-  content: string = "";
-  rideId: number = 0;
-  speaker: string = "You";
-  attributeId: number = 1;
-  continueButton: boolean = true;
-  emotion: number = 0;
+  branch = "Trunk";
+  passage = "";
+  content = "";
+  rideId = 0;
+  speaker = "You";
+  attributeId = 1;
+  continueButton = true;
+  emotion = 0;
 }
 
 export function generate_output(
@@ -23,7 +22,7 @@ export function generate_output(
   const objectIndex = unsorted_branches.findIndex((obj) =>
     obj.name.startsWith(ridedata.name + "start")
   );
-  let branches = unsorted_branches.sort((a, b) => {
+  const branches = unsorted_branches.sort((a, b) => {
     if (a === unsorted_branches[objectIndex]) {
       return -1;
     } else if (b === unsorted_branches[objectIndex]) {
@@ -38,16 +37,15 @@ export function generate_output(
   let other_dialogue = 1;
 
   for (let i = 0; i < branches.length; i++) {
-    let branch = branches[i];
+    const branch = branches[i];
     if (last_root != branch.root_name) {
       you_dialogue = 1;
       other_dialogue = 1;
-      //console.error(last_root + " -> " + branch.root_name)
       last_root = branch.root_name;
     }
 
     for (let j = 0; j < branch.passages.length; j++) {
-      let passage = branch.passages[j];
+      const passage = branch.passages[j];
 
       //make passage name
       let passage_name = branch.name.split("_")[0];
@@ -57,10 +55,6 @@ export function generate_output(
         passage_name = "Trunk";
         edited_root_name = "Trunk";
       }
-
-      //if(passage_name.includes("Inform the teacher")){
-      //  edited_root_name = "PaoloFinish"
-      //}
 
       if (branch.finish_number != -1) {
         edited_root_name = ridedata.name + "Finish";
@@ -76,40 +70,21 @@ export function generate_output(
 
       if (passage.speaker == "You") {
         passage_name += "You" + you_dialogue.toString();
-        //edited_root_name += "You" + you_dialogue.toString();
         you_dialogue += 1;
       } else {
         passage_name += other_dialogue.toString();
-        //edited_root_name += other_dialogue.toString();
         other_dialogue += 1;
       }
-      //HACK HACK
-      //passage_name += (you_dialogue % 2) ? "You" : "" + you_dialogue.toString();
 
-      var last = 0;
-      var last2 = 0;
-      for (var b = 0; b < branches.length; b++) {
-        for (var p = 0; p < branches[b].passages.length; p++) {
-          var inner_passage = branches[b].passages[p];
-          //const regex = /(?<=`)[^`|]*(?=\|)/g;
-          const regex = /(?<=\{)[^\{\}]*(?=\})/g;
-          //const regex = "/'{([^}]*)}'/g"
+      for (let b = 0; b < branches.length; b++) {
+        for (let p = 0; p < branches[b].passages.length; p++) {
+          const inner_passage = branches[b].passages[p];
+          const regex = "/(?<={)[^{}]*(?=})/g";
           const found = inner_passage.text.match(regex);
-          //console.error(found);
-          //console.error(inner_passage.text)
           (found ?? []).forEach((element) => {
             if (element.toString() == branch.name) {
-              //inner_passage.text = "";
-              //passage.text = "";
-              const old = "{" + branch.name + "}"; //TODO wtf
-              //console.log(found.at(a))
-              //console.log(branch.name);
-              //console.log(old)
+              const old = "{" + branch.name + "}";
               inner_passage.text = inner_passage.text.replace(old, passage_name);
-              //branches[b].passages[p].text = "";
-              last = b;
-              last2 = p;
-              //console.log("");
             }
           });
         }
@@ -142,9 +117,9 @@ export function generate_output(
 
   let a = 0;
   for (let i = 0; i < branches.length; i++) {
-    let branch = branches[i];
+    const branch = branches[i];
     for (let j = 0; j < branch.passages.length; j++) {
-      let passage = branch.passages[j];
+      const passage = branch.passages[j];
       output_array[a].content = passage.text;
       a++;
     }
@@ -153,19 +128,18 @@ export function generate_output(
   if (print_debug) {
     console.error(JSON.stringify(output_array, null, 2));
   }
-  //return JSON.stringify(output_array, null, 2);
+
   return (
     '"' +
     JSON.stringify(output_array)
-      .replace(/[\\]/g, "\\\\")
-      .replace(/[\"]/g, '\\"')
-      .replace(/[\/]/g, "\\/")
-      .replace(/[\b]/g, "\\b")
-      .replace(/[\f]/g, "\\f")
-      .replace(/[\n]/g, "\\n")
-      .replace(/[\r]/g, "\\r")
-      .replace(/[\t]/g, "\\t") +
+      .replace("/[\\]/g", "\\\\")
+      .replace('/["]/g', '\\"')
+      .replace("/[/]/g", "\\/")
+      .replace("/[\b]/g", "\\b")
+      .replace("/[\f]/g", "\\f")
+      .replace("/[\n]/g", "\\n")
+      .replace("/[\r]/g", "\\r")
+      .replace("/[\t]/g", "\\t") +
     '"'
   );
-  //return JSON.stringify(output_array);
 }
