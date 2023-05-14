@@ -78,7 +78,7 @@
 {#if parsedJWT}
   <nav
     bind:this={nav}
-    class="shadow bg-night-2 flex flex-col gap-2 overflow-x-hidden overflow-y-auto pl-2 pb-3 fixed top-0 w-full md:static md:w-fit z-10">
+    class="shadow bg-night-2 flex flex-col gap-2 overflow-x-hidden overflow-y-auto pl-2 pb-3 fixed top-0 w-full md:static md:w-fit z-10 max-h-72 md:max-h-full">
     <div class="mt-3 pl-2 py-2 bg-night-1 flex rounded-l justify-between">
       <div class="flex items-center">
         <img src={Logo} alt="logo" class="w-10 h-6 mr-2" />
@@ -113,8 +113,8 @@
               {#each routesInCategory as route}
                 {#if route.icon}
                   {#if parsedJWT.role === "Writer" && route.role === "Writer"}
-                    {#if route.route === "/admin/passage/abstractor"}
-                      <AdminNavLink name={route.route} link={route.route}>
+                    {#if route.route === "/admin/abstractor/create"}
+                      <AdminNavLink name="Abstractor" link={route.route}>
                         <svelte:component this={route.icon} font-size="1.5em" />
                       </AdminNavLink>
                     {:else}
@@ -123,8 +123,8 @@
                       </AdminNavLink>
                     {/if}
                   {:else if parsedJWT.role === "Admin"}
-                    {#if route.route === "/admin/passage/abstractor"}
-                      <AdminNavLink name={route.route} link={route.route}>
+                    {#if route.route === "/admin/abstractor/create"}
+                      <AdminNavLink name="Abstractor" link={route.route}>
                         <svelte:component this={route.icon} font-size="1.5em" />
                       </AdminNavLink>
                     {:else}
