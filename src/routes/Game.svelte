@@ -40,6 +40,7 @@
   import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
 
   import Background from "/background.webm";
+  import DriverModal from "@/components/DriverModal.svelte";
 
   let ambientNoise = false;
 
@@ -78,9 +79,9 @@
 
   let filledjournal = true;
 
+  let user;
   let allPassages: Array<PassageRead>;
   let passedPassages: Array<string> = [];
-
   let patienceLost = false;
 
   let triggerAchievement = false;
@@ -505,6 +506,18 @@
 
 <main>
   <Achievement triggered={triggerAchievement} achievementTitle={unlockedAchievement} />
+  {#if parsedJWT}
+    <button
+      class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg"
+      on:click={() => {
+        showDriverModal = true;
+      }}>
+      Driver License
+    </button>
+  {/if}
+  {#if reviewList}
+    <DriverModal bind:showDriverModal username={user} {reviewList} />
+  {/if}
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
@@ -621,6 +634,209 @@
           </div>
         </div>
       </Phone>
+    {:else if page}
+      {#if page == 1}
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Choose Ride">
+          <div slot="content" class="px-4 mt-2">
+            <div class="profile pt-2 pb-2">
+              {#if riderList.length}
+                {#if passage}
+                  <p class="text-center w-full">You are already in a ride.</p>
+                  {#if filledjournal && !journal}
+                    <div class="flex flex-col mb-3 mt-3">
+                      <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
+                    </div>
+                  {/if}
+                {:else}
+                  {#await riderList then rider}
+                    {#each rider as data}
+                      <div>
+                        <div
+                          on:keypress
+                          on:click={() => selectRide(data)}
+                          class="hover:bg-night-2 cursor-pointer rounded">
+                          <div class="gap-3 w-full flex items-center">
+                            <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                            <div>
+                              <p class="flex items-center">
+                                <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
+                              </p>
+                              <p class="flex items-center">
+                                <IoIosLocationOutline
+                                  font-size="1.2em"
+                                  class="mr-2" />{data.fromLocation}
+                              </p>
+                              <p class="flex items-center">
+                                <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
+                              </p>
+                              <p class="flex items-center">
+                                <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
+                              </p>
+                            </div>
+                          </div>
+                          <div class="flex items-center mt-1 gap-1 justify-center">
+                            <p>Personal best:</p>
+                            <div class="flex">
+                              {#each { length: 5 } as _, i}
+                                {#if i < getReviewStars(data)}
+                                  <IonStar
+                                    font-size="1em"
+                                    class={getReviewStars(data) === 5 && i < 5
+                                      ? "w-5 text-aurora-yellow"
+                                      : "w-5"} />
+                                {:else}
+                                  <IonStarOutline font-size="1em" class="w-5" />
+                                {/if}
+                              {/each}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="border-b-2 border-night-2 h-2 w-full mt-2" />
+                      </div>
+                    {/each}
+                  {/await}
+                {/if}
+              {:else}
+                <p class="text-center w-full">There are no rides you can take.</p>
+              {/if}
+            </div>
+          </div>
+        </Phone>
+      {:else if page == 2}
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Achievements">
+          <div slot="content" class="px-4 mt-3">
+            <div class="flex justify-center flex-wrap gap-3">
+              {#each Array(5) as _}
+                <div
+                  class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+                  <span class="text-2xl">?</span>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </Phone>
+      {:else if page == 3}
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Reviews">
+          <div slot="content" class="px-4 mt-3">
+            {#if reviewList.length}
+              {#await reviewList then reviewer}
+                {#each reviewer as data}
+                  <div
+                    class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+                    on:keypress
+                    on:click={() => toggleModal(data)}>
+                    <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
+                    <div class="overflow-x-hidden whitespace-nowrap">
+                      <p class="flex items-center">
+                        <IoIosCard font-size="1.2em" class="mr-2" />
+                        {data.ride.passenger.name}
+                      </p>
+                      <p class="flex items-center">
+                        <IoIosCalendar font-size="1.2em" class="mr-2" />
+                        {formatDate(data.date)}
+                      </p>
+                      <div class="inline-flex items-center">
+                        {#each Array(data.stars) as _}
+                          {#if data.stars === 5}
+                            <IonStar font-size="1.2em" class="w-5 mr-2 text-aurora-yellow" />
+                          {:else}
+                            <IonStar class="w-5 mr-2" font-size="1.2em" />
+                          {/if}
+                        {/each}
+                        {#if data.stars < 5}
+                          {#each Array(5 - data.stars) as _}
+                            <IoIosStarOutline class="w-5 mr-2 text-frost-3" font-size="1.2em" />
+                          {/each}
+                        {/if}
+                      </div>
+                      <p>{data.description}</p>
+                    </div>
+                  </div>
+                {/each}
+              {/await}
+            {:else}
+              <p class="text-center w-full">
+                You have no reviews, please <span
+                  class="text-aurora-orange cursor-pointer"
+                  on:keypress
+                  on:click={() => (page = 1)}>select a ride</span>
+              </p>
+            {/if}
+          </div>
+        </Phone>
+      {:else if page == 4}
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Dashboard">
+          <div slot="content" class="px-4 mt-3 flex justify-around">
+            <div class="flex flex-col items-center gap-5">
+              {#if typeof passage == "object"}
+                <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
+                {#if filledjournal}
+                  <Button
+                    onClick={toggleJournal}
+                    text="Toggle Journal"
+                    class="bg-frost-2 w-full" />
+                {/if}
+                <Button
+                  onClick={toggleAmbient}
+                  text="Toggle Ambient Noise"
+                  class="bg-frost-4 w-full" />
+              {:else}
+                <p class="text-center w-full">
+                  Dashboard features are only enabled when you are in a ride.
+                </p>
+              {/if}
+            </div>
+          </div>
+        </Phone>
+      {:else if page == 5}
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Radio">
+          <div slot="content" class="px-4 mt-3 flex flex-col items-center">
+            <select name="station" bind:value={radioSelect} class="my-5 p-3 bg-frost-4 rounded">
+              {#each radios as radio}
+                <option value={radio.id}>{radio.name}</option>
+              {/each}
+            </select>
+            {#if radioSelect}
+              <Button
+                onClick={() => (radioSelect = 0)}
+                text="Stop"
+                class="!border-aurora-red hover:bg-aurora-red" />
+            {/if}
+          </div>
+        </Phone>
+      {:else if page == 6}
+        <Phone on:close={togglePhone} on:item={handleClick} menuName="Settings">
+          <div slot="content" class="px-4 mt-3">
+            <p class="text-center text-3xl text-frost-1">Account</p>
+            <div class="flex flex-col items-center gap-5 mt-6 mx-12">
+              <Button
+                onClick={() => changeAccount("username")}
+                text="Username"
+                class="bg-aurora-purple w-full" />
+              <Button
+                onClick={() => changeAccount("password")}
+                text="Password"
+                class="bg-aurora-orange w-full" />
+              <Button
+                onClick={() => {
+                  localStorage.clear();
+                  parsedJWT = null;
+                  showPhoneButton = false;
+                  welcome = true;
+                  dialog = false;
+                  journal = false;
+                  settingsPlane = "";
+                }}
+                text="Logout"
+                class="bg-aurora-green w-full" />
+              <Button
+                onClick={() => changeAccount("Delete")}
+                text="Delete account"
+                class="bg-aurora-red w-full" />
+            </div>
+          </div>
+        </Phone>
+      {/if}
     {:else}
       <Phone on:close={togglePhone} />
     {/if}
