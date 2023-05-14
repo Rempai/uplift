@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import type { PassageRead, ReviewRead, RideRead } from "@/lib/client";
+  import type { AchievementRead, PassageRead, ReviewRead, RideRead } from "@/lib/client";
 
   import { radios } from "@/lib/radio";
 
@@ -20,11 +20,16 @@
   import ClarityLicenseSolid from "~icons/clarity/license-solid";
 
   export let passage: PassageRead | null = null;
+  export let showReviewList = false;
   export let reviewList: Array<ReviewRead>;
   export let rideList: Array<RideRead>;
   export let filledjournal: boolean;
   export let journal: boolean;
   export let modalOpened: boolean;
+  export let animalease: boolean;
+
+  export let allAchievements: Array<AchievementRead>;
+  export let unlockedAchievements: Array<AchievementRead>;
 
   export let audioAmbient;
   export let volumeAmbient: number;
@@ -73,7 +78,7 @@
       passenger: review.ride.passenger.name,
       text: review.description,
     };
-    modalHeader = `${review.ride.passenger.name}'s review`; // set the modal header to the passenger name
+    modalHeader = `${review.ride.passenger.name}'s review (${formatDate(review.date)})`; // set the modal header to the passenger name
   };
 
   const dialog = () => {
@@ -134,6 +139,14 @@
     audioRadio = this;
   }
 
+  $: if (showReviewList) {
+    forward("Reviews");
+  }
+
+  $: if (reviewList) {
+    reviewList = reviewList.reverse()
+  }
+
   $: dialogIconSrc =
     passage && dialogToggled
       ? "multimedia/Dialogue_white_icon.png"
@@ -155,9 +168,9 @@
 
 <Modal showModal={modalOpened} on:click={handleModal} {modalHeader} on:closed={handleModal}>
   {#if activeContent === "Achievements"}
-    <div class="px-4 mt-3">
+    <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
-        {#each Array(5) as _}
+        {#each allAchievements as _}
           <div
             class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
             <span class="text-2xl">?</span>
@@ -222,11 +235,11 @@
           {#if passage}
             <p class="text-center w-full">You are already in a ride.</p>
             {#if filledjournal}
-              <div class="flex flex-col mb-3 mt-3">
+              <div class="flex mt-3 justify-center">
                 <Button
                   onClick={() => dispatch("quitRide")}
                   text="Quit ride"
-                  class="bg-aurora-red" />
+                  class="bg-aurora-red w-fit" />
               </div>
             {/if}
           {:else}
@@ -284,8 +297,27 @@
       </div>
     </div>
   {:else if activeContent === "Radio"}
-    <div class="px-4 my-3 flex flex-col items-center">
+    <div class="px-4 my-3 flex flex-col items-center gap-3">
       {#if passage}
+        {#if animalease}
+          <Button
+            onClick={() => {
+              if (passage) {
+                dispatch("toggleAnimalease");
+              }
+            }}
+            text="Disable Animalease"
+            class="bg-aurora-orange" />
+        {:else}
+          <Button
+            onClick={() => {
+              if (passage) {
+                dispatch("toggleAnimalease");
+              }
+            }}
+            text="Enable Animalease"
+            class="bg-aurora-green" />
+        {/if}
         <Button
           onClick={() => {
             if (passage) {
@@ -293,7 +325,7 @@
             }
           }}
           text="Toggle Ambient Noise"
-          class="p-3 bg-frost-4 hover:brightness-110 rounded" />
+          class="bg-frost-4" />
       {/if}
       {#if ambientNoise}
         <input
@@ -332,29 +364,29 @@
     </div>
   {:else if activeContent === "Settings"}
     <div class="px-4 my-3">
-      <div class="flex flex-col items-center gap-5 m-6 mx-12">
+      <div class="flex flex-col items-center justify-center gap-5">
         <Button
           onClick={() => {
             forwardNotToggle("ChangeUsername", "Change Username");
           }}
           text="Username"
-          class="bg-aurora-purple w-full" />
+          class="bg-aurora-purple w-full max-w-xs" />
         <Button
           onClick={() => {
             forwardNotToggle("ChangePassword", "Change Password");
           }}
           text="Password"
-          class="bg-aurora-orange w-full" />
+          class="bg-aurora-orange w-full max-w-xs" />
         <Button
           onClick={() => {
             dispatch("logout"), (modalOpened = false);
           }}
           text="Logout"
-          class="bg-aurora-green w-full" />
+          class="bg-aurora-green w-full max-w-xs" />
         <Button
           onClick={() => forwardNotToggle("DeleteAccount", "Delete Account")}
           text="Delete account"
-          class="bg-aurora-red w-full" />
+          class="bg-aurora-red w-full max-w-xs" />
       </div>
     </div>
   {:else if activeContent === "ChangeUsername" || activeContent === "ChangePassword"}
@@ -378,7 +410,7 @@
   {:else if activeContent === "DeleteAccount"}
     <div class="px-4 my-3">
       <p>
-        <b>Are you sure you want to delete your account? All progression will be lost.</b>
+        <b>Are you sure you want to delete your account? All your progression will be lost.</b>
       </p>
       <div class="flex mt-5 gap-3">
         <Button
@@ -407,7 +439,7 @@
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
         <div slot="icon">
-          <ClarityLicenseSolid />
+          <ClarityLicenseSolid class="text-aurora-orange" />
         </div>
       </Button>
       <Button
