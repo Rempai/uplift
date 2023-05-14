@@ -89,7 +89,7 @@
 
 <div class="flex justify-center px-3">
   <div
-    class="relative z-3 max-w-screen-lg w-full bg-night-3 shadow rounded border-4"
+    class="relative max-w-screen-lg w-full bg-night-3 shadow rounded border-4"
     style="border-color: {dialogColor}">
     <div class="flex">
       <div class="h-10 shadow py-1 px-6 rounded-br" style="background-color: {dialogColor}">
