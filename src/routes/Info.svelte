@@ -2,10 +2,10 @@
   import Footer from "@/components/Footer.svelte";
 </script>
 
-<section class="p-4 mx-auto max-w-screen-lg" id="about-uplift">
+<section class="p-4 mx-auto max-w-screen-lg" id="knowledge">
   <div class="md:flex md:justify-around md:items-center md:gap-20">
     <div class="pb-10">
-      <h2>Knowledge Page</h2>
+      <h1>Knowledge Page</h1>
       <p>
         Uplift is a game set in the near future, one where the gig economy has kept expanding and
         taxi licensing has become impossibly complicated! So much so, that the only viable way for
@@ -15,32 +15,21 @@
       </p>
     </div>
   </div>
-  <div class="md:flex md:justify-around md:items-center md:gap-20">
-    <div class="pb-10 order-2">
-      <h3>Your Job</h3>
-      <p>
-        Your task as an Uplift taxi driver is to pick up customers and bring them to their
-        destination. Along the way, they will tell you about their problems. It is up to you to
-        listen carefully and ask follow-up questions that reveal the underlying reasons for the
-        problems they are experiencing. Fill out the Uplift Standard Report with these insights to
-        help your customers and earn money!
-      </p>
+  {#each { length: 4 } as _}
+    <div class="md:flex md:justify-around md:items-center md:gap-20" id="lorem">
+      <div class="pb-10">
+        <h3>Lorem</h3>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est ex perferendis, sunt
+          cupiditate repudiandae adipisci autem animi consequatur architecto laboriosam molestias,
+          exercitationem quas, suscipit rerum expedita facilis cumque obcaecati illum! Lorem ipsum
+          dolor sit, amet consectetur adipisicing elit. Est ex perferendis, sunt cupiditate
+          repudiandae adipisci autem animi consequatur architecto laboriosam molestias,
+          exercitationem quas, suscipit rerum expedita facilis cumque obcaecati illum!
+        </p>
+      </div>
     </div>
-  </div>
-</section>
-<section class="p-4 mx-auto max-w-screen-lg">
-  <div class="md:flex md:justify-around md:items-center md:gap-20">
-    <div class="pb-10">
-      <h3>Training</h3>
-      <p>
-        We understand that counseling might be new to you, and guiding customers through their
-        process of introspection seems like an intimidating task. Luckily, Uplift will provide you
-        with in-game coaches that can teach you everything you need to know. Our system of problem
-        analysis is highly intuitive and you will learn to define and recognize such virtuous
-        concepts as Bravery, Perseverance, Integrity and more!
-      </p>
-    </div>
-  </div>
+  {/each}
 </section>
 <section class="bg-night-3">
   <div class="p-4 mx-auto max-w-screen-lg md:flex md:justify-around md:items-center md:gap-20">
