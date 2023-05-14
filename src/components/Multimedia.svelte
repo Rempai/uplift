@@ -1,30 +1,13 @@
 <script lang="ts">
-  import { radios } from "@/lib/radio";
-  import type { PassageRead, ReviewRead, RideRead } from "@/lib/client";
   import { createEventDispatcher } from "svelte";
-  import Modal from "./Modal.svelte";
 
-  export let passage: PassageRead | null = null;
-  export let reviewList: Array<ReviewRead>;
-  export let riderList: Array<RideRead>;
-  export let filledjournal: boolean;
-  export let journal: boolean;
-  export let volumeAmbient;
-  export let audioAmbient;
-  export let ambientNoise;
+  import type { PassageRead, ReviewRead, RideRead } from "@/lib/client";
 
-  let dialogToggled = false;
-  let activeContent: string;
-  let modalHeader = "Menu";
-  let modalOpened = false;
-  let singleReviewData = {
-    passenger: "",
-    text: "",
-  };
-  let radioSelect: number;
-  let buttonAccess = false;
-  let volumeRadio = 1;
-  let audioRadio;
+  import { radios } from "@/lib/radio";
+
+  import Modal from "@/components/Modal.svelte";
+  import Button from "@/components/Button.svelte";
+  import Form from "@/components/Form.svelte";
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -34,17 +17,43 @@
   import IoIosCalendar from "~icons/ion/calendar";
   import IonStar from "~icons/ion/star";
   import IonStarOutline from "~icons/ion/star-outline";
-  import Button from "./Button.svelte";
+  import ClarityLicenseSolid from "~icons/clarity/license-solid";
+
+  export let passage: PassageRead | null = null;
+  export let reviewList: Array<ReviewRead>;
+  export let riderList: Array<RideRead>;
+  export let filledjournal: boolean;
+  export let journal: boolean;
+  export let modalOpened: boolean;
+
+  export let volumeAmbient;
+  export let audioAmbient;
+  export let ambientNoise;
+
+  let dialogToggled = false;
+  let activeContent: string;
+  let modalHeader = "Menu";
+  let singleReviewData = {
+    passenger: "",
+    text: "",
+  };
+  let radioSelect: number;
+  let volumeRadio = 1;
+  let audioRadio;
+
+  let screenHeight: number = window.innerHeight;
 
   const dispatch = createEventDispatcher();
 
-  const forward = (clickedPage: number, pressedItem: string, headerTitle?: string) => {
-    checkAccess();
-    if (buttonAccess) {
-      activeContent = pressedItem;
-      modalHeader = headerTitle || pressedItem || "Menu";
-      handleModal();
-    }
+  const forward = (pressedItem: string, headerTitle?: string) => {
+    activeContent = pressedItem;
+    modalHeader = headerTitle || pressedItem || "Menu";
+    handleModal();
+  };
+
+  const forwardNotToggle = (pressedItem: string, headerTitle?: string) => {
+    activeContent = pressedItem;
+    modalHeader = headerTitle || pressedItem || "Menu";
   };
 
   const handleModal = () => {
@@ -52,6 +61,10 @@
     journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
     modalOpened = !modalOpened;
+  };
+
+  const updateAccount = async ({ target }) => {
+    dispatch("updateAccount", target);
   };
 
   const showSingleReview = (review: ReviewRead) => {
@@ -70,18 +83,13 @@
     }
   };
 
-  const quit = () => {
-    dispatch("quitride");
-  };
-
   const select = (data: RideRead) => {
     modalOpened = false;
     dispatch("select", data);
   };
 
   const toggleJournal = () => {
-    checkAccess();
-    if (buttonAccess && passage && filledjournal) {
+    if (passage && filledjournal) {
       dispatch("journalPressed");
     }
   };
@@ -107,25 +115,6 @@
     return review ? review.stars : null;
   };
 
-  $: dialogIconSrc =
-    passage && dialogToggled
-      ? "multimedia/Dialogue_white_icon.png"
-      : passage
-      ? "multimedia/Dialogue_green_icon.png"
-      : "multimedia/Dialogue_red_icon.png";
-
-  const checkAccess = () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken != null) {
-      buttonAccess = true;
-    } else {
-      buttonAccess = false;
-      dispatch("unauthenticated");
-    }
-  };
-
-  let screenHeight: number = window.innerHeight;
-
   window.addEventListener("resize", () => {
     screenHeight = window.innerHeight;
   });
@@ -144,6 +133,13 @@
     // eslint-disable-next-line  @typescript-eslint/no-this-alias
     audioRadio = this;
   }
+
+  $: dialogIconSrc =
+    passage && dialogToggled
+      ? "multimedia/Dialogue_white_icon.png"
+      : passage
+      ? "multimedia/Dialogue_green_icon.png"
+      : "multimedia/Dialogue_red_icon.png";
 </script>
 
 {#if radioSelect}
@@ -157,7 +153,7 @@
     volume={volumeRadio} />
 {/if}
 
-<Modal showModal={modalOpened} on:click={handleModal} {modalHeader}>
+<Modal showModal={modalOpened} on:click={handleModal} {modalHeader} on:closed={handleModal}>
   {#if activeContent === "Achievements"}
     <div class="px-4 mt-3">
       <div class="flex justify-center flex-wrap gap-3">
@@ -169,9 +165,7 @@
         {/each}
       </div>
     </div>
-  {/if}
-
-  {#if activeContent === "Reviews"}
+  {:else if activeContent === "Reviews"}
     <div class="px-4 mt-3">
       {#if reviewList.length}
         {#await reviewList then reviewer}
@@ -215,21 +209,20 @@
             class="text-aurora-orange cursor-pointer"
             on:keypress
             on:click={() => {
-              handleModal(), forward(0, "Contacts");
+              handleModal(), forward("Rides");
             }}>select a ride</span>
         </p>
       {/if}
     </div>
-  {/if}
-  {#if activeContent === "Contacts"}
-    <div class="px-4 mt-2">
-      <div class="profile pt-2 pb-2">
-        {#if riderList?.length}
+  {:else if activeContent === "Rides"}
+    <div class="px-4 my-2">
+      <div class="pt-2 pb-2">
+        {#if riderList.length}
           {#if passage}
             <p class="text-center w-full">You are already in a ride.</p>
             {#if filledjournal}
               <div class="flex flex-col mb-3 mt-3">
-                <Button onClick={quit} text="Quit ride" class="bg-aurora-red" />
+                <Button onClick={() => dispatch("quit")} text="Quit ride" class="bg-aurora-red" />
               </div>
             {/if}
           {:else}
@@ -259,7 +252,7 @@
                         </p>
                       </div>
                     </div>
-                    <div class="flex items-center mt-1 gap-1 justify-center">
+                    <div class="flex items-center m-1 ml-2 gap-1">
                       <p>Personal best:</p>
                       <div class="flex">
                         {#each { length: 5 } as _, i}
@@ -276,7 +269,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="border-b-2 border-night-2 h-2 w-full mt-2" />
+                  <hr class="border-night-2 m-2 w-11/12 mx-auto" />
                 </div>
               {/each}
             {/await}
@@ -286,30 +279,33 @@
         {/if}
       </div>
     </div>
-  {/if}
-  {#if activeContent === "Radio"}
-    <div class="px-4 mt-3 flex flex-col items-center">
-      <Button
-        onClick={() => {
-          if (passage) {
-            dispatch("toggleAmbient");
-          }
-        }}
-        text="Toggle Ambient Noise"
-        class="p-3 bg-frost-4 hover:brightness-110 rounded" />
+  {:else if activeContent === "Radio"}
+    <div class="px-4 my-3 flex flex-col items-center">
+      {#if passage}
+        <Button
+          onClick={() => {
+            if (passage) {
+              dispatch("toggleAmbient");
+            }
+          }}
+          text="Toggle Ambient Noise"
+          class="p-3 bg-frost-4 hover:brightness-110 rounded" />
+      {/if}
       {#if ambientNoise}
         <input
           class="mt-5"
           type="range"
-          id="volume-slider"
+          id="ambient-slider"
           min="0"
           max="1"
           step="0.1"
-          value={1}
+          value={0.5}
           on:input={handleVolumeChangeAmbient} />
       {/if}
-      <hr class="mt-5 w-96" />
-      <select name="station" bind:value={radioSelect} class="mt-5 p-3 bg-frost-4 rounded">
+      {#if passage}
+        <hr class="m-5 w-96 border-night-2" />
+      {/if}
+      <select name="station" bind:value={radioSelect} class="p-3 bg-frost-4 rounded">
         {#each radios as radio}
           <option value={radio.id}>{radio.name}</option>
         {/each}
@@ -322,7 +318,7 @@
           min="0"
           max="1"
           step="0.1"
-          value={1}
+          value={0.5}
           on:input={handleVolumeChangeRadio} />
         <Button
           onClick={() => (radioSelect = 0)}
@@ -330,20 +326,18 @@
           class="mt-5 p-3 !border-aurora-red hover:bg-aurora-red" />
       {/if}
     </div>
-  {/if}
-  {#if activeContent === "Settings"}
-    <div class="px-4 mt-3">
-      <p class="text-center text-3xl text-frost-1">Account</p>
-      <div class="flex flex-col items-center gap-5 mt-6 mx-12">
+  {:else if activeContent === "Settings"}
+    <div class="px-4 my-3">
+      <div class="flex flex-col items-center gap-5 m-6 mx-12">
         <Button
           onClick={() => {
-            dispatch("changeAccount", "username"), (modalOpened = false);
+            forwardNotToggle("ChangeUsername", "Change Username");
           }}
           text="Username"
           class="bg-aurora-purple w-full" />
         <Button
           onClick={() => {
-            dispatch("changeAccount", "password"), (modalOpened = false);
+            forwardNotToggle("ChangePassword", "Change Password");
           }}
           text="Password"
           class="bg-aurora-orange w-full" />
@@ -354,87 +348,120 @@
           text="Logout"
           class="bg-aurora-green w-full" />
         <Button
-          onClick={() => {
-            dispatch("changeAccount", "Delete"), (modalOpened = false);
-          }}
+          onClick={() => forwardNotToggle("DeleteAccount", "Delete Account")}
           text="Delete account"
           class="bg-aurora-red w-full" />
       </div>
     </div>
-  {/if}
-  {#if activeContent === "SingleReview"}
+  {:else if activeContent === "ChangeUsername" || activeContent === "ChangePassword"}
+    <div class="px-4 mb-3">
+      <Form handleSubmit={updateAccount}>
+        <div slot="forms">
+          {#if activeContent == "ChangeUsername"}
+            <label for="username">New Username</label>
+            <input required placeholder="test123" name="username" type="text" />
+          {:else if activeContent == "ChangePassword"}
+            <label for="password">Password</label>
+            <input required placeholder="password" name="password" type="password" />
+            <label for="newPassword">New password</label>
+            <input required placeholder="New password" name="newPassword" type="password" />
+            <label for="repeatPassword">Repeat password</label>
+            <input required placeholder="Repeat password" name="repeatPassword" type="password" />
+          {/if}
+        </div>
+      </Form>
+    </div>
+  {:else if activeContent === "DeleteAccount"}
+    <div class="px-4 my-3">
+      <p>
+        <b>Are you sure you want to delete your account? All progression will be lost.</b>
+      </p>
+      <div class="flex mt-5 gap-3">
+        <Button
+          onClick={() => {
+            dispatch("deleteAccount"), (modalOpened = false);
+          }}
+          text="Delete"
+          class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
+        <Button
+          onClick={() => (modalOpened = false)}
+          text="Cancel"
+          class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
+      </div>
+    </div>
+  {:else if activeContent === "SingleReview"}
     <p>{singleReviewData.text}</p>
   {/if}
 </Modal>
-<div class="flex justify-center items-end h-screen">
+
+<div class="flex justify-center items-end h-full" style="padding-bottom: {screenHeight / 14.9}px">
   <div
-    class="bg-night-1 h-[23.7%] rounded -md flex flex-row absolute"
-    style="top:{screenHeight / 1.45}px; width: {screenHeight / 2.8}px">
+    class="bg-night-1 rounded flex"
+    style="width: {screenHeight / 3}px; height: {screenHeight / 4.1}px">
     <div
       class="flex flex-col items-center justify-evenly w-12 bg-white/10 mr-2"
       style="border-radius: 10px">
-      <img
-        src="multimedia/Home_icon.png"
-        alt="info"
-        class="w-6 h-6 cursor-pointer"
-        on:click={() => forward(-1, "Home")}
-        on:keydown />
-      <img
-        src="multimedia/Info_Icon.png"
-        alt="info"
-        class="w-6 h-6 cursor-pointer"
-        on:click={() => forward(2, "Info")}
-        on:keydown />
-      <img
-        src={dialogIconSrc}
-        alt="info"
-        class="w-6 h-6 cursor-pointer"
-        on:click={dialog}
-        on:keydown />
+      <Button
+        class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
+        onClick={() => forward("Home")}>
+        <div slot="icon">
+          <ClarityLicenseSolid />
+        </div>
+      </Button>
+      <Button
+        onClick={() => forward("Info")}
+        class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
+        <div slot="icon">
+          <img src="multimedia/Info_Icon.png" alt="info" />
+        </div>
+      </Button>
+      <Button onClick={dialog} class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
+        <div slot="icon">
+          <img src={dialogIconSrc} alt="info" />
+        </div>
+      </Button>
     </div>
-
-    <!-- this section -->
     <div class="flex flex-col flex-1 justify-center">
       <div class="flex gap-2 p-2">
-        <img
-          src="multimedia/Achievements_icon.png"
-          alt="achievements"
-          class="w-full h-full cursor-pointer"
-          on:click={() => forward(1, "Achievements")}
-          on:keydown />
-        <img
-          src="multimedia/Contacts_icon.png"
-          alt="contacts"
-          class="w-full h-full cursor-pointer"
-          on:click={() => forward(0, "Contacts")}
-          on:keydown />
-        <img
-          src="multimedia/Music_icon.png"
-          alt="music"
-          class="w-full h-full cursor-pointer"
-          on:click={() => forward(4, "Radio")}
-          on:keydown />
+        <Button
+          onClick={() => forward("Achievements")}
+          class="w-full h-full !p-0 !shadow-transparent">
+          <div slot="icon">
+            <img src="multimedia/Achievements_icon.png" alt="achievements" />
+          </div>
+        </Button>
+        <Button onClick={() => forward("Rides")} class="w-full h-full !p-0 !shadow-transparent">
+          <div slot="icon">
+            <img src="multimedia/Contacts_icon.png" alt="contacts" />
+          </div>
+        </Button>
+        <Button onClick={() => forward("Radio")} class="w-full h-full !p-0 !shadow-transparent">
+          <div slot="icon">
+            <img src="multimedia/Music_icon.png" alt="music" />
+          </div>
+        </Button>
       </div>
       <div class="flex gap-2 p-2">
-        <img
-          src="multimedia/Notes_icon.png"
-          alt="notes"
-          class="w-full h-full cursor-pointer"
-          on:click={toggleJournal}
-          on:keydown />
-        <!-- drivers license hier? -->
-        <img
-          src="multimedia/Reviews_icon.png"
-          alt="notes"
-          class="w-full h-full cursor-pointer"
-          on:click={() => forward(2, "Reviews")}
-          on:keydown />
-        <img
-          src="multimedia/Settings_icon.png"
-          alt="settings"
-          class="w-full h-full cursor-pointer"
-          on:click={() => forward(5, "Settings")}
-          on:keydown />
+        <Button onClick={toggleJournal} class="w-full h-full !p-0 !shadow-transparent">
+          <div slot="icon">
+            <img
+              class:cursor-not-allowed={!passage}
+              class:hover:brightness-50={!passage}
+              class:brightness-50={!passage}
+              src="multimedia/Notes_icon.png"
+              alt="notes" />
+          </div>
+        </Button>
+        <Button class="w-full h-full !p-0 !shadow-transparent" onClick={() => forward("Reviews")}>
+          <div slot="icon">
+            <img src="multimedia/Reviews_icon.png" alt="reviews" />
+          </div>
+        </Button>
+        <Button class="w-full h-full !p-0 !shadow-transparent" onClick={() => forward("Settings")}>
+          <div slot="icon">
+            <img src="multimedia/Settings_icon.png" alt="settings" />
+          </div>
+        </Button>
       </div>
     </div>
   </div>
