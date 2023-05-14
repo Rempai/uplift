@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ReviewRead } from "@/lib/client";
+  import type { AchievementRead, ReviewRead } from "@/lib/client";
 
   import Button from "@/components/Button.svelte";
 
@@ -10,15 +10,19 @@
   import IonHalfStar from "~icons/ion/star-half";
 
   export let showDriverModal: boolean;
+
   export let username: string;
+  export let lang: string;
   export let reviewList: Array<ReviewRead>;
+  export let allAchievements: Array<AchievementRead>;
+  export let unlockedAchievements: Array<AchievementRead>;
 
   let dialog: HTMLDialogElement;
   let rate: number;
 
   $: if (dialog && showDriverModal) dialog.showModal();
 
-  let colors = ["aurora-red", "aurora-orange", "aurora-yellow", "aurora-green", "aurora-purple"]; // array of predefined colors
+  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"]; // array of predefined colors
   let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
 
   function changeColor(direction) {
@@ -59,8 +63,8 @@
       <div class="flex flex-col basis-2/3 gap-1">
         <span>Name: {username}</span>
         <span>Age: 23</span>
-        <span>Country: NL</span>
-        <span>Achievements: 3/5</span>
+        <span>Country: {lang}</span>
+        <span>Achievements: {unlockedAchievements.length}/{allAchievements.length}</span>
         <Button
           class="!border-night-1 bg-slate-300 hover:bg-storm-3 !text-night-1 text-2xl !w-fit"
           text="Close License"
