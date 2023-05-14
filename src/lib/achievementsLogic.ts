@@ -6,7 +6,7 @@ type achievementObj = {
   achievementId: number;
   currentRide?: RideRead | null;
   reviewList?: ReviewRead[] | null;
-  riderList?: Array<RideRead> | null;
+  rideList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
   resolutionData?: RideRead | null;
   tutorialCompleted?: boolean | null;
@@ -21,7 +21,7 @@ export const isAchieved = ({
   reviewList = null,
   resolutionData = null,
   tutorialCompleted = null,
-  riderList = null,
+  rideList = null,
 }: achievementObj) => {
   switch (achievementId) {
     case 1:
@@ -33,7 +33,7 @@ export const isAchieved = ({
     case 2:
       if (!IdUnlockedAchievements.includes(achievementId)) {
         const fiveStarReviews = reviewList.filter((review) => review.stars === 5);
-        if (fiveStarReviews.length === riderList.length) {
+        if (fiveStarReviews.length === rideList.length) {
           postUserAchievement(userId, achievementId);
           return true;
         }
@@ -71,9 +71,9 @@ export const isAchieved = ({
     }
     case 9:
       if (!IdUnlockedAchievements.includes(achievementId)) {
-        if (riderList && reviewList) {
+        if (rideList && reviewList) {
           const reviews = reviewList.filter((review) => review.stars > 3);
-          for (const ride of riderList) {
+          for (const ride of rideList) {
             const reviewExists = reviews.filter((review) => review.rideId === ride.id);
             if (!reviewExists) {
               return false;
