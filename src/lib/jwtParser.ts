@@ -1,7 +1,9 @@
 export type jwtObject = {
+  iss: string;
   sub: number;
-  role: string;
   exp: number;
+  username: string;
+  role: string;
 };
 
 export async function parseJwt(token: string) {
