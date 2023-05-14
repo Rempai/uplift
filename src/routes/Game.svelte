@@ -157,9 +157,6 @@
 
   const selectRide = async (event: CustomEvent) => {
     const ride: RideRead = event.detail;
-    if (passage) {
-      return;
-    }
 
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
