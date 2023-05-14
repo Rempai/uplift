@@ -4,12 +4,12 @@ let do_debug = false;
 
 const args = process.argv.slice(2);
 args.forEach((arg) => {
-  if (arg == "--debug") {
+  if (arg == "debug") {
     do_debug = true;
   }
 });
 args.forEach((file) => {
-  if (!file.startsWith("--")) {
+  if (!file.startsWith("debug")) {
     const returned = do_thing(file, do_debug);
     const returned_errors = returned[0];
     if (do_debug) {
