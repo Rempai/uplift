@@ -56,8 +56,6 @@
   let login = false;
   let register = false;
 
-  let settingsPlane = "";
-
   let errors: Array<string> = [];
 
   let riderList: Array<RideRead>;
@@ -96,6 +94,7 @@
   let audioAmbient;
   let allowAudioCall = true;
   let audio;
+  let modalOpened = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -125,7 +124,6 @@
     welcome = true;
     dialog = false;
     journal = false;
-    settingsPlane = "";
     togglePhone();
   };
 
@@ -218,21 +216,16 @@
     resolutionData = detail;
   };
 
-  const changeAccount = async (event: CustomEvent) => {
-    settingsPlane = event.detail;
-    dialog = false;
-    journal = false;
-    pausevideo();
-  };
-
-  const updateAccount = async ({ target }) => {
-    const update = await updateUserAccount(target, parsedJWT.sub);
-    if (update === true) {
-      settingsPlane = "";
-      journal = false;
-    } else {
-      showError(update);
-    }
+  const updateAccount = async ({ detail }) => {
+    await updateUserAccount(detail, parsedJWT.sub)
+      .then((res) => {
+        if (!res && res.status !== 200) {
+          showError(res.statusText);
+        } else {
+          journal = false;
+          modalOpened = false;
+        }
+      })
   };
 
   const deleteUser = async () => {
@@ -244,7 +237,6 @@
         showError("Deleted User");
         checkPhoneButton();
         welcome = true;
-        settingsPlane = "";
       })
       .catch((err) => showError(err));
     pausevideo();
@@ -407,6 +399,7 @@
     journalData = [];
     clearResolutionData();
     dialog = false;
+    journal = false;
     filledjournal = true;
     patienceLost = false;
     showPhoneButton = true;
@@ -466,17 +459,8 @@
     }
   });
 
-  $: if ($passageName !== "") {
-    nextPassage($passageName);
-  }
-
-  $: if ($emotion <= 70) {
-    filledjournal = false;
-    patienceLost = true;
-  }
-
   $: if (passage) {
-    if (allowAudioCall) {
+    if (allowAudioCall && passage.speaker !== "You") {
       textParsed = textParser(passage.content);
       fetch("https://audio.appelsapje.net/", {
         method: "POST",
@@ -494,11 +478,15 @@
           audio = new Audio();
           audio.src = URL.createObjectURL(blob);
           audio.playbackRate = 3.5;
+          audio.volume = 0.3;
           audio.play();
         })
         .catch((error) => console.error(error));
       updateJournalData();
     }
+
+    textParsed = textParser(passage.content);
+    updateJournalData();
   }
 
   $: if ($passageName !== "") {
@@ -508,11 +496,6 @@
   $: if ($emotion <= 70) {
     filledjournal = false;
     patienceLost = true;
-  }
-
-  $: if (passage) {
-    textParsed = textParser(passage.content);
-    updateJournalData();
   }
 </script>
 
@@ -526,7 +509,7 @@
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification bind:message={errors} />
-  <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
+  <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)} on:closed={() => (showModal = !showModal)}>
     <p class="mb-3">{reviewText}</p>
     <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
   </Modal>
@@ -549,63 +532,8 @@
       volume={volumeAmbient} />
   {/if}
   <div
-    class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10">
-    <Progress {allPassages} {passedPassages} />
-    {#if settingsPlane}
-      <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
-        <div
-          class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6 z-20">
-          {#if settingsPlane === "Delete"}
-            <p class="text-3xl text-frost-1">{settingsPlane} account</p>
-          {:else}
-            <p class="text-3xl text-frost-1">Change {settingsPlane}</p>
-          {/if}
-          {#if settingsPlane == "Delete"}
-            <p>
-              <b>Are you sure you want to delete your account? All progression will be lost.</b>
-            </p>
-            <div class="flex justify-center mt-5 gap-3">
-              <Button
-                onClick={deleteUser}
-                text="Delete"
-                class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
-              <Button
-                onClick={() => {
-                  settingsPlane = "";
-                }}
-                text="Cancel"
-                class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
-            </div>
-          {:else}
-            <Form
-              handleSubmit={updateAccount}
-              backButton={true}
-              on:back={() => {
-                settingsPlane = "";
-              }}>
-              <div slot="forms">
-                <input hidden required name="role" value={parsedJWT.role} />
-                {#if settingsPlane == "username"}
-                  <label for="username">New Username</label>
-                  <input required placeholder="test123" name="username" type="text" />
-                {:else if settingsPlane == "password"}
-                  <label for="password">Password</label>
-                  <input required placeholder="password" name="password" type="password" />
-                  <label for="newPassword">New password</label>
-                  <input required placeholder="New password" name="newPassword" type="password" />
-                  <label for="repeatPassword">Confirm password</label>
-                  <input
-                    required
-                    placeholder="Confirm password"
-                    name="repeatPassword"
-                    type="password" />
-                {/if}
-              </div>
-            </Form>
-          {/if}
-        </div>
-      </div>
-    {/if}
+    class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10"
+    style="background-size: 100% 100%">
     {#if dialog}
       <div in:fade class="absolute left-0 right-0 top-1/3 m-auto z-20">
         {#await passage then dialog}
@@ -621,7 +549,6 @@
                 fontSize={dialog.attribute.fontSize}
                 color={dialog.attribute.color} />
             {:else}
-              <!-- dialogColor = aurora red, color = Nord's snow color. -->
               <Dialog
                 on:next={losePatience}
                 continueButton={true}
@@ -697,15 +624,19 @@
     {:else}
       <Phone on:close={togglePhone} />
     {/if}
+    {#if dialog}
+      <Progress {allPassages} {passedPassages} />
+    {/if}
     <Multimedia
       on:dialog={toggleDialog}
       on:select={selectRide}
       on:quitride={quitRide}
-      on:changeAccount={changeAccount}
+      on:deleteAccount={deleteUser}
       on:logout={handleLogout}
       on:journalPressed={toggleJournal}
+      on:updateAccount={updateAccount}
       on:toggleAmbient={toggleAmbient}
-      on:unauthenticated={() => showError("Log je in om het menu te gebruiken!")}
+      {modalOpened}
       {passage}
       {reviewList}
       {riderList}
