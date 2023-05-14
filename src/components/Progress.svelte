@@ -22,7 +22,7 @@
 
   const calcProgression = () => {
     possibleBranches.forEach((branch) => {
-      const passagesWithBranch = allPassages.filter((obj) => obj.branch === branch);
+      const passagesWithBranch = allPassages.filter((obj) => obj.branch === branch && !(obj.emotion < 0));
       const totalBranchPassages = passagesWithBranch.length;
 
       if (totalBranchPassages > 0) {
@@ -66,7 +66,11 @@
   }
 </script>
 
-<Modal {showModal} on:closed={() => (showModal = !showModal)} on:click={() => (showModal = !showModal)} modalHeader="Branch progress">
+<Modal
+  {showModal}
+  on:closed={() => (showModal = !showModal)}
+  on:click={() => (showModal = !showModal)}
+  modalHeader="Branch progress">
   <div class="flex justify-around flex-wrap p-4">
     {#each possibleBranches as branch}
       <div class="flex flex-col items-center w-32 mb-6">
