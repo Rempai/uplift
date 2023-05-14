@@ -28,10 +28,12 @@ p}I told you, [it was also my choice:project_purechoice].
 ### project_purechoice
 
 Are you sure this was purely your choice?
-p}Yes I am. Can we move on to another topic now? [I just have to work harder:project_notsolution]. -1 patience
+p}Yes I am. Can we move on to another topic now? [I just have to work harder:project_notsolution].
+:patience -10
 
 ### project_notsolution
 
 Working harder is not a solution to your problems?
-p}What else can I do at this point? -1 patience
+p}What else can I do at this point?
+:patience -10
 :end
