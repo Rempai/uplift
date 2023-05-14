@@ -113,6 +113,10 @@
       asyncComponent: () => import("@/routes/AdminEdit.svelte"),
     }),
 
+    "/info": wrap({
+      asyncComponent: () => import("@/routes/Info.svelte"),
+    }),
+
     // Catch-all, must be last
     "*": NotFound,
   };
