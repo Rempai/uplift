@@ -30,7 +30,7 @@
           passagesWithBranch.some((obj) => obj.passage === passage)
         ).length;
 
-        branchProgress[branch] = Math.round((seenBranchPassages / totalBranchPassages) * 100);
+        branchProgress[branch] = Math.ceil((seenBranchPassages / totalBranchPassages) * 100);
       } else {
         branchProgress[branch] = 0;
       }
@@ -66,7 +66,7 @@
   }
 </script>
 
-<Modal {showModal} on:click={() => (showModal = !showModal)} modalHeader="Branch progress">
+<Modal {showModal} on:closed={() => (showModal = !showModal)} on:click={() => (showModal = !showModal)} modalHeader="Branch progress">
   <div class="flex justify-around flex-wrap p-4">
     {#each possibleBranches as branch}
       <div class="flex flex-col items-center w-32 mb-6">
