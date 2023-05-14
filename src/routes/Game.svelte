@@ -38,15 +38,11 @@
 
   import Background from "/background.webm";
 
-  let showModal = false;
-  let modalHeader = "";
-  let reviewText = "";
-
   let login = false;
   let register = false;
   let welcome = false;
 
-  let errors: Array<string> = [];
+  let messages: Array<string> = [];
 
   let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
@@ -116,6 +112,7 @@
   };
 
   const startGame = async () => {
+    $validation.length = 0;
     const token = localStorage.getItem("access_token");
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
@@ -174,7 +171,7 @@
   };
 
   const showError = (err: string) => {
-    errors = [...errors, err];
+    messages = [...messages, err];
   };
 
   const showResolution = ({ detail }) => {
@@ -453,22 +450,8 @@
 
 <main>
   <Achievement triggered={triggerAchievement} achievementTitle={unlockedAchievement} />
-  {#if reviewList}
-    <DriverModal bind:showDriverModal username={parsedJWT.username} {reviewList} />
-  {/if}
-  {#if dialog}
-    <CustomMenu on:menuClick={updateContextData} />
-    <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
-  {/if}
-  <Notification bind:message={errors} />
-  <Modal
-    {showModal}
-    {modalHeader}
-    on:click={() => (showModal = !showModal)}
-    on:closed={() => (showModal = !showModal)}>
-    <p class="mb-3">{reviewText}</p>
-    <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
-  </Modal>
+  <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
+  <Notification {messages} />
   <video
     class="fixed h-screen w-screen object-fill"
     loop
@@ -477,6 +460,12 @@
     <track kind="captions" />
     <source src={Background} />
   </video>
+  {#if dialog}
+    <CustomMenu on:menuClick={updateContextData} />
+  {/if}
+  {#if reviewList}
+    <DriverModal bind:showDriverModal username={parsedJWT.username} {reviewList} />
+  {/if}
   {#if ambientNoise}
     <audio
       class="hidden"
