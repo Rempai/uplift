@@ -144,7 +144,7 @@
   }
 
   $: if (reviewList) {
-    reviewList = reviewList.reverse()
+    reviewList = reviewList.reverse();
   }
 
   $: dialogIconSrc =
