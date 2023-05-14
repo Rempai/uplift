@@ -77,7 +77,7 @@
       asyncComponent: () => import("@/routes/AdminCreate.svelte"),
     }),
 
-    "/admin/abstractor": wrap({
+    "/admin/abstractor/create": wrap({
       asyncComponent: () => import("@/routes/AdminCreate.svelte"),
     }),
 
