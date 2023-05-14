@@ -25,42 +25,34 @@
 
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
-  import Phone from "@/components/Phone.svelte";
   import Form from "@/components/Form.svelte";
   import Notification from "@/components/Notification.svelte";
   import Modal from "@/components/Modal.svelte";
   import CustomMenu from "@/components/contextMenu/CustomMenu.svelte";
   import Journal from "@/components/Journal.svelte";
-  import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
   import Achievement from "@/components/Achievement.svelte";
   import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
-
-  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
-
-  import Background from "/background.webm";
   import DriverModal from "@/components/DriverModal.svelte";
 
-  let ambientNoise = false;
-
-  let showPhoneButton = true;
-  let phonebutton = true;
-
-  let loader = true;
+  import Background from "/background.webm";
 
   let showModal = false;
   let modalHeader = "";
   let reviewText = "";
 
-  let welcome = false;
   let login = false;
   let register = false;
+  let welcome = false;
 
   let errors: Array<string> = [];
 
-  let riderList: Array<RideRead>;
+  let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
+
+  let allPassages: Array<PassageRead>;
+  let passedPassages: Array<string> = [];
 
   let dialog = false;
   let passage: PassageRead;
@@ -78,39 +70,36 @@
   let parsedJWT: jwtObject;
 
   let filledjournal = true;
-
-  let user;
-  let allPassages: Array<PassageRead>;
-  let passedPassages: Array<string> = [];
   let patienceLost = false;
-
   let triggerAchievement = false;
+  let tutorialCompleted = false;
   let unlockedAchievement = "";
-
   let allAchievements: Array<AchievementRead> = [];
   let unlockedAchievements = [];
 
-  let tutorialCompleted = false;
+  let ambientNoise = false;
   let volumeAmbient = 1;
-  let audioAmbient;
   let allowAudioCall = true;
+  let audioAmbient;
   let audio;
+
   let modalOpened = false;
+
+  let showDriverModal = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
-      checkPhoneButton();
       startGame();
     } else {
       $validation = $validation;
       showError(await validationErrorCheck(login, false));
     }
   };
+
   const submitRegister = async ({ target }) => {
     const register = await registerForAccessToken(target);
     if (register === true) {
-      checkPhoneButton();
       startGame();
     } else {
       $validation = $validation;
@@ -121,25 +110,21 @@
   const handleLogout = () => {
     localStorage.clear();
     pausevideo();
-    checkPhoneButton();
-    welcome = true;
+    login = true;
     dialog = false;
     journal = false;
-    togglePhone();
   };
 
   const startGame = async () => {
-    showPhoneButton = true;
     const token = localStorage.getItem("access_token");
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
-    loader = false;
     login = false;
     register = false;
 
     await CharactersService.getRides()
-      .then((res) => (riderList = res))
+      .then((res) => (rideList = res))
       .catch((err) => showError(err));
 
     await CharactersService.getReviews(parsedJWT.sub)
@@ -155,10 +140,6 @@
       .catch((err) => showError(err));
   };
 
-  const togglePhone = () => {
-    showPhoneButton = !showPhoneButton;
-  };
-
   const toggleAmbient = () => {
     ambientNoise = !ambientNoise;
   };
@@ -172,18 +153,6 @@
     dialog = !dialog;
     journal = false;
     allowAudioCall = dialog;
-  };
-
-  const skipAndLogin = () => {
-    $validation.length = 0;
-    welcome = !welcome;
-    login = true;
-  };
-
-  const triggerRegister = () => {
-    $validation.length = 0;
-    welcome = !welcome;
-    register = true;
   };
 
   const selectRide = async (event: CustomEvent) => {
@@ -203,6 +172,7 @@
     const video = document.querySelector("video");
     video.play();
     passedPassages = [];
+    passedPassages.push(passage.passage);
     emotion.set(100);
   };
 
@@ -211,37 +181,31 @@
   };
 
   const showResolution = ({ detail }) => {
-    togglePhone();
     journal = false;
     resolution = true;
     resolutionData = detail;
   };
 
   const updateAccount = async ({ detail }) => {
-    await updateUserAccount(detail, parsedJWT.sub)
-      .then((res) => {
-        if (!res && res.status !== 200) {
-          showError(res.statusText);
-        } else {
-          journal = false;
-          modalOpened = false;
-        }
-      })
+    await updateUserAccount(detail, parsedJWT.sub).then((res) => {
+      if (!res && res.status !== 200) {
+        showError(res.statusText);
+      } else {
+        journal = false;
+        modalOpened = false;
+      }
+    });
   };
 
   const deleteUser = async () => {
     UserService.deleteUser(parsedJWT.sub)
       .then(() => {
         localStorage.clear();
-      })
-      .then(() => {
         showError("Deleted User");
-        checkPhoneButton();
-        welcome = true;
+        login = true;
       })
       .catch((err) => showError(err));
     pausevideo();
-    togglePhone();
   };
 
   const nextPassageName = () => {
@@ -350,7 +314,6 @@
     clearResolutionData();
     dialog = true;
     filledjournal = false;
-    showPhoneButton = true;
   };
 
   const createReview = async () => {
@@ -375,8 +338,6 @@
     if (reviewList.length === 1) {
       handleAchievement(1);
     }
-    togglePhone();
-    showPhoneButton = true;
   };
 
   const losePatience = () => {
@@ -403,16 +364,6 @@
     journal = false;
     filledjournal = true;
     patienceLost = false;
-    showPhoneButton = true;
-  };
-
-  const checkPhoneButton = () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken != null) {
-      phonebutton = false;
-    } else {
-      phonebutton = true;
-    }
   };
 
   const pausevideo = () => {
@@ -441,7 +392,7 @@
       reviewList: reviewList,
       currentRide: currentRide,
       tutorialCompleted: tutorialCompleted,
-      riderList: riderList,
+      rideList: rideList,
       resolutionData: resolutionData,
     });
     unlockedAchievement = allAchievements[achievementId - 1].name;
@@ -450,7 +401,6 @@
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
-      checkPhoneButton();
       startGame();
     } else {
       welcome = true;
@@ -506,23 +456,19 @@
 
 <main>
   <Achievement triggered={triggerAchievement} achievementTitle={unlockedAchievement} />
-  {#if parsedJWT}
-    <button
-      class="absolute z-10 bottom-0 right-3 border-black bg-slate-100 text-black px-4 py-3 border-t-4 border-r-4 border-l-4 rounded-t-lg"
-      on:click={() => {
-        showDriverModal = true;
-      }}>
-      Driver License
-    </button>
-  {/if}
   {#if reviewList}
-    <DriverModal bind:showDriverModal username={user} {reviewList} />
+    <DriverModal bind:showDriverModal username={parsedJWT.username} {reviewList} />
   {/if}
-  <Loader bind:loading={loader} />
-  <CustomMenu on:menuClick={updateContextData} />
-  <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
+  {#if dialog}
+    <CustomMenu on:menuClick={updateContextData} />
+    <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
+  {/if}
   <Notification bind:message={errors} />
-  <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)} on:closed={() => (showModal = !showModal)}>
+  <Modal
+    {showModal}
+    {modalHeader}
+    on:click={() => (showModal = !showModal)}
+    on:closed={() => (showModal = !showModal)}>
     <p class="mb-3">{reviewText}</p>
     <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
   </Modal>
@@ -547,319 +493,109 @@
   <div
     class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10"
     style="background-size: 100% 100%">
-    {#if dialog}
-      <div in:fade class="absolute left-0 right-0 top-1/3 m-auto z-20">
-        {#await passage then dialog}
-          {#await textParsed then parsedText}
-            {#if !patienceLost}
-              <Dialog
-                on:next={nextPassageName}
-                continueButton={dialog.continueButton}
-                user={dialog.speaker}
-                dialogColor={dialog.attribute.color}
-                text={parsedText}
-                font={dialog.attribute.fontFamily}
-                fontSize={dialog.attribute.fontSize}
-                color={dialog.attribute.color} />
-            {:else}
-              <Dialog
-                on:next={losePatience}
-                continueButton={true}
-                text="You pissed off {currentRide.passenger
-                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
-                dialogColor="#BF616A"
-                color="#e5e9f0" />
-            {/if}
-          {/await}
-        {/await}
-      </div>
-    {/if}
-    {#if journal}
-      <div in:fade class="w-9/12 z-30">
-        <Journal
-          {journalData}
-          {resolutionData}
-          on:report={showResolution}
-          on:gotoTab={gotoBranch} />
-      </div>
-    {/if}
-    {#if showPhoneButton}
-      {#if phonebutton}
-        <button
-          class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
-          on:click={togglePhone}>
-          <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
-        </button>
-      {/if}
+    {#if welcome}
+      <Modal showModal={true} modalHeader="" closeButton={false}>
+        <div class="flex flex-col items-center gap-6">
+          <p class="text-3xl">Welcome to</p>
+          <img src="logo.png" alt="Logo" class="w-32" />
+          <p class="text-frost-1 text-3xl mb-3">Uplift</p>
+        </div>
+        <div class="flex justify-center gap-4">
+          <Button
+            text="Login"
+            class="bg-frost-1"
+            onClick={() => {
+              login = true;
+              welcome = false;
+            }} />
+          <Button
+            text="Register"
+            class="bg-frost-3"
+            onClick={() => {
+              register = true;
+              welcome = false;
+            }} />
+        </div>
+      </Modal>
     {:else if login}
-      <Phone on:close={togglePhone} menuName="Login">
-        <div slot="content" class="px-4 mt-3">
-          <p class="text-center text-3xl text-frost-1">Login</p>
-          <Form
-            handleSubmit={submitLogin}
-            enctype="multipart/form-data"
-            login={true}
-            backButton={true}
-            on:back={() => {
-              welcome = true;
-              login = false;
-            }} />
-        </div>
-      </Phone>
+      <Modal showModal={true} modalHeader="Login" closeButton={false}>
+        <Form
+          backButton={true}
+          on:back={() => {
+            welcome = true;
+            login = false;
+          }}
+          handleSubmit={submitLogin}
+          login={true} />
+      </Modal>
     {:else if register}
-      <Phone on:close={togglePhone} menuName="Register">
-        <div slot="content" class="px-4 mt-3">
-          <p class="text-center text-3xl text-frost-1">Register</p>
-          <Form
-            handleSubmit={submitRegister}
-            register={true}
-            backButton={true}
-            on:back={() => {
-              welcome = true;
-              register = false;
-            }} />
-        </div>
-      </Phone>
-    {:else if welcome}
-      <Phone on:close={togglePhone} menuName="Welcome">
-        <div slot="content" class="px-4 mt-3">
-          <div class="flex flex-col items-center gap-6">
-            <p class="text-3xl">Welcome to</p>
-            <img src="logo.png" alt="Logo" class="w-32" />
-            <p class="text-frost-1 text-3xl mb-3">Uplift</p>
-          </div>
-          <div class="gap-5 flex flex-col items-center mt-5">
-            <Button onClick={triggerRegister} class="bg-frost-4" text="New player" />
-            <Button onClick={skipAndLogin} class="bg-frost-1" text="Returning player" />
-          </div>
-        </div>
-      </Phone>
-    {:else if page}
-      {#if page == 1}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Choose Ride">
-          <div slot="content" class="px-4 mt-2">
-            <div class="profile pt-2 pb-2">
-              {#if riderList.length}
-                {#if passage}
-                  <p class="text-center w-full">You are already in a ride.</p>
-                  {#if filledjournal && !journal}
-                    <div class="flex flex-col mb-3 mt-3">
-                      <Button onClick={quitRide} text="Quit ride" class="bg-aurora-red" />
-                    </div>
-                  {/if}
-                {:else}
-                  {#await riderList then rider}
-                    {#each rider as data}
-                      <div>
-                        <div
-                          on:keypress
-                          on:click={() => selectRide(data)}
-                          class="hover:bg-night-2 cursor-pointer rounded">
-                          <div class="gap-3 w-full flex items-center">
-                            <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
-                            <div>
-                              <p class="flex items-center">
-                                <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
-                              </p>
-                              <p class="flex items-center">
-                                <IoIosLocationOutline
-                                  font-size="1.2em"
-                                  class="mr-2" />{data.fromLocation}
-                              </p>
-                              <p class="flex items-center">
-                                <FaRoute font-size="1.2em" class="mr-2" />{data.toLocation}
-                              </p>
-                              <p class="flex items-center">
-                                <TiTime font-size="1.2em" class="mr-2" />{data.time} minutes
-                              </p>
-                            </div>
-                          </div>
-                          <div class="flex items-center mt-1 gap-1 justify-center">
-                            <p>Personal best:</p>
-                            <div class="flex">
-                              {#each { length: 5 } as _, i}
-                                {#if i < getReviewStars(data)}
-                                  <IonStar
-                                    font-size="1em"
-                                    class={getReviewStars(data) === 5 && i < 5
-                                      ? "w-5 text-aurora-yellow"
-                                      : "w-5"} />
-                                {:else}
-                                  <IonStarOutline font-size="1em" class="w-5" />
-                                {/if}
-                              {/each}
-                            </div>
-                          </div>
-                        </div>
-                        <div class="border-b-2 border-night-2 h-2 w-full mt-2" />
-                      </div>
-                    {/each}
-                  {/await}
-                {/if}
-              {:else}
-                <p class="text-center w-full">There are no rides you can take.</p>
-              {/if}
-            </div>
-          </div>
-        </Phone>
-      {:else if page == 2}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Achievements">
-          <div slot="content" class="px-4 mt-3">
-            <div class="flex justify-center flex-wrap gap-3">
-              {#each Array(5) as _}
-                <div
-                  class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-                  <span class="text-2xl">?</span>
-                </div>
-              {/each}
-            </div>
-          </div>
-        </Phone>
-      {:else if page == 3}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Reviews">
-          <div slot="content" class="px-4 mt-3">
-            {#if reviewList.length}
-              {#await reviewList then reviewer}
-                {#each reviewer as data}
-                  <div
-                    class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
-                    on:keypress
-                    on:click={() => toggleModal(data)}>
-                    <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
-                    <div class="overflow-x-hidden whitespace-nowrap">
-                      <p class="flex items-center">
-                        <IoIosCard font-size="1.2em" class="mr-2" />
-                        {data.ride.passenger.name}
-                      </p>
-                      <p class="flex items-center">
-                        <IoIosCalendar font-size="1.2em" class="mr-2" />
-                        {formatDate(data.date)}
-                      </p>
-                      <div class="inline-flex items-center">
-                        {#each Array(data.stars) as _}
-                          {#if data.stars === 5}
-                            <IonStar font-size="1.2em" class="w-5 mr-2 text-aurora-yellow" />
-                          {:else}
-                            <IonStar class="w-5 mr-2" font-size="1.2em" />
-                          {/if}
-                        {/each}
-                        {#if data.stars < 5}
-                          {#each Array(5 - data.stars) as _}
-                            <IoIosStarOutline class="w-5 mr-2 text-frost-3" font-size="1.2em" />
-                          {/each}
-                        {/if}
-                      </div>
-                      <p>{data.description}</p>
-                    </div>
-                  </div>
-                {/each}
-              {/await}
-            {:else}
-              <p class="text-center w-full">
-                You have no reviews, please <span
-                  class="text-aurora-orange cursor-pointer"
-                  on:keypress
-                  on:click={() => (page = 1)}>select a ride</span>
-              </p>
-            {/if}
-          </div>
-        </Phone>
-      {:else if page == 4}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Dashboard">
-          <div slot="content" class="px-4 mt-3 flex justify-around">
-            <div class="flex flex-col items-center gap-5">
-              {#if typeof passage == "object"}
-                <Button onClick={toggleDialog} text="Toggle Dialog" class="bg-frost-1 w-full" />
-                {#if filledjournal}
-                  <Button
-                    onClick={toggleJournal}
-                    text="Toggle Journal"
-                    class="bg-frost-2 w-full" />
-                {/if}
-                <Button
-                  onClick={toggleAmbient}
-                  text="Toggle Ambient Noise"
-                  class="bg-frost-4 w-full" />
-              {:else}
-                <p class="text-center w-full">
-                  Dashboard features are only enabled when you are in a ride.
-                </p>
-              {/if}
-            </div>
-          </div>
-        </Phone>
-      {:else if page == 5}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Radio">
-          <div slot="content" class="px-4 mt-3 flex flex-col items-center">
-            <select name="station" bind:value={radioSelect} class="my-5 p-3 bg-frost-4 rounded">
-              {#each radios as radio}
-                <option value={radio.id}>{radio.name}</option>
-              {/each}
-            </select>
-            {#if radioSelect}
-              <Button
-                onClick={() => (radioSelect = 0)}
-                text="Stop"
-                class="!border-aurora-red hover:bg-aurora-red" />
-            {/if}
-          </div>
-        </Phone>
-      {:else if page == 6}
-        <Phone on:close={togglePhone} on:item={handleClick} menuName="Settings">
-          <div slot="content" class="px-4 mt-3">
-            <p class="text-center text-3xl text-frost-1">Account</p>
-            <div class="flex flex-col items-center gap-5 mt-6 mx-12">
-              <Button
-                onClick={() => changeAccount("username")}
-                text="Username"
-                class="bg-aurora-purple w-full" />
-              <Button
-                onClick={() => changeAccount("password")}
-                text="Password"
-                class="bg-aurora-orange w-full" />
-              <Button
-                onClick={() => {
-                  localStorage.clear();
-                  parsedJWT = null;
-                  showPhoneButton = false;
-                  welcome = true;
-                  dialog = false;
-                  journal = false;
-                  settingsPlane = "";
-                }}
-                text="Logout"
-                class="bg-aurora-green w-full" />
-              <Button
-                onClick={() => changeAccount("Delete")}
-                text="Delete account"
-                class="bg-aurora-red w-full" />
-            </div>
-          </div>
-        </Phone>
-      {/if}
+      <Modal showModal={true} modalHeader="Register" closeButton={false}>
+        <Form
+          backButton={true}
+          on:back={() => {
+            welcome = true;
+            register = false;
+          }}
+          handleSubmit={submitRegister}
+          register={true} />
+      </Modal>
     {:else}
-      <Phone on:close={togglePhone} />
+      {#if journal}
+        <div in:fade class="w-9/12 z-30">
+          <Journal
+            {journalData}
+            {resolutionData}
+            on:report={showResolution}
+            on:gotoTab={gotoBranch} />
+        </div>
+      {/if}
+      {#if dialog}
+        <div in:fade class="absolute left-0 right-0 top-1/3 m-auto z-20">
+          {#await passage then dialog}
+            {#await textParsed then parsedText}
+              {#if !patienceLost}
+                <Dialog
+                  on:next={nextPassageName}
+                  continueButton={dialog.continueButton}
+                  user={dialog.speaker}
+                  dialogColor={dialog.attribute.color}
+                  text={parsedText}
+                  font={dialog.attribute.fontFamily}
+                  fontSize={dialog.attribute.fontSize}
+                  color={dialog.attribute.color} />
+              {:else}
+                <Dialog
+                  on:next={losePatience}
+                  continueButton={true}
+                  text="You pissed off {currentRide.passenger
+                    .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                  dialogColor="#BF616A"
+                  color="#e5e9f0" />
+              {/if}
+            {/await}
+          {/await}
+        </div>
+        <Progress {allPassages} {passedPassages} />
+      {/if}
+      <Multimedia
+        on:dialog={toggleDialog}
+        on:select={selectRide}
+        on:quitRide={quitRide}
+        on:deleteAccount={deleteUser}
+        on:logout={handleLogout}
+        on:journalPressed={toggleJournal}
+        on:updateAccount={updateAccount}
+        on:toggleAmbient={toggleAmbient}
+        on:driverModal={() => (showDriverModal = !showDriverModal)}
+        {modalOpened}
+        {passage}
+        {reviewList}
+        {rideList}
+        {filledjournal}
+        {journal}
+        {volumeAmbient}
+        {audioAmbient}
+        {ambientNoise} />
     {/if}
-    {#if dialog}
-      <Progress {allPassages} {passedPassages} />
-    {/if}
-    <Multimedia
-      on:dialog={toggleDialog}
-      on:select={selectRide}
-      on:quitride={quitRide}
-      on:deleteAccount={deleteUser}
-      on:logout={handleLogout}
-      on:journalPressed={toggleJournal}
-      on:updateAccount={updateAccount}
-      on:toggleAmbient={toggleAmbient}
-      {modalOpened}
-      {passage}
-      {reviewList}
-      {riderList}
-      {filledjournal}
-      {journal}
-      {volumeAmbient}
-      {audioAmbient}
-      {ambientNoise} />
   </div>
 </main>
