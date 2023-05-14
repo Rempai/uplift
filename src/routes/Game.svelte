@@ -350,6 +350,7 @@
 
   const quitRide = () => {
     passage = undefined;
+    currentRide = undefined;
     ambientNoise = false;
     pausevideo();
     journalData = [];
@@ -406,7 +407,6 @@
 
   $: if (passage) {
     if (allowAudioCall && passage.speaker !== "You") {
-      textParsed = textParser(passage.content);
       fetch("https://audio.appelsapje.net/", {
         method: "POST",
         headers: {
@@ -422,12 +422,11 @@
           if (audio) audio.pause();
           audio = new Audio();
           audio.src = URL.createObjectURL(blob);
-          audio.playbackRate = 3.5;
+          audio.playbackRate = 5;
           audio.volume = 0.3;
           audio.play();
         })
         .catch((error) => console.error(error));
-      updateJournalData();
     }
 
     textParsed = textParser(passage.content);
@@ -460,7 +459,7 @@
     <track kind="captions" />
     <source src={Background} />
   </video>
-  {#if dialog}
+  {#if (dialog || journal) && !showDriverModal}
     <CustomMenu on:menuClick={updateContextData} />
   {/if}
   {#if reviewList}
@@ -536,7 +535,7 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute left-0 right-0 top-1/3 m-auto z-20">
+        <div in:fade class="absolute left-0 right-0 top-28 m-auto z-20">
           {#await passage then dialog}
             {#await textParsed then parsedText}
               {#if !patienceLost}
