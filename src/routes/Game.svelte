@@ -38,10 +38,6 @@
 
   import Background from "/background.webm";
 
-  let login = false;
-  let register = false;
-  let welcome = false;
-
   let messages: Array<string> = [];
 
   let rideList: Array<RideRead>;
@@ -65,6 +61,10 @@
 
   let parsedJWT: jwtObject;
 
+  let login = false;
+  let register = false;
+  let welcome = false;
+
   let filledjournal = true;
   let patienceLost = false;
   let triggerAchievement = false;
@@ -74,12 +74,14 @@
   let unlockedAchievements = [];
 
   let ambientNoise = false;
+  let animalease = true;
   let volumeAmbient = 1;
   let allowAudioCall = true;
   let audioAmbient;
   let audio;
 
   let modalOpened = false;
+  let showReviewList = false;
 
   let showDriverModal = false;
 
@@ -105,10 +107,8 @@
 
   const handleLogout = () => {
     localStorage.clear();
-    pausevideo();
     login = true;
-    dialog = false;
-    journal = false;
+    quitRide();
   };
 
   const startGame = async () => {
@@ -139,6 +139,10 @@
 
   const toggleAmbient = () => {
     ambientNoise = !ambientNoise;
+  };
+
+  const toggleAnimalease = () => {
+    animalease = !animalease;
   };
 
   const toggleJournal = () => {
@@ -237,6 +241,8 @@
           reviewList = res;
           passage = undefined;
           ambientNoise = false;
+          journal = false;
+          dialog = false;
           pausevideo();
         })
         .catch((err) => showError(err));
@@ -247,8 +253,7 @@
   const textParser = async (text: string) => {
     if (text) {
       if (text.match("{user}")) {
-        let user = await UserService.getMe();
-        text = text.replace("{user}", user.username);
+        text = text.replace("{user}", parsedJWT.username);
       }
     }
     return text;
@@ -258,7 +263,7 @@
     // Workaround for adding {user} template parsing for the journal
     let dialogUpdate = passage;
     dialogUpdate.content = await textParsed;
-    //prevent duplicate passages in journal
+    // Prevent duplicate passages in journal
     if (journalData.length !== 0) {
       let alreadyInJournal = false;
       journalData.forEach((obj) => {
@@ -284,7 +289,7 @@
 
   const gotoBranch = async (event: CustomEvent) => {
     journal = false;
-    toggleDialog();
+    dialog = true;
     nextPassage(event.detail.passage);
   };
 
@@ -332,6 +337,8 @@
     if (reviewList.length === 1) {
       handleAchievement(1);
     }
+
+    showReviewList = true;
   };
 
   const losePatience = () => {
@@ -405,36 +412,37 @@
     }
   });
 
-  $: if (passage) {
-    if (allowAudioCall && passage.speaker !== "You") {
-      fetch("https://audio.appelsapje.net/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          string: passage.content,
-        }),
-      })
-        .then((response) => response.blob())
-        .then((blob) => {
-          allowAudioCall = false;
-          if (audio) audio.pause();
-          audio = new Audio();
-          audio.src = URL.createObjectURL(blob);
-          audio.playbackRate = 5;
-          audio.volume = 0.3;
-          audio.play();
-        })
-        .catch((error) => console.error(error));
-    }
-
-    textParsed = textParser(passage.content);
-    updateJournalData();
-  }
-
   $: if ($passageName !== "") {
     nextPassage($passageName);
+  }
+
+  $: if (passage) {
+    if (allowAudioCall) {
+      textParsed = textParser(passage.content);
+      if (animalease && passage.speaker !== "You") {
+        fetch("https://audio.appelsapje.net/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            string: passage.content,
+          }),
+        })
+          .then((response) => response.blob())
+          .then((blob) => {
+            allowAudioCall = false;
+            if (audio) audio.pause();
+            audio = new Audio();
+            audio.src = URL.createObjectURL(blob);
+            audio.playbackRate = 3.5;
+            audio.volume = 0.5;
+            audio.play();
+          })
+          .catch((error) => console.error(error));
+      }
+      updateJournalData();
+    }
   }
 
   $: if ($emotion <= 70) {
@@ -463,7 +471,13 @@
     <CustomMenu on:menuClick={updateContextData} />
   {/if}
   {#if reviewList}
-    <DriverModal bind:showDriverModal username={parsedJWT.username} {reviewList} />
+    <DriverModal
+      bind:showDriverModal
+      lang="NL"
+      username={parsedJWT.username}
+      {allAchievements}
+      {unlockedAchievements}
+      {reviewList} />
   {/if}
   {#if ambientNoise}
     <audio
@@ -571,13 +585,18 @@
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
+        on:toggleAnimalease={toggleAnimalease}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
+        {animalease}
+        {showReviewList}
         {modalOpened}
         {passage}
         {reviewList}
         {rideList}
         {filledjournal}
         {journal}
+        {allAchievements}
+        {unlockedAchievements}
         {volumeAmbient}
         {audioAmbient}
         {ambientNoise} />
