@@ -133,7 +133,7 @@
       }
     }
 
-    handler = new DataHandler(data, { rowsPerPage: 10 });
+    handler = new DataHandler(data, { rowsPerPage: 20 });
     rows = handler.getRows();
     addNestedObjects($rows[0]);
 
@@ -202,7 +202,13 @@
                             src={obj}
                             alt="" /></td>
                       {:else}
-                        <td class={tdClass}>{obj}</td>
+                        <td class={tdClass}>
+                          {#if String(obj).length > 80}
+                            {String(obj).substring(0, 80)}...
+                          {:else}
+                            {obj}
+                          {/if}
+                        </td>
                       {/if}
                     {/each}
                   {:else if checkIcon(data)}
@@ -219,7 +225,13 @@
                   {:else if data == row.color}
                     <td style:color={row.color} class={tdClass}>{data}</td>
                   {:else}
-                    <td class={tdClass}>{data}</td>
+                    <td class={tdClass}>
+                      {#if String(data).length > 80}
+                        {String(data).substring(0, 80)}...
+                      {:else}
+                        {data}
+                      {/if}
+                    </td>
                   {/if}
                 {/each}
                 <td class="py-2 border border-dotted border-storm-1">
