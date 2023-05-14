@@ -60,7 +60,7 @@
     screenWidth = window.innerWidth;
   });
 
-  $: if (passedPassages && passedPassages.length > 0) {
+  $: if (passedPassages) {
     branches();
     calcProgression();
   }
@@ -80,7 +80,9 @@
   </div>
 </Modal>
 
-<div class="flex w-full justify-end absolute z-10" style="bottom: {screenHeight / 4}px; right: {screenWidth / 3.75}px">
+<div
+  class="flex w-full justify-end absolute z-10"
+  style="bottom: {screenHeight / 4}px; right: {screenWidth / 3.75}px">
   <div
     on:click={popup}
     on:keypress
