@@ -82,12 +82,12 @@
 
 <div
   class="flex w-full justify-end absolute z-10"
-  style="bottom: {screenHeight / 4}px; right: {screenWidth / 3.75}px">
+  style="bottom: {screenHeight / 3.96}px; right: {screenWidth / 3.71}px">
   <div
     on:click={popup}
     on:keypress
     class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
-    style="width: {screenHeight / 5.5}px; height: {screenHeight / 18}px;">
+    style="width: {screenHeight / 5.85}px; height: {screenHeight / 18.9}px;">
     {#if allPassages && allPassages.length > 0}
       {progression}%
     {/if}
