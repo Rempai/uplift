@@ -94,7 +94,6 @@
     }
 
     showModal = false;
-    // TODO: filter/reduce instead of reloading
     window.location.reload();
   };
 
