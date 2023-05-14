@@ -1,17 +1,20 @@
 <script lang="ts">
   import type { ReviewRead } from "@/lib/client";
+
+  import Button from "@/components/Button.svelte";
+
   import IoIosChevronBackOutline from "~icons/ion/chevron-back-outline";
   import IoIosChevronForwardOutline from "~icons/ion/chevron-forward-outline";
   import IonStar from "~icons/ion/star";
   import IonStarOutline from "~icons/ion/star-outline";
   import IonHalfStar from "~icons/ion/star-half";
 
-  export let showDriverModal;
+  export let showDriverModal: boolean;
   export let username: string;
   export let reviewList: Array<ReviewRead>;
 
-  let dialog;
-  let rate;
+  let dialog: HTMLDialogElement;
+  let rate: number;
 
   $: if (dialog && showDriverModal) dialog.showModal();
 
@@ -46,38 +49,29 @@
   bind:this={dialog}
   on:close={() => (showDriverModal = false)}
   on:click|self={() => dialog.close()}
-  class="w-1/3 h-2/5 overflow-hidden bg-{bgColor} bg-[url('/rijbewijs_feedback_noarrows.png')] bg-cover before:absolute before:inset-0 before:z-[-99] select-none rounded-[10%] p-0">
+  class="w-4/5 h-3/5 md:w-full md:h-full overflow-hidden bg-{bgColor} bg-[url('/rijbewijs_feedback_noarrows.png')] bg-cover bg-center rounded-[10%] max-h-96 max-w-xl"
+  style="background-size: 100% 100%">
   <div class="flex flex-col h-full pt-5">
-
-    <div class="flex justify-between items-center h-5/6 pt-4" on:click|stopPropagation>
-      <div class="leftArrow">
-        <button on:click|preventDefault={() => changeColor("left")} type="button"
-          ><IoIosChevronBackOutline font-size="1.7em" /></button>
-      </div>
-
-
-      <div class="basis-1/3 flex-none"></div>
-
-
-      <div class="licenseContent flex flex-col basis-2/3 text-2xl">
+    <div class="flex items-center h-full w-full" on:click|stopPropagation>
+      <button on:click|preventDefault={() => changeColor("left")}
+        ><IoIosChevronBackOutline font-size="1.7em" class="relative right-3" /></button>
+      <div class="basis-1/3 flex-none" />
+      <div class="flex flex-col basis-2/3 gap-1">
         <span>Name: {username}</span>
         <span>Age: 23</span>
         <span>Country: NL</span>
         <span>Achievements: 3/5</span>
-        <button
-          class="w-1/2 mt-3 border-2 rounded border-black bg-slate-300 hover:bg-storm-3 text-2xl px-0"
-          on:click={() => dialog.close()}>Close menu</button>
+        <Button
+          class="!border-night-1 bg-slate-300 hover:bg-storm-3 !text-night-1 text-2xl !w-fit"
+          text="Close License"
+          onClick={() => dialog.close()} />
       </div>
-
-
-      <div class="rightArrow">
-        <button on:click|preventDefault={() => changeColor("right")} type="button"
-          ><IoIosChevronForwardOutline font-size="1.7em" /></button>
-      </div>
+      <button on:click|preventDefault={() => changeColor("right")} type="button"
+        ><IoIosChevronForwardOutline font-size="1.7em" /></button>
     </div>
-    <div class="flex flex-row items-center justify-end w-4/5 text-xl">
+    <div class="flex items-center text-lg justify-center">
       <span class="mr-1">AVG. Rating:</span>
-      <span class="flex flex-row">
+      <span class="flex">
         {#each { length: 5 } as _, i}
           {#if i < Math.floor(rate)}
             <IonStar
