@@ -21,14 +21,14 @@
 
   export let passage: PassageRead | null = null;
   export let reviewList: Array<ReviewRead>;
-  export let riderList: Array<RideRead>;
+  export let rideList: Array<RideRead>;
   export let filledjournal: boolean;
   export let journal: boolean;
   export let modalOpened: boolean;
 
-  export let volumeAmbient;
   export let audioAmbient;
-  export let ambientNoise;
+  export let volumeAmbient: number;
+  export let ambientNoise: boolean;
 
   let dialogToggled = false;
   let activeContent: string;
@@ -201,6 +201,7 @@
                 <p class="text-ellipsis overflow-hidden">{data.description}</p>
               </div>
             </div>
+            <hr class="border-night-2 m-2 w-11/12 mx-auto" />
           {/each}
         {/await}
       {:else}
@@ -217,17 +218,20 @@
   {:else if activeContent === "Rides"}
     <div class="px-4 my-2">
       <div class="pt-2 pb-2">
-        {#if riderList.length}
+        {#if rideList.length}
           {#if passage}
             <p class="text-center w-full">You are already in a ride.</p>
             {#if filledjournal}
               <div class="flex flex-col mb-3 mt-3">
-                <Button onClick={() => dispatch("quit")} text="Quit ride" class="bg-aurora-red" />
+                <Button
+                  onClick={() => dispatch("quitRide")}
+                  text="Quit ride"
+                  class="bg-aurora-red" />
               </div>
             {/if}
           {:else}
-            {#await riderList then rider}
-              {#each rider as data}
+            {#await rideList then ride}
+              {#each ride as data}
                 <div>
                   <div
                     on:keypress
@@ -396,14 +400,12 @@
 
 <div class="flex justify-center items-end h-full" style="padding-bottom: {screenHeight / 14.9}px">
   <div
-    class="bg-night-1 rounded flex"
+    class="bg-night-1 flex rounded border-night-3 border-8"
     style="width: {screenHeight / 3}px; height: {screenHeight / 4.1}px">
-    <div
-      class="flex flex-col items-center justify-evenly w-12 bg-white/10 mr-2"
-      style="border-radius: 10px">
+    <div class="flex flex-col items-center justify-evenly w-12 bg-night-2 mr-2 rounded-r">
       <Button
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
-        onClick={() => forward("Home")}>
+        onClick={() => dispatch("driverModal")}>
         <div slot="icon">
           <ClarityLicenseSolid />
         </div>
@@ -417,7 +419,10 @@
       </Button>
       <Button onClick={dialog} class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
         <div slot="icon">
-          <img src={dialogIconSrc} alt="info" />
+          <img
+            src={dialogIconSrc}
+            alt="info"
+            class:cursor-not-allowed={dialogIconSrc === "multimedia/Dialogue_red_icon.png"} />
         </div>
       </Button>
     </div>
@@ -468,7 +473,6 @@
 </div>
 
 <style>
-  /* barretje tussen 2 delen */
   input[type="range"] {
     -webkit-appearance: none !important;
     appearance: none;
