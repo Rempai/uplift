@@ -144,7 +144,7 @@ export const routes: Array<route> = [
     role: "Writer",
   },
   {
-    route: "/admin/abstractor",
+    route: "/admin/abstractor/create",
     call: "/passage_handler/passage_bulk/",
     html: passageBulkHTML,
     service: PassageHandlingService.postPassageBulk,

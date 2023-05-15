@@ -6,7 +6,7 @@ type achievementObj = {
   achievementId: number;
   currentRide?: RideRead | null;
   reviewList?: ReviewRead[] | null;
-  riderList?: Array<RideRead> | null;
+  rideList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
   resolutionData?: RideRead | null;
   tutorialCompleted?: boolean | null;
@@ -21,7 +21,7 @@ export const isAchieved = ({
   reviewList = null,
   resolutionData = null,
   tutorialCompleted = null,
-  riderList = null,
+  rideList = null,
 }: achievementObj) => {
   switch (achievementId) {
     case 1:
@@ -33,7 +33,7 @@ export const isAchieved = ({
     case 2:
       if (!IdUnlockedAchievements.includes(achievementId)) {
         const fiveStarReviews = reviewList.filter((review) => review.stars === 5);
-        if (fiveStarReviews.length === riderList.length) {
+        if (fiveStarReviews.length === rideList.length) {
           postUserAchievement(userId, achievementId);
           return true;
         }
@@ -53,7 +53,7 @@ export const isAchieved = ({
       return false;
 
     case 7: {
-      const { mainProblem, mainCause, partiesInvolved } = currentRide;
+      const { mainProblem, mainCause, partiesInvolved } = resolutionData;
 
       const correctMainCauses = currentRide.mainCause.match(/(?<=;)[^;]+(?=;)/g);
       const correctMainProblems = currentRide.mainProblem.match(/(?<=;)[^;]+(?=;)/g);
@@ -62,11 +62,7 @@ export const isAchieved = ({
       if (
         correctMainCauses.includes(mainCause) &&
         correctMainProblems.includes(mainProblem) &&
-        correctPartiesInvolved.includes(partiesInvolved) &&
-        currentRide.bravery === resolutionData.bravery &&
-        currentRide.enthusiasm === resolutionData.enthusiasm &&
-        currentRide.integrity === resolutionData.integrity &&
-        currentRide.perseverance === resolutionData.perseverance
+        correctPartiesInvolved.includes(partiesInvolved)
       ) {
         postUserAchievement(userId, achievementId);
         return true;
@@ -75,9 +71,9 @@ export const isAchieved = ({
     }
     case 9:
       if (!IdUnlockedAchievements.includes(achievementId)) {
-        if (riderList && reviewList) {
+        if (rideList && reviewList) {
           const reviews = reviewList.filter((review) => review.stars > 3);
-          for (const ride of riderList) {
+          for (const ride of rideList) {
             const reviewExists = reviews.filter((review) => review.rideId === ride.id);
             if (!reviewExists) {
               return false;

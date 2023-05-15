@@ -5,5 +5,4 @@
 export type AchievementUpdate = {
   name?: string;
   description?: string;
-  icon?: string;
 };

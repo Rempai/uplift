@@ -77,7 +77,7 @@
       asyncComponent: () => import("@/routes/AdminCreate.svelte"),
     }),
 
-    "/admin/abstractor": wrap({
+    "/admin/abstractor/create": wrap({
       asyncComponent: () => import("@/routes/AdminCreate.svelte"),
     }),
 
@@ -111,6 +111,10 @@
 
     "/admin/attribute/edit/:id": wrap({
       asyncComponent: () => import("@/routes/AdminEdit.svelte"),
+    }),
+
+    "/info": wrap({
+      asyncComponent: () => import("@/routes/Info.svelte"),
     }),
 
     // Catch-all, must be last

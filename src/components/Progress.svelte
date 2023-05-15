@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PassageRead } from "@/lib/client";
-  import Modal from "./Modal.svelte";
+
+  import Modal from "@/components/Modal.svelte";
 
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
@@ -21,7 +22,9 @@
 
   const calcProgression = () => {
     possibleBranches.forEach((branch) => {
-      const passagesWithBranch = allPassages.filter((obj) => obj.branch === branch);
+      const passagesWithBranch = allPassages.filter(
+        (obj) => obj.branch === branch && !(obj.emotion < 0)
+      );
       const totalBranchPassages = passagesWithBranch.length;
 
       if (totalBranchPassages > 0) {
@@ -29,7 +32,7 @@
           passagesWithBranch.some((obj) => obj.passage === passage)
         ).length;
 
-        branchProgress[branch] = Math.round((seenBranchPassages / totalBranchPassages) * 100);
+        branchProgress[branch] = Math.ceil((seenBranchPassages / totalBranchPassages) * 100);
       } else {
         branchProgress[branch] = 0;
       }
@@ -46,7 +49,9 @@
   };
 
   const popup = () => {
-    showModal = !showModal;
+    if (allPassages && allPassages.length > 0) {
+      showModal = !showModal;
+    }
   };
 
   let screenHeight: number = window.innerHeight;
@@ -57,34 +62,18 @@
     screenWidth = window.innerWidth;
   });
 
-  $: if (passedPassages && passedPassages.length > 0) {
+  $: if (passedPassages) {
     branches();
     calcProgression();
   }
 </script>
 
-<div>
-  {#if allPassages && allPassages.length > 0}
-    <div class="flex justify-center h-full cursor-pointer" on:click={popup} on:keypress>
-      <div
-        class="hover:bg-night-2 transition bg-night-1 h-[4.9%] -md flex justify-center items-center absolute"
-        style="top:{screenHeight / 1.43}px; width: {screenHeight / 5.5}px;
-    transform: translateX({screenHeight / 2.75}%)">
-        {progression}%
-      </div>
-    </div>
-  {:else}
-    <div class="flex justify-center h-full">
-      <div
-        class="bg-night-1 h-[4.9%] -md flex justify-center items-center absolute"
-        style="top:{screenHeight / 1.43}px; width: {screenHeight / 5.5}px;
-    transform: translateX({screenHeight / 2.75}%)" />
-    </div>
-  {/if}
-</div>
-
-<Modal {showModal} on:click={() => (showModal = !showModal)} modalHeader="Branch progress">
-  <div class=" flex  justify-around flex-wrap p-4 ">
+<Modal
+  {showModal}
+  on:closed={() => (showModal = !showModal)}
+  on:click={() => (showModal = !showModal)}
+  modalHeader="Branch progress">
+  <div class="flex justify-around flex-wrap p-4">
     {#each possibleBranches as branch}
       <div class="flex flex-col items-center w-32 mb-6">
         <progress
@@ -96,6 +85,20 @@
     {/each}
   </div>
 </Modal>
+
+<div
+  class="flex w-full justify-end absolute z-10"
+  style="bottom: {screenHeight / 3.96}px; right: {screenWidth / 3.71}px">
+  <div
+    on:click={popup}
+    on:keypress
+    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
+    style="width: {screenHeight / 5.85}px; height: {screenHeight / 18.9}px;">
+    {#if allPassages && allPassages.length > 0}
+      {progression}%
+    {/if}
+  </div>
+</div>
 
 <style>
   progress::-moz-progress-bar {
