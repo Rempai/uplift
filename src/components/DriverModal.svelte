@@ -53,7 +53,7 @@
   bind:this={dialog}
   on:close={() => (showDriverModal = false)}
   on:click|self={() => dialog.close()}
-  class="w-4/5 h-3/5 md:w-full md:h-full overflow-hidden bg-{bgColor} bg-[url('/rijbewijs_feedback_noarrows.png')] bg-cover bg-center rounded-[10%] max-h-96 max-w-xl"
+  class="w-4/5 h-3/5 md:w-full md:h-full overflow-hidden bg-{bgColor} bg-[url('/license.png')] bg-cover bg-center rounded-[10%] max-h-96 max-w-xl border-4 border-night-1"
   style="background-size: 100% 100%">
   <div class="flex flex-col h-full pt-5">
     <div class="flex items-center h-full w-full" on:click|stopPropagation>
