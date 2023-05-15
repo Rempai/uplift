@@ -4,7 +4,7 @@
 y}I think you should keep it up. Life can be hard, you should get used to it.
 p}Have you actually been listening?!
 y}Don't forget to leave a review.
-p}You are useless you \***\* \*\*** **\*\***\***\*\***. <i>They exit the car after making a rude gesture</i>
+p}You are useless you **** **** *************. <i>They exit the car after making a rude gesture</i>
 :end
 
 #### Inform the teacher about workload inequality
