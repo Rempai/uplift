@@ -79,7 +79,7 @@ export function generate_output(
       for (let b = 0; b < branches.length; b++) {
         for (let p = 0; p < branches[b].passages.length; p++) {
           const inner_passage = branches[b].passages[p];
-          const regex = "/(?<={)[^{}]*(?=})/g";
+          const regex = /(?<={)[^{}]*(?=})/g;
           const found = inner_passage.text.match(regex);
           (found ?? []).forEach((element) => {
             if (element.toString() == branch.name) {
@@ -132,14 +132,14 @@ export function generate_output(
   return (
     '"' +
     JSON.stringify(output_array)
-      .replace("/[\\]/g", "\\\\")
-      .replace('/["]/g', '\\"')
-      .replace("/[/]/g", "\\/")
-      .replace("/[\b]/g", "\\b")
-      .replace("/[\f]/g", "\\f")
-      .replace("/[\n]/g", "\\n")
-      .replace("/[\r]/g", "\\r")
-      .replace("/[\t]/g", "\\t") +
+      .replace(/[\\]/g, "\\\\")
+      .replace(/["]/g, '\\"')
+      .replace(/[/]/g, "\\/")
+      .replace(/[\b]/g, "\\b")
+      .replace(/[\f]/g, "\\f")
+      .replace(/[\n]/g, "\\n")
+      .replace(/[\r]/g, "\\r")
+      .replace(/[\t]/g, "\\t") +
     '"'
   );
 }
