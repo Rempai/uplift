@@ -66,7 +66,7 @@
         <span>Country: {lang}</span>
         <span>Achievements: {unlockedAchievements.length}/{allAchievements.length}</span>
         <Button
-          class="!border-night-1 bg-slate-300 hover:bg-storm-3 !text-night-1 text-2xl !w-fit"
+          class="!border-night-1 bg-slate-300 hover:bg-storm-3 !text-night-1 text-2xl w-fit"
           text="Close License"
           onClick={() => dialog.close()} />
       </div>
