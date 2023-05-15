@@ -22,7 +22,9 @@
 
   const calcProgression = () => {
     possibleBranches.forEach((branch) => {
-      const passagesWithBranch = allPassages.filter((obj) => obj.branch === branch && !(obj.emotion < 0));
+      const passagesWithBranch = allPassages.filter(
+        (obj) => obj.branch === branch && !(obj.emotion < 0)
+      );
       const totalBranchPassages = passagesWithBranch.length;
 
       if (totalBranchPassages > 0) {
