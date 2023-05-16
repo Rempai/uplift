@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { afterUpdate, onMount, tick } from "svelte";
   import { cubicOut, cubicInOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { tweened } from "svelte/motion";
+  import type { AchievementRead } from "@/lib/client";
+
   export let achievementTitle = "Congratulations! You've done it!";
   export let iconImage = "icon-outline.png";
   export let triggered = false;
@@ -12,9 +15,9 @@
     triggered = false;
   };
 
-  $: if (triggered) {
-    rotationAngle.set(360, { duration: 3750, easing: cubicOut });
+  $: if (triggered === true) {
     audio.play();
+    rotationAngle.set(360, { duration: 3750, easing: cubicOut });
     setTimeout(resetTrigger, 8000);
   } else {
     rotationAngle.set(0);
@@ -46,3 +49,4 @@
     </div>
   </div>
 {/if}
+<button on:click={() => (triggered = !triggered)} class="absolute z-50">trigger</button>
