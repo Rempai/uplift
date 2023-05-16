@@ -181,7 +181,6 @@
   const showResolution = ({ detail }) => {
     // Achievement : Perfect journal for Ride Paolo
     handleAchievement(7);
-    togglePhone();
     journal = false;
     resolution = true;
     resolutionData = detail;
