@@ -12,26 +12,26 @@ type achievementObj = {
   tutorialCompleted?: boolean | null;
 };
 
-export const IdUnlockedAchievements: Array<number> = [];
+export const unlockedAchievementsIds: Array<number> = [];
 
 export const isAchieved = ({
   userId,
   achievementId,
   currentRide = null,
   reviewList = null,
+  riderList = null,
   resolutionData = null,
   tutorialCompleted = null,
-  riderList = null,
 }: achievementObj) => {
   switch (achievementId) {
     case 1:
-      if (!IdUnlockedAchievements.includes(achievementId)) {
+      if (!unlockedAchievementsIds.includes(achievementId)) {
         postUserAchievement(userId, achievementId);
         return true;
       }
-      return false;
+      false;
     case 2:
-      if (!IdUnlockedAchievements.includes(achievementId)) {
+      if (!unlockedAchievementsIds.includes(achievementId)) {
         const fiveStarReviews = reviewList.filter((review) => review.stars === 5);
         if (fiveStarReviews.length === riderList.length) {
           postUserAchievement(userId, achievementId);
@@ -40,41 +40,38 @@ export const isAchieved = ({
       }
       return false;
     case 4:
-      if (!IdUnlockedAchievements.includes(achievementId)) {
+      if (!unlockedAchievementsIds.includes(achievementId)) {
         postUserAchievement(userId, achievementId);
         return true;
       }
       return false;
     case 5:
-      if (!IdUnlockedAchievements.includes(achievementId)) {
+      if (!unlockedAchievementsIds.includes(achievementId)) {
         postUserAchievement(userId, achievementId);
         return true;
       }
       return false;
-
     case 7: {
-      const { mainProblem, mainCause, partiesInvolved } = currentRide;
-
-      const correctMainCauses = currentRide.mainCause.match(/(?<=;)[^;]+(?=;)/g);
-      const correctMainProblems = currentRide.mainProblem.match(/(?<=;)[^;]+(?=;)/g);
-      const correctPartiesInvolved = currentRide.partiesInvolved.match(/(?<=;)[^;]+(?=;)/g);
-
-      if (
-        correctMainCauses.includes(mainCause) &&
-        correctMainProblems.includes(mainProblem) &&
-        correctPartiesInvolved.includes(partiesInvolved) &&
-        currentRide.bravery === resolutionData.bravery &&
-        currentRide.enthusiasm === resolutionData.enthusiasm &&
-        currentRide.integrity === resolutionData.integrity &&
-        currentRide.perseverance === resolutionData.perseverance
-      ) {
-        postUserAchievement(userId, achievementId);
-        return true;
+      if (!unlockedAchievementsIds.includes(achievementId)) {
+        const { mainProblem, mainCause, partiesInvolved } = resolutionData;
+        console.log("bar", resolutionData);
+        const correctMainCauses = currentRide.mainCause.match(/(?<=;)[^;]+(?=;)/g);
+        const correctMainProblems = currentRide.mainProblem.match(/(?<=;)[^;]+(?=;)/g);
+        const correctPartiesInvolved = currentRide.partiesInvolved.match(/(?<=;)[^;]+(?=;)/g);
+        console.log(correctMainCauses.includes(resolutionData.mainCause));
+        if (
+          correctMainProblems.includes(mainProblem.trim()) &&
+          correctMainCauses.includes(mainCause.trim()) &&
+          correctPartiesInvolved.includes(partiesInvolved.trim())
+        ) {
+          postUserAchievement(userId, achievementId);
+          return true;
+        }
+        return false;
       }
-      return false;
     }
     case 9:
-      if (!IdUnlockedAchievements.includes(achievementId)) {
+      if (!unlockedAchievementsIds.includes(achievementId)) {
         if (riderList && reviewList) {
           const reviews = reviewList.filter((review) => review.stars > 3);
           for (const ride of riderList) {
@@ -92,33 +89,6 @@ export const isAchieved = ({
       return false;
   }
 };
-
-// if (reviewList[-1]) {
-//   if ((reviewList[-1].stars = 4)) {
-//     postUserAchievement(userId, achievementId);
-//     return true;
-//   } else if ((reviewList[-1].stars = 5)) {
-//     postUserAchievement(userId, achievementId);
-
-//     return true;
-//   }
-// }
-
-// if (tutorialCompleted) {
-//   if (tutorialCompleted === true) {
-//     postUserAchievement(userId, achievementId);
-
-//     return true;
-//   }
-// }
-
-// if (reviewList[0]) {
-//   if (reviewList[0].stars === 5) {
-//     postUserAchievement(userId, achievementId);
-//     return true;
-//   }
-// }
-// return false;
 
 const postUserAchievement = async (userId: number, achievementId: number) => {
   const currentTime = new Date().toISOString();
