@@ -10,7 +10,7 @@
     registerForAccessToken,
     updateUserAccount,
   } from "@/lib/authProcesses";
-  import { isAchieved, IdUnlockedAchievements } from "@/lib/achievementsLogic";
+  import { isAchieved, unlockedAchievementsIds } from "@/lib/achievementsLogic";
   import {
     CharactersService,
     OpenAPI,
@@ -86,7 +86,7 @@
   let patienceLost = false;
 
   let triggerAchievement = false;
-  let unlockedAchievement = "";
+  let unlockedAchievement: Array<AchievementRead> = [];
 
   let allAchievements: Array<AchievementRead> = [];
   let unlockedAchievements = [];
@@ -217,7 +217,6 @@
   const showResolution = ({ detail }) => {
     // Achievement : Perfect journal for Ride Paolo
     handleAchievement(7);
-
     togglePhone();
     journal = false;
     resolution = true;
@@ -344,15 +343,7 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
-    // Achievement: 4 stars on a Ride Paolo
-    // if (reviewList[reviewList.length - 1].stars === 4) {
-    // handleAchievement(4);
-    // }
-
-    // Achievement: 5 stars on a Ride Paolo
-    // if (reviewList[reviewList.length - 1].stars === 5) {
-    //   handleAchievement(5);
-    // }
+    console.log("foo", resolutionData);
     solution = event.detail;
     nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
@@ -379,6 +370,16 @@
 
     // Achievement: Completed all rides
     //handleAchievement(9);
+
+    // Achievement: 4 stars on a Ride Paolo
+    if (reviewList[reviewList.length - 1].stars === 4) {
+      handleAchievement(4);
+    }
+
+    // Achievement: 5 stars on a Ride Paolo
+    if (reviewList[reviewList.length - 1].stars === 5) {
+      handleAchievement(5);
+    }
 
     //Achievement: Completed first ride
     if (reviewList.length === 1) {
@@ -437,8 +438,8 @@
     // TODO: Change license
 
     unlockedAchievements.forEach((item) => {
-      if (!IdUnlockedAchievements.includes(item.achievementId)) {
-        IdUnlockedAchievements.push(item.achievementId);
+      if (!unlockedAchievementsIds.includes(item.achievementId)) {
+        unlockedAchievementsIds.push(item.achievementId);
       }
     });
 
@@ -451,7 +452,9 @@
       riderList: riderList,
       resolutionData: resolutionData,
     });
-    unlockedAchievement = allAchievements[achievementId - 1].name;
+
+    unlockedAchievement.push(allAchievements[achievementId - 1]);
+    console.log(unlockedAchievement, "foo");
   };
 
   onMount(async () => {
@@ -466,15 +469,6 @@
       clearResolutionData();
     }
   });
-
-  $: if ($passageName !== "") {
-    nextPassage($passageName);
-  }
-
-  $: if ($emotion <= 70) {
-    filledjournal = false;
-    patienceLost = true;
-  }
 
   $: if (passage) {
     if (allowAudioCall) {
@@ -522,7 +516,11 @@
 </svelte:head>
 
 <main>
-  <Achievement triggered={triggerAchievement} achievementTitle={unlockedAchievement} />
+  {#if unlockedAchievement}
+    {#each unlockedAchievement as item}
+      <Achievement triggered={triggerAchievement} achievementTitle={item.name} />
+    {/each}
+  {/if}
   <Loader bind:loading={loader} />
   <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
