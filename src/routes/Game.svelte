@@ -25,43 +25,26 @@
 
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
-  import Phone from "@/components/Phone.svelte";
   import Form from "@/components/Form.svelte";
   import Notification from "@/components/Notification.svelte";
   import Modal from "@/components/Modal.svelte";
   import CustomMenu from "@/components/contextMenu/CustomMenu.svelte";
   import Journal from "@/components/Journal.svelte";
-  import Loader from "@/components/Loader.svelte";
   import Resolution from "@/components/Resolution.svelte";
   import Achievement from "@/components/Achievement.svelte";
   import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
-
-  import IoIosPhonePortSharp from "~icons/ion/phone-portrait-sharp";
+  import DriverModal from "@/components/DriverModal.svelte";
 
   import Background from "/background.webm";
 
-  let ambientNoise = false;
+  let messages: Array<string> = [];
 
-  let showPhoneButton = true;
-  let phonebutton = true;
-
-  let loader = true;
-
-  let showModal = false;
-  let modalHeader = "";
-  let reviewText = "";
-
-  let welcome = false;
-  let login = false;
-  let register = false;
-
-  let settingsPlane = "";
-
-  let errors: Array<string> = [];
-
-  let riderList: Array<RideRead>;
+  let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
+
+  let allPassages: Array<PassageRead>;
+  let passedPassages: Array<string> = [];
 
   let dialog = false;
   let passage: PassageRead;
@@ -78,39 +61,43 @@
 
   let parsedJWT: jwtObject;
 
+  let login = false;
+  let register = false;
+  let welcome = false;
+
   let filledjournal = true;
-
-  let allPassages: Array<PassageRead>;
-  let passedPassages: Array<string> = [];
-
   let patienceLost = false;
-
   let triggerAchievement = false;
+  let tutorialCompleted = false;
   let unlockedAchievement: Array<AchievementRead> = [];
-
   let allAchievements: Array<AchievementRead> = [];
   let unlockedAchievements = [];
 
-  let tutorialCompleted = false;
+  let ambientNoise = false;
+  let animalease = true;
   let volumeAmbient = 1;
-  let audioAmbient;
   let allowAudioCall = true;
+  let audioAmbient;
   let audio;
+
+  let modalOpened = false;
+  let showReviewList = false;
+
+  let showDriverModal = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
     if (login === true) {
-      checkPhoneButton();
       startGame();
     } else {
       $validation = $validation;
       showError(await validationErrorCheck(login, false));
     }
   };
+
   const submitRegister = async ({ target }) => {
     const register = await registerForAccessToken(target);
     if (register === true) {
-      checkPhoneButton();
       startGame();
     } else {
       $validation = $validation;
@@ -120,27 +107,21 @@
 
   const handleLogout = () => {
     localStorage.clear();
-    pausevideo();
-    checkPhoneButton();
-    welcome = true;
-    dialog = false;
-    journal = false;
-    settingsPlane = "";
-    togglePhone();
+    login = true;
+    quitRide();
   };
 
   const startGame = async () => {
-    showPhoneButton = true;
+    $validation.length = 0;
     const token = localStorage.getItem("access_token");
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
-    loader = false;
     login = false;
     register = false;
 
     await CharactersService.getRides()
-      .then((res) => (riderList = res))
+      .then((res) => (rideList = res))
       .catch((err) => showError(err));
 
     await CharactersService.getReviews(parsedJWT.sub)
@@ -154,17 +135,14 @@
     await UserService.getAchievements(parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
-
-    console.log(allAchievements);
-    console.log(unlockedAchievements);
-  };
-
-  const togglePhone = () => {
-    showPhoneButton = !showPhoneButton;
   };
 
   const toggleAmbient = () => {
     ambientNoise = !ambientNoise;
+  };
+
+  const toggleAnimalease = () => {
+    animalease = !animalease;
   };
 
   const toggleJournal = () => {
@@ -178,23 +156,8 @@
     allowAudioCall = dialog;
   };
 
-  const skipAndLogin = () => {
-    $validation.length = 0;
-    welcome = !welcome;
-    login = true;
-  };
-
-  const triggerRegister = () => {
-    $validation.length = 0;
-    welcome = !welcome;
-    register = true;
-  };
-
   const selectRide = async (event: CustomEvent) => {
     const ride: RideRead = event.detail;
-    if (passage) {
-      return;
-    }
 
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
@@ -207,11 +170,12 @@
     const video = document.querySelector("video");
     video.play();
     passedPassages = [];
+    passedPassages.push(passage.passage);
     emotion.set(100);
   };
 
   const showError = (err: string) => {
-    errors = [...errors, err];
+    messages = [...messages, err];
   };
 
   const showResolution = ({ detail }) => {
@@ -223,37 +187,26 @@
     resolutionData = detail;
   };
 
-  const changeAccount = async (event: CustomEvent) => {
-    settingsPlane = event.detail;
-    dialog = false;
-    journal = false;
-    pausevideo();
-  };
-
-  const updateAccount = async ({ target }) => {
-    const update = await updateUserAccount(target, parsedJWT.sub);
-    if (update === true) {
-      settingsPlane = "";
-      journal = false;
-    } else {
-      showError(update);
-    }
+  const updateAccount = async ({ detail }) => {
+    await updateUserAccount(detail, parsedJWT.sub).then((res) => {
+      if (!res && res.status !== 200) {
+        showError(res.statusText);
+      } else {
+        journal = false;
+        modalOpened = false;
+      }
+    });
   };
 
   const deleteUser = async () => {
     UserService.deleteUser(parsedJWT.sub)
       .then(() => {
         localStorage.clear();
-      })
-      .then(() => {
         showError("Deleted User");
-        checkPhoneButton();
-        welcome = true;
-        settingsPlane = "";
+        login = true;
       })
       .catch((err) => showError(err));
     pausevideo();
-    togglePhone();
   };
 
   const nextPassageName = () => {
@@ -291,6 +244,8 @@
           reviewList = res;
           passage = undefined;
           ambientNoise = false;
+          journal = false;
+          dialog = false;
           pausevideo();
         })
         .catch((err) => showError(err));
@@ -301,8 +256,7 @@
   const textParser = async (text: string) => {
     if (text) {
       if (text.match("{user}")) {
-        let user = await UserService.getMe();
-        text = text.replace("{user}", user.username);
+        text = text.replace("{user}", parsedJWT.username);
       }
     }
     return text;
@@ -312,7 +266,7 @@
     // Workaround for adding {user} template parsing for the journal
     let dialogUpdate = passage;
     dialogUpdate.content = await textParsed;
-    //prevent duplicate passages in journal
+    // Prevent duplicate passages in journal
     if (journalData.length !== 0) {
       let alreadyInJournal = false;
       journalData.forEach((obj) => {
@@ -338,7 +292,7 @@
 
   const gotoBranch = async (event: CustomEvent) => {
     journal = false;
-    toggleDialog();
+    dialog = true;
     nextPassage(event.detail.passage);
   };
 
@@ -385,8 +339,8 @@
     if (reviewList.length === 1) {
       handleAchievement(1);
     }
-    togglePhone();
-    showPhoneButton = false;
+
+    showReviewList = true;
   };
 
   const losePatience = () => {
@@ -405,22 +359,15 @@
 
   const quitRide = () => {
     passage = undefined;
+    currentRide = undefined;
     ambientNoise = false;
     pausevideo();
     journalData = [];
     clearResolutionData();
     dialog = false;
+    journal = false;
     filledjournal = true;
     patienceLost = false;
-  };
-
-  const checkPhoneButton = () => {
-    const accessToken = localStorage.getItem("access_token");
-    if (accessToken != null) {
-      phonebutton = false;
-    } else {
-      phonebutton = true;
-    }
   };
 
   const pausevideo = () => {
@@ -449,7 +396,7 @@
       reviewList: reviewList,
       currentRide: currentRide,
       tutorialCompleted: tutorialCompleted,
-      riderList: riderList,
+      rideList: rideList,
       resolutionData: resolutionData,
     });
 
@@ -460,7 +407,6 @@
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
-      checkPhoneButton();
       startGame();
     } else {
       welcome = true;
@@ -470,44 +416,42 @@
     }
   });
 
+  $: if ($passageName !== "") {
+    nextPassage($passageName);
+  }
+
   $: if (passage) {
     if (allowAudioCall) {
       textParsed = textParser(passage.content);
-      fetch("https://audio.appelsapje.net/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          string: passage.content,
-        }),
-      })
-        .then((response) => response.blob())
-        .then((blob) => {
-          allowAudioCall = false;
-          if (audio) audio.pause();
-          audio = new Audio();
-          audio.src = URL.createObjectURL(blob);
-          audio.playbackRate = 3.5;
-          audio.play();
+      if (animalease && passage.speaker !== "You") {
+        fetch("https://audio.appelsapje.net/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            string: passage.content,
+          }),
         })
-        .catch((error) => console.error(error));
+          .then((response) => response.blob())
+          .then((blob) => {
+            allowAudioCall = false;
+            if (audio) audio.pause();
+            audio = new Audio();
+            audio.src = URL.createObjectURL(blob);
+            audio.playbackRate = 3.5;
+            audio.volume = 0.5;
+            audio.play();
+          })
+          .catch((error) => console.error(error));
+      }
       updateJournalData();
     }
-  }
-
-  $: if ($passageName !== "") {
-    nextPassage($passageName);
   }
 
   $: if ($emotion <= 70) {
     filledjournal = false;
     patienceLost = true;
-  }
-
-  $: if (passage) {
-    textParsed = textParser(passage.content);
-    updateJournalData();
   }
 </script>
 
@@ -521,14 +465,8 @@
       <Achievement triggered={triggerAchievement} achievementTitle={item.name} />
     {/each}
   {/if}
-  <Loader bind:loading={loader} />
-  <CustomMenu on:menuClick={updateContextData} />
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
-  <Notification bind:message={errors} />
-  <Modal {showModal} {modalHeader} on:click={() => (showModal = !showModal)}>
-    <p class="mb-3">{reviewText}</p>
-    <Button onClick={() => (showModal = !showModal)} text="close" class="bg-aurora-green w-fit" />
-  </Modal>
+  <Notification {messages} />
   <video
     class="fixed h-screen w-screen object-fill"
     loop
@@ -537,6 +475,18 @@
     <track kind="captions" />
     <source src={Background} />
   </video>
+  {#if (dialog || journal) && !showDriverModal}
+    <CustomMenu on:menuClick={updateContextData} />
+  {/if}
+  {#if reviewList}
+    <DriverModal
+      bind:showDriverModal
+      lang="NL"
+      username={parsedJWT.username}
+      {allAchievements}
+      {unlockedAchievements}
+      {reviewList} />
+  {/if}
   {#if ambientNoise}
     <audio
       class="hidden"
@@ -548,170 +498,116 @@
       volume={volumeAmbient} />
   {/if}
   <div
-    class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10">
-    <Progress {allPassages} {passedPassages} />
-    {#if settingsPlane}
-      <div in:fade class="flex justify-center items-center absolute w-full h-full px-4">
-        <div
-          class="w-full max-w-screen-xl rounded bg-night-3 border-4 border-frost-3 z-5 p-6 z-20">
-          {#if settingsPlane === "Delete"}
-            <p class="text-3xl text-frost-1">{settingsPlane} account</p>
-          {:else}
-            <p class="text-3xl text-frost-1">Change {settingsPlane}</p>
-          {/if}
-          {#if settingsPlane == "Delete"}
-            <p>
-              <b>Are you sure you want to delete your account? All progression will be lost.</b>
-            </p>
-            <div class="flex justify-center mt-5 gap-3">
-              <Button
-                onClick={deleteUser}
-                text="Delete"
-                class="bg-transparent px-3 py-6 !border-aurora-red hover:bg-aurora-red" />
-              <Button
-                onClick={() => {
-                  settingsPlane = "";
-                }}
-                text="Cancel"
-                class="bg-transparent px-3 py-6 !border-aurora-green hover:bg-aurora-green" />
-            </div>
-          {:else}
-            <Form
-              handleSubmit={updateAccount}
-              backButton={true}
-              on:back={() => {
-                settingsPlane = "";
-              }}>
-              <div slot="forms">
-                <input hidden required name="role" value={parsedJWT.role} />
-                {#if settingsPlane == "username"}
-                  <label for="username">New Username</label>
-                  <input required placeholder="test123" name="username" type="text" />
-                {:else if settingsPlane == "password"}
-                  <label for="password">Password</label>
-                  <input required placeholder="password" name="password" type="password" />
-                  <label for="newPassword">New password</label>
-                  <input required placeholder="New password" name="newPassword" type="password" />
-                  <label for="repeatPassword">Confirm password</label>
-                  <input
-                    required
-                    placeholder="Confirm password"
-                    name="repeatPassword"
-                    type="password" />
-                {/if}
-              </div>
-            </Form>
-          {/if}
+    class="h-screen relative bg-[url('/dashboard.png')] w-full bg-cover bg-center bg-no-repeat z-10"
+    style="background-size: 100% 100%">
+    {#if welcome}
+      <Modal showModal={true} modalHeader="" closeButton={false}>
+        <div class="flex flex-col items-center gap-6">
+          <p class="text-3xl">Welcome to</p>
+          <img src="logo.png" alt="Logo" class="w-32" />
+          <p class="text-frost-1 text-3xl mb-3">Uplift</p>
         </div>
-      </div>
-    {/if}
-    {#if dialog}
-      <div in:fade class="absolute left-0 right-0 top-1/3 m-auto z-20">
-        {#await passage then dialog}
-          {#await textParsed then parsedText}
-            {#if !patienceLost}
-              <Dialog
-                on:next={nextPassageName}
-                continueButton={dialog.continueButton}
-                user={dialog.speaker}
-                dialogColor={dialog.attribute.color}
-                text={parsedText}
-                font={dialog.attribute.fontFamily}
-                fontSize={dialog.attribute.fontSize}
-                color={dialog.attribute.color} />
-            {:else}
-              <!-- dialogColor = aurora red, color = Nord's snow color. -->
-              <Dialog
-                on:next={losePatience}
-                continueButton={true}
-                text="You pissed off {currentRide.passenger
-                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
-                dialogColor="#BF616A"
-                color="#e5e9f0" />
-            {/if}
-          {/await}
-        {/await}
-      </div>
-    {/if}
-    {#if journal}
-      <div in:fade class="w-9/12 z-30">
-        <Journal
-          {journalData}
-          {resolutionData}
-          on:report={showResolution}
-          on:gotoTab={gotoBranch} />
-      </div>
-    {/if}
-    {#if showPhoneButton}
-      {#if phonebutton}
-        <button
-          class="w-16 h-20 absolute top-1/3 rounded-r flex justify-evenly items-center bg-aurora-red hover:brightness-110"
-          on:click={togglePhone}>
-          <IoIosPhonePortSharp font-size="2.5em" class="text-night-3" />
-        </button>
-      {/if}
+        <div class="flex justify-center gap-4">
+          <Button
+            text="Login"
+            class="bg-frost-1"
+            onClick={() => {
+              login = true;
+              welcome = false;
+            }} />
+          <Button
+            text="Register"
+            class="bg-frost-3"
+            onClick={() => {
+              register = true;
+              welcome = false;
+            }} />
+        </div>
+      </Modal>
     {:else if login}
-      <Phone on:close={togglePhone} menuName="Login">
-        <div slot="content" class="px-4 mt-3">
-          <p class="text-center text-3xl text-frost-1">Login</p>
-          <Form
-            handleSubmit={submitLogin}
-            enctype="multipart/form-data"
-            login={true}
-            backButton={true}
-            on:back={() => {
-              welcome = true;
-              login = false;
-            }} />
-        </div>
-      </Phone>
+      <Modal showModal={true} modalHeader="Login" closeButton={false}>
+        <Form
+          backButton={true}
+          on:back={() => {
+            welcome = true;
+            login = false;
+          }}
+          handleSubmit={submitLogin}
+          login={true} />
+      </Modal>
     {:else if register}
-      <Phone on:close={togglePhone} menuName="Register">
-        <div slot="content" class="px-4 mt-3">
-          <p class="text-center text-3xl text-frost-1">Register</p>
-          <Form
-            handleSubmit={submitRegister}
-            register={true}
-            backButton={true}
-            on:back={() => {
-              welcome = true;
-              register = false;
-            }} />
-        </div>
-      </Phone>
-    {:else if welcome}
-      <Phone on:close={togglePhone} menuName="Welcome">
-        <div slot="content" class="px-4 mt-3">
-          <div class="flex flex-col items-center gap-6">
-            <p class="text-3xl">Welcome to</p>
-            <img src="logo.png" alt="Logo" class="w-32" />
-            <p class="text-frost-1 text-3xl mb-3">Uplift</p>
-          </div>
-          <div class="gap-5 flex flex-col items-center mt-5">
-            <Button onClick={triggerRegister} class="bg-frost-4" text="New player" />
-            <Button onClick={skipAndLogin} class="bg-frost-1" text="Returning player" />
-          </div>
-        </div>
-      </Phone>
+      <Modal showModal={true} modalHeader="Register" closeButton={false}>
+        <Form
+          backButton={true}
+          on:back={() => {
+            welcome = true;
+            register = false;
+          }}
+          handleSubmit={submitRegister}
+          register={true} />
+      </Modal>
     {:else}
-      <Phone on:close={togglePhone} />
+      {#if journal}
+        <div in:fade class="w-9/12 z-30">
+          <Journal
+            {journalData}
+            {resolutionData}
+            on:report={showResolution}
+            on:gotoTab={gotoBranch} />
+        </div>
+      {/if}
+      {#if dialog}
+        <div in:fade class="absolute left-0 right-0 top-48 m-auto z-20">
+          {#await passage then dialog}
+            {#await textParsed then parsedText}
+              {#if !patienceLost}
+                <Dialog
+                  on:next={nextPassageName}
+                  continueButton={dialog.continueButton}
+                  user={dialog.speaker}
+                  dialogColor={dialog.attribute.color}
+                  text={parsedText}
+                  font={dialog.attribute.fontFamily}
+                  fontSize={dialog.attribute.fontSize}
+                  color={dialog.attribute.color} />
+              {:else}
+                <Dialog
+                  on:next={losePatience}
+                  continueButton={true}
+                  text="You pissed off {currentRide.passenger
+                    .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                  dialogColor="#BF616A"
+                  color="#e5e9f0" />
+              {/if}
+            {/await}
+          {/await}
+        </div>
+        <Progress {allPassages} {passedPassages} />
+      {/if}
+      <Multimedia
+        on:dialog={toggleDialog}
+        on:select={selectRide}
+        on:quitRide={quitRide}
+        on:deleteAccount={deleteUser}
+        on:logout={handleLogout}
+        on:journalPressed={toggleJournal}
+        on:updateAccount={updateAccount}
+        on:toggleAmbient={toggleAmbient}
+        on:toggleAnimalease={toggleAnimalease}
+        on:driverModal={() => (showDriverModal = !showDriverModal)}
+        {animalease}
+        {showReviewList}
+        {modalOpened}
+        {passage}
+        {reviewList}
+        {rideList}
+        {filledjournal}
+        {journal}
+        {allAchievements}
+        {unlockedAchievements}
+        {volumeAmbient}
+        {audioAmbient}
+        {ambientNoise} />
     {/if}
-    <Multimedia
-      on:dialog={toggleDialog}
-      on:select={selectRide}
-      on:quitride={quitRide}
-      on:changeAccount={changeAccount}
-      on:logout={handleLogout}
-      on:journalPressed={toggleJournal}
-      on:toggleAmbient={toggleAmbient}
-      on:unauthenticated={() => showError("Log je in om het menu te gebruiken!")}
-      {passage}
-      {reviewList}
-      {riderList}
-      {filledjournal}
-      {journal}
-      {volumeAmbient}
-      {audioAmbient}
-      {ambientNoise} />
   </div>
 </main>

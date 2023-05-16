@@ -27,7 +27,7 @@ p}I- I know. [It's just so hard to tell them the truth:friends_truth]. I want th
 
 ### friends_truth
 
-A true friend tells the truth, even if it risks the friendship. The big man in the sky said so.
-You just have to work up the willpower to tell the truth even when you are afraid of the consequences.
-p}Thank you. I'll have to think about that. +1 patience
+A true friend tells the truth, even if it risks the friendship. The big man in the sky said so. You just have to work up the willpower to tell the truth even when you are afraid of the consequences.
+p}Thank you. I'll have to think about that.
+:patience 10
 :end

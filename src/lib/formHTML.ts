@@ -29,8 +29,6 @@ export const achievementHTML = `
   <input required type="text" name="name" placeholder="Got 5 stars" />
   <label for="description">Description</label>
   <input required type="text" name="description" placeholder="You got 5 stars" />
-  <label for="icon">Icon</label>
-  <input required type="text" name="icon" placeholder="paolo.png" />
 `;
 
 export const passengerHTML = `
@@ -156,8 +154,6 @@ export function achievementEditHTML(data: AchievementUpdate): string {
   <input required type="text" name="name" placeholder="Got 5 stars" value="${data.name}" />
   <label for="description">Description</label>
   <input required type="text" name="description" placeholder="You got 5 stars" value="${data.description}" />
-  <label for="icon">Icon</label>
-  <input required type="text" name="icon" placeholder="paolo.png" value="${data.icon}" />
   `;
 }
 

@@ -126,7 +126,7 @@
   }
 </script>
 
-<Modal modalHeader="Resolution" showModal={resolution}>
+<Modal modalHeader="Resolution" showModal={resolution} closeButton={false}>
   <div class="flex w-full justify-center">
     <div class="flex flex-col overflow-y-auto overflow-x-hidden h-full pb-4">
       <p class="text-3xl text-frost-1 text-center">What should {currentRide.passenger.name} do?</p>

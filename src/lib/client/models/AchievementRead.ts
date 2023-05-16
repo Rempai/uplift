@@ -9,5 +9,4 @@ export type AchievementRead = {
   user?: UserRead;
   name: string;
   description: string;
-  icon: string;
 };

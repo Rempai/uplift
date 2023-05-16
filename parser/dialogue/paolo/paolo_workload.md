@@ -18,6 +18,7 @@ p}Of course, my friends are [pulling their weight. At least I think so:workload_
 ### workload_bulkwork
 
 It sounds like you are doing the bulk of the work.
+//TODO assumption
 p}No. I mean... maybe. [I can make it though. I just need to get it done:workload_capable].
 
 ### workload_capable
@@ -48,5 +49,6 @@ p}Yes, [I don't want to end up as a glorified taxi driver:workload_check]... No 
 ### workload_check
 
 The job isn't that bad, except for the pay, benefits, and that social credit score check every Monday.
-p}Who is getting therapy again? Lower patience by 1.
+p}Who is getting therapy again?
+:patience -10
 :end
