@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  import { fade, fly } from "svelte/transition";
 
   import type { AchievementRead, PassageRead, ReviewRead, RideRead } from "@/lib/client";
 
@@ -8,6 +9,7 @@
   import Modal from "@/components/Modal.svelte";
   import Button from "@/components/Button.svelte";
   import Form from "@/components/Form.svelte";
+  import Tooltip from "@/components/Tooltip.svelte";
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -18,6 +20,7 @@
   import IonStar from "~icons/ion/star";
   import IonStarOutline from "~icons/ion/star-outline";
   import ClarityLicenseSolid from "~icons/clarity/license-solid";
+  import MSLock from "~icons/material-symbols/lock";
 
   export let passage: PassageRead | null = null;
   export let showReviewList = false;
@@ -29,7 +32,7 @@
   export let animalease: boolean;
 
   export let allAchievements: Array<AchievementRead>;
-  export let unlockedAchievements: Array<AchievementRead>;
+  export let unlockedAchievementsIds = [];
 
   export let audioAmbient;
   export let volumeAmbient: number;
@@ -170,10 +173,22 @@
   {#if activeContent === "Achievements"}
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
-        {#each allAchievements as _}
+        {#each allAchievements as ach}
+          {#if unlockedAchievementsIds.includes(ach.id)}
+            <div class="relative">
+              <Tooltip title={ach.description} position={"top"}>
+                <div
+                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center bg-[url('/icon-outline.png')] bg-contain bg-fixed bg-center">
+                  <span class="text-md text-center">{ach.name}</span>
+                </div>
+              </Tooltip>
+            </div>
+          {/if}
           <div
             class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-            <span class="text-2xl">?</span>
+            <span class="text-2xl">
+              <MSLock class="text-storm-3" />
+            </span>
           </div>
         {/each}
       </div>
