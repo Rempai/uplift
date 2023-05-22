@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import type { AchievementRead, ReviewRead } from "@/lib/client";
 
   import Button from "@/components/Button.svelte";
@@ -19,6 +20,7 @@
 
   let dialog: HTMLDialogElement;
   let rate: number;
+  const dispatch = createEventDispatcher();
 
   $: if (dialog && showDriverModal) dialog.showModal();
 
@@ -32,6 +34,8 @@
       currentColorIndex = (currentColorIndex + 1) % colors.length;
     }
 
+    //Achievement changed driver's license colour
+    handleAchievement(3);
     localStorage.setItem("currentColorIndex", currentColorIndex.toString());
   }
 
@@ -45,6 +49,9 @@
     rate = Math.round(avg * 2) / 2;
   };
 
+  const handleAchievement = (id: number) => {
+    dispatch("achievement", { id });
+  };
   $: if (reviewList) getReviewAverage();
 </script>
 
