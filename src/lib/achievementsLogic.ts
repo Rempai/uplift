@@ -1,9 +1,10 @@
-import type { RideRead, ReviewRead, UserAchievementCreate, AchievementRead } from "@/lib/client";
+import type { RideRead, ReviewRead, UserAchievementCreate } from "@/lib/client";
 import { UserService } from "@/lib/client";
 
 type achievementObj = {
   userId: number;
   achievementId: number;
+  unlockedAchievementsIds: Array<number>;
   currentRide?: RideRead | null;
   reviewList?: ReviewRead[] | null;
   rideList?: Array<RideRead> | null;
@@ -12,11 +13,10 @@ type achievementObj = {
   tutorialCompleted?: boolean | null;
 };
 
-export const unlockedAchievementsIds: Array<number> = [];
-
-export const isAchieved = ({
+export const isAchieved = async ({
   userId,
   achievementId,
+  unlockedAchievementsIds,
   currentRide = null,
   reviewList = null,
   rideList = null,
@@ -29,14 +29,17 @@ export const isAchieved = ({
         postUserAchievement(userId, achievementId);
         return true;
       }
-      false;
+      return false;
     case 2:
       if (!unlockedAchievementsIds.includes(achievementId)) {
-        const fiveStarReviews = reviewList.filter((review) => review.stars === 5);
-        if (fiveStarReviews.length === rideList.length) {
-          postUserAchievement(userId, achievementId);
-          return true;
-        }
+        postUserAchievement(userId, achievementId);
+        return true;
+      }
+      return false;
+    case 3:
+      if (!unlockedAchievementsIds.includes(achievementId)) {
+        postUserAchievement(userId, achievementId);
+        return true;
       }
       return false;
     case 4:
@@ -54,11 +57,11 @@ export const isAchieved = ({
     case 7: {
       if (!unlockedAchievementsIds.includes(achievementId)) {
         const { mainProblem, mainCause, partiesInvolved } = resolutionData;
-        console.log("bar", resolutionData);
+
         const correctMainCauses = currentRide.mainCause.match(/(?<=;)[^;]+(?=;)/g);
         const correctMainProblems = currentRide.mainProblem.match(/(?<=;)[^;]+(?=;)/g);
         const correctPartiesInvolved = currentRide.partiesInvolved.match(/(?<=;)[^;]+(?=;)/g);
-        console.log(correctMainCauses.includes(resolutionData.mainCause));
+
         if (
           correctMainProblems.includes(mainProblem.trim()) &&
           correctMainCauses.includes(mainCause.trim()) &&
@@ -74,8 +77,10 @@ export const isAchieved = ({
       if (!unlockedAchievementsIds.includes(achievementId)) {
         if (rideList && reviewList) {
           const reviews = reviewList.filter((review) => review.stars > 3);
+
           for (const ride of rideList) {
             const reviewExists = reviews.filter((review) => review.rideId === ride.id);
+
             if (!reviewExists) {
               return false;
             }
@@ -92,10 +97,12 @@ export const isAchieved = ({
 
 const postUserAchievement = async (userId: number, achievementId: number) => {
   const currentTime = new Date().toISOString();
+
   const input: UserAchievementCreate = {
     date: currentTime,
     userId: userId,
     achievementId: achievementId,
   };
+
   await UserService.postUserAchievement(input);
 };
