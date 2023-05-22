@@ -1,31 +1,43 @@
 <script lang="ts">
-  import { afterUpdate, onMount, tick } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import { cubicOut, cubicInOut } from "svelte/easing";
   import { fly } from "svelte/transition";
   import { tweened } from "svelte/motion";
-  import type { AchievementRead } from "@/lib/client";
 
   export let achievementTitle = "Congratulations! You've done it!";
   export let iconImage = "icon-outline.png";
-  export let triggered = false;
+  export let triggerAchievement = false;
+
   const rotationAngle = tweened(0);
   const audio = new Audio("achievement-sylized-fx-2.wav");
+  const dispatch = createEventDispatcher();
 
   const resetTrigger = () => {
-    triggered = false;
+    triggerAchievement = !resetTrigger;
+    achievementTitle = "";
   };
 
-  $: if (triggered === true) {
-    audio.play();
-    rotationAngle.set(360, { duration: 3750, easing: cubicOut });
-    setTimeout(resetTrigger, 8000);
-  } else {
+  $: if (triggerAchievement) {
+    if (triggerAchievement === true) {
+      audio.play();
+      rotationAngle.set(360, { duration: 3750, easing: cubicOut });
+      setTimeout(() => {
+        dispatch("killAchievement");
+      }, 8000);
+    } else {
+      rotationAngle.set(0);
+      audio.pause();
+    }
+  }
+
+  onDestroy(() => {
+    resetTrigger();
     rotationAngle.set(0);
     audio.pause();
-  }
+  });
 </script>
 
-{#if triggered}
+{#if triggerAchievement}
   <div
     class="top-0 right-0 absolute z-50 mt-4 mr-4 w-96 h-24"
     in:fly={{ x: 525, duration: 700, easing: cubicInOut }}
@@ -49,4 +61,3 @@
     </div>
   </div>
 {/if}
-<button on:click={() => (triggered = !triggered)} class="absolute z-50">trigger</button>
