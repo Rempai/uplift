@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { fade, fly } from "svelte/transition";
 
   import type { AchievementRead, PassageRead, ReviewRead, RideRead } from "@/lib/client";
 
@@ -120,7 +119,31 @@
       return prevReview;
     }, null);
 
+    if (reviewList.length > 0) {
+      //Achievement: Completed first ride
+      if (reviewList.length === 1) {
+        console.log("first ride multimedia.svelte");
+        handleAchievement(1);
+      }
+      // Achievement: 4 stars on a Ride Paolo
+      console.log("kanker", reviewList);
+      if (reviewList[reviewList.length - 1].stars === 4) {
+        handleAchievement(4);
+      }
+      // Achievement: 5 stars on a Ride Paolo
+      if (reviewList[reviewList.length - 1].stars === 5) {
+        console.log("jemoeder");
+        handleAchievement(2);
+      }
+    }
+
     return review ? review.stars : null;
+  };
+
+  const handleAchievement = (achievementId: number) => {
+    // TODO: Achievement emotion meter: emotion stays above level whole game
+    let id = achievementId;
+    dispatch("achievement", { id });
   };
 
   window.addEventListener("resize", () => {
@@ -149,7 +172,10 @@
   $: if (reviewList) {
     reviewList = reviewList.reverse();
   }
-
+  //Achievement coolsong
+  $: if (radioSelect === 4) {
+    handleAchievement(5);
+  }
   $: dialogIconSrc =
     passage && dialogToggled
       ? "multimedia/Dialogue_white_icon.png"
@@ -178,18 +204,19 @@
             <div class="relative">
               <Tooltip title={ach.description} position={"top"}>
                 <div
-                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center bg-[url('/icon-outline.png')] bg-contain bg-fixed bg-center">
-                  <span class="text-md text-center">{ach.name}</span>
+                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
+                  <p class="text-sm text-center">{ach.name}</p>
                 </div>
               </Tooltip>
             </div>
+          {:else}
+            <div
+              class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+              <span class="text-2xl">
+                <MSLock class="text-storm-3" />
+              </span>
+            </div>
           {/if}
-          <div
-            class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-            <span class="text-2xl">
-              <MSLock class="text-storm-3" />
-            </span>
-          </div>
         {/each}
       </div>
     </div>

@@ -10,7 +10,7 @@
     registerForAccessToken,
     updateUserAccount,
   } from "@/lib/authProcesses";
-  import { isAchieved, unlockedAchievementsIds } from "@/lib/achievementsLogic";
+  import { isAchieved } from "@/lib/achievementsLogic";
   import {
     CharactersService,
     OpenAPI,
@@ -67,10 +67,12 @@
 
   let filledjournal = true;
   let patienceLost = false;
-  let triggerAchievement = false;
   let tutorialCompleted = false;
-  let unlockedAchievement: Array<AchievementRead> = [];
+
+  let triggerAchievement = false;
+  let unlockedAchievement = "";
   let allAchievements: Array<AchievementRead> = [];
+  let unlockedAchievementsIds: Array<number> = [];
   let unlockedAchievements = [];
 
   let ambientNoise = false;
@@ -132,9 +134,9 @@
       .then((res) => (allAchievements = res))
       .catch((err) => showError(err));
 
-    await UserService.getAchievements(parsedJWT.sub)
-      .then((res) => (unlockedAchievements = res))
-      .catch((err) => showError(err));
+    await getUnlockedAchievements();
+    console.log(allAchievements);
+    console.log(unlockedAchievements);
   };
 
   const toggleAmbient = () => {
@@ -296,7 +298,6 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
-    console.log("foo", resolutionData);
     solution = event.detail;
     nextPassage(currentRide?.passenger.name + solution + "You" + 1);
     journalData = [];
@@ -323,22 +324,6 @@
 
     // Achievement: Completed all rides
     //handleAchievement(9);
-
-    // Achievement: 4 stars on a Ride Paolo
-    if (reviewList[reviewList.length - 1].stars === 4) {
-      handleAchievement(4);
-    }
-
-    // Achievement: 5 stars on a Ride Paolo
-    if (reviewList[reviewList.length - 1].stars === 5) {
-      handleAchievement(5);
-    }
-
-    //Achievement: Completed first ride
-    if (reviewList.length === 1) {
-      handleAchievement(1);
-    }
-
     showReviewList = true;
   };
 
@@ -379,18 +364,23 @@
     audioAmbient = this;
   }
 
-  const handleAchievement = (achievementId: number) => {
-    // TODO: Achievement emotion meter: emotion stays above level whole game
-    // TODO: Change license
+  const getUnlockedAchievements = async () => {
+    await UserService.getAchievements(parsedJWT.sub)
+      .then((res) => (unlockedAchievements = res))
+      .catch((err) => showError(err));
 
     unlockedAchievements.forEach((item) => {
       if (!unlockedAchievementsIds.includes(item.achievementId)) {
         unlockedAchievementsIds.push(item.achievementId);
       }
     });
+  };
 
-    triggerAchievement = isAchieved({
+  const handleAchievement = async (achievementId: number) => {
+    // TODO: Achievement emotion meter: emotion stays above level whole game
+    triggerAchievement = await isAchieved({
       userId: parsedJWT.sub,
+      unlockedAchievementsIds: unlockedAchievementsIds,
       achievementId: achievementId,
       reviewList: reviewList,
       currentRide: currentRide,
@@ -399,8 +389,11 @@
       resolutionData: resolutionData,
     });
 
-    unlockedAchievement.push(allAchievements[achievementId - 1]);
-    console.log(unlockedAchievement, "foo");
+    getUnlockedAchievements();
+
+    if (triggerAchievement === true) {
+      unlockedAchievement = allAchievements[achievementId - 1].name;
+    }
   };
 
   onMount(async () => {
@@ -452,6 +445,9 @@
     filledjournal = false;
     patienceLost = true;
   }
+
+  $: console.log(triggerAchievement);
+  $: console.log(unlockedAchievement);
 </script>
 
 <svelte:head>
@@ -459,10 +455,13 @@
 </svelte:head>
 
 <main>
-  {#if unlockedAchievement}
-    {#each unlockedAchievement as item}
-      <Achievement triggered={triggerAchievement} achievementTitle={item.name} />
-    {/each}
+  {#if triggerAchievement}
+    <Achievement
+      on:killAchievement={() => {
+        triggerAchievement = false;
+      }}
+      achievementTitle={unlockedAchievement}
+      {triggerAchievement} />
   {/if}
   <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
   <Notification {messages} />
@@ -480,6 +479,7 @@
   {#if reviewList}
     <DriverModal
       bind:showDriverModal
+      on:achievement={(event) => handleAchievement(event.detail.id)}
       lang="NL"
       username={parsedJWT.username}
       {allAchievements}
@@ -594,6 +594,7 @@
         on:toggleAmbient={toggleAmbient}
         on:toggleAnimalease={toggleAnimalease}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
+        on:achievement={(event) => handleAchievement(event.detail.id)}
         {animalease}
         {showReviewList}
         {modalOpened}
@@ -603,7 +604,7 @@
         {filledjournal}
         {journal}
         {allAchievements}
-        {unlockedAchievements}
+        {unlockedAchievementsIds}
         {volumeAmbient}
         {audioAmbient}
         {ambientNoise} />
