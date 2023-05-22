@@ -433,7 +433,7 @@
 <div class="flex justify-center items-end h-full" style="padding-bottom: {screenHeight / 14.9}px">
   <div
     class="bg-night-1 flex rounded border-night-3 border-8"
-    style="width: {screenHeight / 3}px; height: {screenHeight / 4.1}px">
+    style="width: {screenHeight / 2.9}px; height: {screenHeight / 4.1}px">
     <div class="flex flex-col items-center justify-evenly w-12 bg-night-2 mr-2 rounded-r">
       <Button
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
