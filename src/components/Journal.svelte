@@ -35,10 +35,8 @@
           tabItems.push({ label: obj.branch, value: tab_num + 1 });
         }
 
-        let item = tabItems.find((e) => e.value === tab);
-        // TODO: fix this
-        const validTabs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-        if (validTabs.includes(tab) && obj.branch !== "Trunk" && item.value === tab) {
+        const item = tabItems.find((e) => e.label === obj.branch);
+        if (obj.branch !== "trunk" && item && item.value === tab) {
           branchData.push(obj);
         }
       }
@@ -74,7 +72,7 @@
 </script>
 
 <div
-  class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-32 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1">
+  class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-3 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-frost-1 z-20">
   <div class="overflow-x-auto flex flex-col flex-wrap basis-11/12">
     <Tabs bind:activeTabValue={currentTab} items={tabItems} />
     <Button

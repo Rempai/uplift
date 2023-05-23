@@ -1,35 +1,43 @@
 <script lang="ts">
+  import { tweened } from "svelte/motion";
+
   export let info = false;
-  export let message: string[] = [];
+  export let messages: string[] = [];
 
-  const containerClasses = "absolute top-10 right-10 z-50 flex flex-col items-end space-y-4";
+  let alertClasses = `hover:brightness-110 rounded py-2 px-3 w-48 cursor-pointer shadow ${
+    info ? "bg-frost-4" : "bg-aurora-red"
+  }`;
 
-  let alertClasses = "hover:brightness-110 rounded py-2 px-3 w-48 cursor-pointer shadow";
-
-  if (info) {
-    alertClasses = `${alertClasses} bg-frost-4`;
-  } else {
-    alertClasses = `${alertClasses} bg-aurora-red`;
+  function removeMessages(index: number) {
+    messages.splice(index, 1);
   }
 
-  function removeMessage(index: number) {
-    message = [...message.slice(0, index), ...message.slice(index + 1)];
+  const progressBarWidth = tweened(0, {
+    duration: 5000,
+  });
+
+  function startProgressBar() {
+    progressBarWidth.set(100);
   }
 
-  $: if (message.length > 0) {
+  $: if (messages.length > 0) {
+    startProgressBar();
+
     setTimeout(() => {
-      message.splice(message.length - 1, 1);
-      message = [...message]; // trigger update
+      messages.splice(messages.length - 1, 1);
     }, 5000);
   }
 </script>
 
-<div class={containerClasses}>
-  {#each message as msg, i}
-    <button class={alertClasses} on:click={() => removeMessage(i)}>
-      <div class="flex justify-between">
+<div class="absolute top-10 right-10 z-50 flex flex-col items-end space-y-4">
+  {#each messages as msg, i}
+    <button class={alertClasses} on:click={() => removeMessages(i)}>
+      <div class="h-2 bg-night-3 rounded">
+        <div class="h-full bg-frost-1 rounded" style="width: {$progressBarWidth}%" />
+      </div>
+      <div class="flex justify-between gap-2">
         <p class="break-words">{msg}</p>
-        <span class="">&times;</span>
+        <span>&times;</span>
       </div>
     </button>
   {/each}

@@ -3,6 +3,15 @@
 
   import Button from "@/components/Button.svelte";
   import Footer from "@/components/Footer.svelte";
+
+  const setLocation = () => {
+    window.location.hash = "#about-uplift";
+    const elementId = window.location.hash.split("#").pop();
+    const element = document.getElementById(elementId);
+    setTimeout(() => {
+      element.scrollIntoView(true);
+    }, 50);
+  };
 </script>
 
 <header
@@ -13,7 +22,7 @@
       <h1>Uplift</h1>
       <p class="text-frost-1">Getting you where you should be</p>
       <Button onClick={() => push("/game")} text="Start Uplift" class="bg-frost-4 md:!px-10" />
-      <Button href="#about-uplift" text="Read more" class="bg-aurora-orange md:!px-10" />
+      <Button onClick={setLocation} text="Read more" class="bg-aurora-orange md:!px-10" />
     </div>
   </div>
 </header>
@@ -64,8 +73,9 @@
       <img src="uplift-training.png" alt="" class="w-screen" />
     </div>
   </div>
-  <div class="flex justify-center my-10">
+  <div class="flex justify-center flex-col items-center my-10">
     <Button onClick={() => push("/game")} text="Start Now!" class="bg-aurora-orange !px-10" />
+    <Button onClick={() => push("/info")} text="Read Info" class="bg-aurora-green !px-10 mt-8" />
   </div>
 </section>
 <section class="bg-night-3">
