@@ -49,6 +49,7 @@
   let showInfo = false;
 
   let screenHeight: number = window.innerHeight;
+  let screenWidth: number = window.innerWidth;
 
   const dispatch = createEventDispatcher();
 
@@ -124,6 +125,7 @@
 
   window.addEventListener("resize", () => {
     screenHeight = window.innerHeight;
+    screenWidth = window.innerWidth;
   });
 
   function handleVolumeChangeAmbient(event) {
@@ -445,7 +447,7 @@
 <div class="flex justify-center items-end h-full" style="padding-bottom: {screenHeight / 14.9}px">
   <div
     class="bg-night-1 flex rounded border-night-3 border-8"
-    style="width: {screenHeight / 2.9}px; height: {screenHeight / 4.1}px">
+    style="width: {screenWidth / 6}px; height: {screenHeight / 4.1}px">
     <div class="flex flex-col items-center justify-evenly w-12 bg-night-2 mr-2 rounded-r">
       <Button
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
@@ -470,7 +472,7 @@
         </div>
       </Button>
     </div>
-    <div class="flex flex-col flex-1 justify-center">
+    <div class="flex flex-col w-full justify-center">
       <div class="flex gap-2 p-2">
         <Button
           onClick={() => forward("Achievements")}
