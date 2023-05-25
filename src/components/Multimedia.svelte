@@ -46,6 +46,8 @@
   let volumeRadio = 1;
   let audioRadio;
 
+  let showInfo = false;
+
   let screenHeight: number = window.innerHeight;
 
   const dispatch = createEventDispatcher();
@@ -164,6 +166,15 @@
     src={radios[radioSelect].source}
     on:loadedmetadata={handleAudioLoadedRadio}
     volume={volumeRadio} />
+{/if}
+
+{#if showInfo}
+  <img
+    src="/cheatsheet.png"
+    alt=""
+    class="absolute h-screen z-50"
+    on:click={() => (showInfo = !showInfo)}
+    on:keypress />
 {/if}
 
 <Modal showModal={modalOpened} on:click={handleModal} {modalHeader} on:closed={handleModal}>
@@ -443,7 +454,7 @@
         </div>
       </Button>
       <Button
-        onClick={() => forward("Info")}
+        onClick={() => (showInfo = !showInfo)}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
         <div slot="icon">
           <img src="multimedia/Info_Icon.png" alt="info" />
