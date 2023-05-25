@@ -135,8 +135,6 @@
       .catch((err) => showError(err));
 
     await getUnlockedAchievements();
-    console.log(allAchievements);
-    console.log(unlockedAchievements);
   };
 
   const toggleAmbient = () => {
@@ -243,6 +241,15 @@
       CharactersService.getReviews(parsedJWT.sub)
         .then((res) => {
           reviewList = res;
+
+          // Achievement: 5 stars on Ride Paolo
+          if (reviewList[reviewList.length - 1].stars === 5) {
+            handleAchievement(2);
+          }
+          // Achievement: 4 stars on a Ride Paolo
+          if (reviewList[reviewList.length - 1].stars === 4) {
+            handleAchievement(4);
+          }
           passage = undefined;
           ambientNoise = false;
           journal = false;
@@ -251,6 +258,7 @@
         })
         .catch((err) => showError(err));
     }
+
     allowAudioCall = true;
   };
 
@@ -445,9 +453,6 @@
     filledjournal = false;
     patienceLost = true;
   }
-
-  $: console.log(triggerAchievement);
-  $: console.log(unlockedAchievement);
 </script>
 
 <svelte:head>
