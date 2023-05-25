@@ -172,8 +172,8 @@
   <img
     src="/cheatsheet.png"
     alt=""
-    class="absolute h-screen z-50 bg-center bg-fixed bg-no-repeat"
-    style="background-size: contain cover"
+    class="absolute h-screen w-full z-50 bg-center bg-cover bg-no-repeat"
+    style="background-size: 100% 100%"
     on:click={() => (showInfo = !showInfo)}
     on:keypress />
 {/if}
