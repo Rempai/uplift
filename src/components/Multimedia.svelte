@@ -173,6 +173,7 @@
     src="/cheatsheet.png"
     alt=""
     class="absolute h-screen z-50"
+    style="background-size: 100% 100%"
     on:click={() => (showInfo = !showInfo)}
     on:keypress />
 {/if}
