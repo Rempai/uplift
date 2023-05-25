@@ -126,13 +126,11 @@
         handleAchievement(1);
       }
       // Achievement: 4 stars on a Ride Paolo
-      console.log("kanker", reviewList);
       if (reviewList[reviewList.length - 1].stars === 4) {
         handleAchievement(4);
       }
       // Achievement: 5 stars on a Ride Paolo
       if (reviewList[reviewList.length - 1].stars === 5) {
-        console.log("jemoeder");
         handleAchievement(2);
       }
     }
