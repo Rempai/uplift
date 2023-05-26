@@ -70,16 +70,49 @@
     branchData = [];
     getData(currentTab);
   }
+
+  // Make outer container with flex col and with a fixed `em` width and height.
+  // First col: get 1/th width of parent container, flex col, all children in this container with full
+  // middle col: 80% of max width of parent. flex row, padding on first row and items-center.
+  // third col: use tab component, change the style, flex col, h-1/2 on each
 </script>
 
 <div
-  class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-3 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-night-1 z-20">
-  <div class="overflow-x-auto flex flex-wrap">
-    <Tabs bind:activeTabValue={currentTab} items={tabItems} />
-    <Button
-      onclick={gotoBranch}
-      text="Go to branch"
-      class="w-full flex justify-center mt-3 bg-aurora-orange" />
+  class="bg-night-3 flex mx-auto w-screen max-w-screen-lg h-[20em] gap-2 border-4 border-night-1 z-20"
+  style="border-radius: 10%">
+  <div class="flex-col w-3/12 h-full">
+    <div class="flex flex-wrap">
+      <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+      <Button
+        onclick={gotoBranch}
+        text="Go to branch"
+        class="w-full flex justify-center align-bottom mt-3 bg-aurora-orange text-sm" />
+    </div>
+  </div>
+  <div class="w-full flex-col overflow-y-auto overflow-x-hidden">
+    {#if currentTab}
+      {#each branchData as data}
+        <div
+          class={data.speaker === "You"
+            ? "flex flex-col items-end text-end w-full px-3 mt-2"
+            : "w-full px-3 mt-2"}>
+          <p class={data.speaker === "You" ? "bg-frost-4 w-fit p-1" : "bg-aurora-green w-fit p-1"}>
+            {data.speaker}
+          </p>
+          <p class={data.speaker === "You" ? "bg-frost-4 p-1" : "bg-aurora-green w-fit p-1"}>
+            {@html data.content}
+          </p>
+        </div>
+      {/each}
+    {/if}
+  </div>
+  <div class="flex flex-col w-1/12">
+    <div class="border-4 border-night-2 grow flex justify-center items-center">
+      <p class="writing-vertical transform rotate-90 origin-center">Journal</p>
+    </div>
+    <div class="border-4 border-night-2 grow flex justify-center items-center">
+      <p class="writing-vertical transform rotate-90 origin-center">Report</p>
+    </div>
   </div>
 </div>
 
