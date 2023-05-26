@@ -179,8 +179,6 @@
   };
 
   const showResolution = ({ detail }) => {
-    // Achievement : Perfect journal for Ride Paolo
-    handleAchievement(7);
     journal = false;
     resolution = true;
     resolutionData = detail;
@@ -224,7 +222,6 @@
       journalData = [];
       filledjournal = true;
     }
-
     nextPassage(text);
   };
 
@@ -241,15 +238,6 @@
       CharactersService.getReviews(parsedJWT.sub)
         .then((res) => {
           reviewList = res;
-
-          // Achievement: 5 stars on Ride Paolo
-          if (reviewList[reviewList.length - 1].stars === 5) {
-            handleAchievement(2);
-          }
-          // Achievement: 4 stars on a Ride Paolo
-          if (reviewList[reviewList.length - 1].stars === 4) {
-            handleAchievement(4);
-          }
           passage = undefined;
           ambientNoise = false;
           journal = false;
@@ -258,7 +246,6 @@
         })
         .catch((err) => showError(err));
     }
-
     allowAudioCall = true;
   };
 
@@ -330,9 +317,19 @@
 
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
 
-    // Achievement: Completed all rides
-    //handleAchievement(9);
     showReviewList = true;
+
+    // Achievement: 5 stars on Ride Paolo
+    if (reviewList.at(-1).stars === 5) {
+      handleAchievement(2);
+    }
+    // Achievement: 4 stars on a Ride Paolo
+    if (reviewList.at(-1).stars === 4) {
+      handleAchievement(4);
+    }
+
+    // Achievement: Completed all rides
+    // handleAchievement(9);
   };
 
   const losePatience = () => {
@@ -468,7 +465,12 @@
       achievementTitle={unlockedAchievement}
       {triggerAchievement} />
   {/if}
-  <Resolution data={resolutionData} {currentRide} on:finishRide={finishRide} {resolution} />
+  <Resolution
+    data={resolutionData}
+    {currentRide}
+    on:finishRide={finishRide}
+    {resolution}
+    on:achievement={(event) => handleAchievement(event.detail.id)} />
   <Notification {messages} />
   <video
     class="fixed h-screen w-screen object-fill"
