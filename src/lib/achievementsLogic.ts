@@ -54,7 +54,7 @@ export const isAchieved = async ({
         return true;
       }
       return false;
-    case 7: {
+    case 7:
       if (!unlockedAchievementsIds.includes(achievementId)) {
         const { mainProblem, mainCause, partiesInvolved } = resolutionData;
 
@@ -70,9 +70,8 @@ export const isAchieved = async ({
           postUserAchievement(userId, achievementId);
           return true;
         }
-        return false;
       }
-    }
+      return false;
     case 9:
       if (!unlockedAchievementsIds.includes(achievementId)) {
         if (rideList && reviewList) {
