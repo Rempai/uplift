@@ -18,23 +18,15 @@
     {#each items as item}
       <li
         class={activeTabValue === item.value
-          ? "hover:bg-frost-2 bg-frost-3 border border-frost-1 w-full"
-          : "hover:bg-frost-2 border border-frost-1 w-full"}>
+          ? "hover:bg-frost-2 bg-frost-3 border border-frost-1 w-full h-fit"
+          : "hover:bg-frost-2 border border-frost-1 w-full h-fit"}>
         <span
           on:keypress
           on:click={handleClick(item.value)}
-          class="px-2 py-3 cursor-pointer whitespace-nowrap inline-flex justify-center">
+          class="px-2 py-3 cursor-pointer whitespace-nowrap inline-flex justify-center items-center w-full">
           {item.label}
         </span>
       </li>
     {/each}
   {/if}
 </ul>
-
-<style>
-  ul li:first-child,
-  ul li:first-child span {
-    width: 100%;
-    border-top-left-radius: 55%;
-  }
-</style>

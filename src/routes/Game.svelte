@@ -540,10 +540,7 @@
       </Modal>
     {:else}
       {#if journal}
-        <div
-          in:fade
-          class="mx-auto absolute left-0 right-0 top-16"
-          style="border-radius: 50%">
+        <div in:fade class="mx-auto absolute left-0 right-0 top-16" style="border-radius: 50%">
           <Journal
             {journalData}
             {resolutionData}
