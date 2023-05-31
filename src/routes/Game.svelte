@@ -110,6 +110,8 @@
   const handleLogout = () => {
     localStorage.clear();
     login = true;
+    unlockedAchievements = [];
+    unlockedAchievementsIds = [];
     quitRide();
   };
 
@@ -318,6 +320,10 @@
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
 
     showReviewList = true;
+    //Achievement: Completed first ride
+    if (reviewList.length === 1) {
+      handleAchievement(1);
+    }
 
     // Achievement: 5 stars on Ride Paolo
     if (reviewList.at(-1).stars === 5) {
