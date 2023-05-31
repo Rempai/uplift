@@ -118,14 +118,6 @@
       }
       return prevReview;
     }, null);
-
-    if (reviewList.length > 0) {
-      //Achievement: Completed first ride
-      if (reviewList.length === 1) {
-        handleAchievement(1);
-      }
-    }
-
     return review ? review.stars : null;
   };
 
