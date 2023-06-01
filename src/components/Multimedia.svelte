@@ -8,6 +8,7 @@
   import Modal from "@/components/Modal.svelte";
   import Button from "@/components/Button.svelte";
   import Form from "@/components/Form.svelte";
+  import Tooltip from "@/components/Tooltip.svelte";
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -18,6 +19,7 @@
   import IonStar from "~icons/ion/star";
   import IonStarOutline from "~icons/ion/star-outline";
   import ClarityLicenseSolid from "~icons/clarity/license-solid";
+  import MSLock from "~icons/material-symbols/lock";
 
   export let passage: PassageRead | null = null;
   export let showReviewList = false;
@@ -29,7 +31,7 @@
   export let animalease: boolean;
 
   export let allAchievements: Array<AchievementRead>;
-  export let unlockedAchievements: Array<AchievementRead>;
+  export let unlockedAchievementsIds = [];
 
   export let audioAmbient;
   export let volumeAmbient: number;
@@ -119,8 +121,13 @@
       }
       return prevReview;
     }, null);
-
     return review ? review.stars : null;
+  };
+
+  const handleAchievement = (achievementId: number) => {
+    // TODO: Achievement emotion meter: emotion stays above level whole game
+    // TODO: Tutorial
+    dispatch("achievement", { achievementId });
   };
 
   window.addEventListener("resize", () => {
@@ -150,7 +157,10 @@
   $: if (reviewList) {
     reviewList = reviewList.reverse();
   }
-
+  //Achievement coolsong
+  $: if (radioSelect === 4) {
+    handleAchievement(5);
+  }
   $: dialogIconSrc =
     passage && dialogToggled
       ? "multimedia/Dialogue_white_icon.png"
@@ -184,11 +194,24 @@
   {#if activeContent === "Achievements"}
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
-        {#each allAchievements as _}
-          <div
-            class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-            <span class="text-2xl">?</span>
-          </div>
+        {#each allAchievements as ach}
+          {#if unlockedAchievementsIds.includes(ach.id)}
+            <div class="relative">
+              <Tooltip title={ach.description} position={"top"}>
+                <div
+                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
+                  <p class="text-sm text-center">{ach.name}</p>
+                </div>
+              </Tooltip>
+            </div>
+          {:else}
+            <div
+              class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+              <span class="text-2xl">
+                <MSLock class="text-storm-3" />
+              </span>
+            </div>
+          {/if}
         {/each}
       </div>
     </div>
