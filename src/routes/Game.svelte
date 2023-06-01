@@ -325,15 +325,16 @@
       handleAchievement(1);
     }
 
-    // Achievement: 5 stars on Ride Paolo
-    if (reviewList.at(-1).stars === 5) {
-      handleAchievement(2);
+    if (reviewList) {
+      // Achievement: 5 stars on Ride Paolo
+      if (reviewList.at(-1).stars === 5) {
+        handleAchievement(2);
+      }
+      // Achievement: 4 stars on a Ride Paolo
+      if (reviewList.at(-1).stars === 4) {
+        handleAchievement(4);
+      }
     }
-    // Achievement: 4 stars on a Ride Paolo
-    if (reviewList.at(-1).stars === 4) {
-      handleAchievement(4);
-    }
-
     // Achievement: Completed all rides
     // handleAchievement(9);
   };
@@ -463,15 +464,17 @@
 </svelte:head>
 
 <main>
-  {#if triggerAchievement}
-    <Achievement
-      on:killAchievement={() => {
-        triggerAchievement = false;
-        achievementCarousel = [];
-      }}
-      achievement={achievementCarousel}
-      {triggerAchievement} />
-  {/if}
+  {#await reviewList then _}
+    {#if triggerAchievement}
+      <Achievement
+        on:killAchievement={() => {
+          triggerAchievement = false;
+          achievementCarousel = [];
+        }}
+        achievement={achievementCarousel}
+        {triggerAchievement} />
+    {/if}
+  {/await}
   <Resolution
     data={resolutionData}
     {currentRide}
