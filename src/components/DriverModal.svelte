@@ -49,8 +49,8 @@
     rate = Math.round(avg * 2) / 2;
   };
 
-  const handleAchievement = (id: number) => {
-    dispatch("achievement", { id });
+  const handleAchievement = (achievementId: number) => {
+    dispatch("achievement", { achievementId });
   };
   $: if (reviewList) getReviewAverage();
 </script>

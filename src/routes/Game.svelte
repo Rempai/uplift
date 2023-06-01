@@ -70,7 +70,7 @@
   let tutorialCompleted = false;
 
   let triggerAchievement = false;
-  let unlockedAchievement = "";
+  let achievementCarousel = [];
   let allAchievements: Array<AchievementRead> = [];
   let unlockedAchievementsIds: Array<number> = [];
   let unlockedAchievements = [];
@@ -403,7 +403,7 @@
     getUnlockedAchievements();
 
     if (triggerAchievement === true) {
-      unlockedAchievement = allAchievements[achievementId - 1].name;
+      achievementCarousel.push(allAchievements[achievementId - 1].name);
     }
   };
 
@@ -467,8 +467,9 @@
     <Achievement
       on:killAchievement={() => {
         triggerAchievement = false;
+        achievementCarousel = [];
       }}
-      achievementTitle={unlockedAchievement}
+      achievement={achievementCarousel}
       {triggerAchievement} />
   {/if}
   <Resolution
@@ -476,7 +477,7 @@
     {currentRide}
     on:finishRide={finishRide}
     {resolution}
-    on:achievement={(event) => handleAchievement(event.detail.id)} />
+    on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
   <Notification {messages} />
   <video
     class="fixed h-screen w-screen object-fill"
@@ -492,7 +493,7 @@
   {#if reviewList}
     <DriverModal
       bind:showDriverModal
-      on:achievement={(event) => handleAchievement(event.detail.id)}
+      on:achievement={(event) => handleAchievement(event.detail.achievementId)}
       lang="NL"
       username={parsedJWT.username}
       {allAchievements}
@@ -607,7 +608,7 @@
         on:toggleAmbient={toggleAmbient}
         on:toggleAnimalease={toggleAnimalease}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
-        on:achievement={(event) => handleAchievement(event.detail.id)}
+        on:achievement={(event) => handleAchievement(event.detail.achievementId)}
         {animalease}
         {showReviewList}
         {modalOpened}
