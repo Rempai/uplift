@@ -12,8 +12,8 @@
   export let resolutionData: RideRead;
 
   let branchData: Array<PassageRead> = [];
-  let open = 2;
-
+  let open = 1;
+  $: console.log(branchData);
   const dispatch = createEventDispatcher();
 
   let currentTab = 0;
@@ -88,30 +88,32 @@
   class="bg-night-3 flex mx-auto w-screen max-w-screen-lg h-[20em] border-4 border-night-1 z-20 overflow-hidden"
   style="border-radius: 10%">
   {#if open === 1}
-    <div class="flex-col w-3/12 h-full">
-      <div
-        class="flex h-full flex-wrap items-start overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
-        <Tabs bind:activeTabValue={currentTab} items={tabItems} />
-        <Button
-          onclick={gotoBranch}
-          text="Go to branch"
-          class="w-full h-fit flex justify-center self-end mt-3 bg-aurora-orange text-sm !rounded-[0px] !px-2 !py-3 !shadow-[0px]" />
-      </div>
+    <div
+      class="flex h-full w-min flex-wrap overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
+      <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+      <Button
+        onClick={gotoBranch}
+        text="Go to branch"
+        class="w-48 h-fit flex justify-center  mt-3 bg-aurora-orange text-sm !rounded-[0px] !px-2 !py-3 !shadow-[0px]" />
     </div>
     <div class="w-full flex-col overflow-y-auto overflow-x-hidden">
+      <div class="flex">
+        <div class="ml-2 mt-2 rounded-[100%] h-10 w-10 bg-white" />
+        <p class="mt-4 ml-2">Paulo</p>
+      </div>
       {#if currentTab}
         {#each branchData as data}
           <div
             class={data.speaker === "You"
               ? "flex flex-col items-end text-end w-full px-3 mt-2"
-              : "w-full px-3 mt-2"}>
+              : "w-fit px-3 mt-2"}>
             <p
               class={data.speaker === "You"
                 ? "bg-frost-4 w-fit p-1"
                 : "bg-aurora-green w-fit p-1"}>
               {data.speaker}
             </p>
-            <p class={data.speaker === "You" ? "bg-frost-4 p-1" : "bg-aurora-green w-fit p-1"}>
+            <p class={data.speaker === "You" ? "bg-frost-4 p-1" : "bg-aurora-green p-1"}>
               {@html data.content}
             </p>
           </div>
@@ -123,7 +125,7 @@
     <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap w-full">
       <Form handleSubmit={submitForm} on:back={() => history.back()}>
         <div slot="forms" class="flex w-full ml-8 mt-2">
-          <div class="w-40% justify-start items-start mr-2 pr-4 border-r-4">
+          <div class="w-40% justify-start items-start grow mr-2 pr-4 border-r-4 border-night-1">
             <label class="bg-aurora-orange p-2 !mb-0 !m-0" for="mainProblem">Main Problem</label>
             <input
               disabled
@@ -132,7 +134,7 @@
               type="text"
               placeholder="What?"
               required
-              class="w-full !rounded-[0px]" />
+              class="w-full !rounded-[0px] overflow-auto" />
             <label class="bg-aurora-orange p-2 !mb-0" for="partiesInvolved"
               >Parties Involved</label>
             <input
@@ -153,7 +155,7 @@
               required
               class="w-full !rounded-[0px]" />
           </div>
-          <div class="w-40% justify-end items-end ml-2 mr-8 rounded overflow-hidden">
+          <div class="w-40% justify-items-end ml-2 mr-8 rounded overflow-hidden">
             <div class="bg-aurora-orange text-left p-2"><b>Virtue of courage</b></div>
             <table class="w-full">
               <thead>
@@ -190,7 +192,7 @@
       </Form>
     </div>
   {/if}
-  <div class="flex flex-col w-1/12 ">
+  <div class="flex flex-col w-16">
     <div
       class={open === 2
         ? "border-l-4 border-b-4 border-night-1 grow flex justify-center items-center bg-night-2 hover:bg-night-3"
@@ -209,7 +211,6 @@
     </div>
   </div>
 </div>
-
 <!-- <div
   class="bg-night-3 rounded z-2 flex absolute left-0 right-0 mx-auto top-3 w-screen max-w-screen-lg max-h-[30rem] gap-2 border-4 border-night-1 z-20">
   <div class="overflow-x-auto flex flex-col flex-wrap basis-11/12">
@@ -309,3 +310,35 @@
   </div>
 </div>
 -->
+
+<!-- <div class="flex-col w-3/12 h-full">
+  <div
+    class="flex h-full flex-wrap items-start overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
+    <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+    <Button
+      onclick={gotoBranch}
+      text="Go to branch"
+      class="w-full h-fit flex justify-center self-end mt-3 bg-aurora-orange text-sm !rounded-[0px] !px-2 !py-3 !shadow-[0px]" />
+  </div>
+</div>
+<div class="w-full flex-col overflow-y-auto overflow-x-hidden">
+  {#if currentTab}
+    {#each branchData as data}
+      <div
+        class={data.speaker === "You"
+          ? "flex flex-col items-end text-end w-full px-3 mt-2"
+          : "w-full px-3 mt-2"}>
+        <p
+          class={data.speaker === "You"
+            ? "bg-frost-4 w-fit p-1"
+            : "bg-aurora-green w-fit p-1"}>
+          {data.speaker}
+        </p>
+        <p class={data.speaker === "You" ? "bg-frost-4 p-1" : "bg-aurora-green w-fit p-1"}>
+          {@html data.content}
+        </p>
+      </div>
+    {/each}
+  {/if}
+</div>
+{/if} -->
