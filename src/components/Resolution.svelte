@@ -92,12 +92,18 @@
   const finishRide = async (solution: string) => {
     visibleSolution = [];
     score = 0;
+    // Achievement : Perfect journal for Ride Paolo
+    handleAchievement(7);
     dispatch("finishRide", solution);
   };
 
   const getData = async () => {
     score = await checkAnswer(data, currentRide.id);
     visibleSolution = await getSolution(score);
+  };
+
+  const handleAchievement = (id: number) => {
+    dispatch("achievement", { id });
   };
 
   $: if (resolution) {
