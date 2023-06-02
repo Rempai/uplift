@@ -54,6 +54,12 @@ export const isAchieved = async ({
         return true;
       }
       return false;
+    case 6:
+      if (!unlockedAchievementsIds.includes(achievementId)) {
+        postUserAchievement(userId, achievementId);
+        return true;
+      }
+      return false;
     case 7:
       if (!unlockedAchievementsIds.includes(achievementId)) {
         const { mainProblem, mainCause, partiesInvolved } = resolutionData;

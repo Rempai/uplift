@@ -325,15 +325,22 @@
       handleAchievement(1);
     }
 
-    if (reviewList) {
+    const lastReview = reviewList.at(-1);
+
+    if (lastReview) {
       // Achievement: 5 stars on Ride Paolo
-      if (reviewList.at(-1).stars === 5) {
+      if (lastReview.stars === 5) {
         handleAchievement(2);
       }
       // Achievement: 4 stars on a Ride Paolo
-      if (reviewList.at(-1).stars === 4) {
+      if (lastReview.stars === 4) {
         handleAchievement(4);
       }
+      //Achievement: Tutorial complete
+      // if (lastReview.description.includes("Finished Tutorial"))
+      // {
+      //   handleAchievement(6);
+      // }
     }
     // Achievement: Completed all rides
     // handleAchievement(9);
@@ -457,6 +464,7 @@
     filledjournal = false;
     patienceLost = true;
   }
+  $: console.log(reviewList);
 </script>
 
 <svelte:head>
