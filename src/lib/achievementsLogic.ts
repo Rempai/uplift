@@ -10,7 +10,6 @@ type achievementObj = {
   rideList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
   resolutionData?: RideRead | null;
-  tutorialCompleted?: boolean | null;
 };
 
 export const isAchieved = async ({
@@ -21,7 +20,6 @@ export const isAchieved = async ({
   reviewList = null,
   rideList = null,
   resolutionData = null,
-  tutorialCompleted = null,
 }: achievementObj) => {
   switch (achievementId) {
     case 1:

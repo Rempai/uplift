@@ -67,7 +67,6 @@
 
   let filledjournal = true;
   let patienceLost = false;
-  let tutorialCompleted = false;
 
   let triggerAchievement = false;
   let achievementCarousel = [];
@@ -402,7 +401,6 @@
       achievementId: achievementId,
       reviewList: reviewList,
       currentRide: currentRide,
-      tutorialCompleted: tutorialCompleted,
       rideList: rideList,
       resolutionData: resolutionData,
     });

@@ -126,7 +126,6 @@
 
   const handleAchievement = (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    // TODO: Tutorial
     dispatch("achievement", { achievementId });
   };
 
