@@ -337,10 +337,9 @@
         handleAchievement(4);
       }
       //Achievement: Tutorial complete
-      // if (lastReview.description.includes("Finished Tutorial"))
-      // {
-      //   handleAchievement(6);
-      // }
+      if (lastReview.description.includes("Finished Tutorial")) {
+        handleAchievement(6);
+      }
     }
     // Achievement: Completed all rides
     // handleAchievement(9);
