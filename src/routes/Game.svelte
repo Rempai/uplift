@@ -149,7 +149,7 @@
 
   const toggleJournal = () => {
     journal = !journal;
-    dialog = false;
+    dialog = !dialog;
   };
 
   const toggleDialog = () => {
@@ -463,7 +463,7 @@
     filledjournal = false;
     patienceLost = true;
   }
-  $: console.log(reviewList);
+  $: console.log(rideList);
 </script>
 
 <svelte:head>
