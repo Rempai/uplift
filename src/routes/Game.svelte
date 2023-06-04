@@ -121,9 +121,6 @@
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
-    login = false;
-    register = false;
-
     await CharactersService.getRides()
       .then((res) => (rideList = res))
       .catch((err) => showError(err));
@@ -137,6 +134,16 @@
       .catch((err) => showError(err));
 
     await getUnlockedAchievements();
+
+    if (register || reviewList.length === 0) {
+      const tutorialElement = document.createElement("div");
+      const clickEvent = new CustomEvent("click", { detail: 1 });
+      tutorialElement.dispatchEvent(clickEvent);
+      selectRide(clickEvent);
+    }
+
+    login = false;
+    register = false;
   };
 
   const toggleAmbient = () => {
@@ -598,7 +605,7 @@
             {/await}
           {/await}
         </div>
-        <Progress {allPassages} {passedPassages} />
+        <Progress {allPassages} {passedPassages} {reviewList} />
       {/if}
       <Multimedia
         on:dialog={toggleDialog}

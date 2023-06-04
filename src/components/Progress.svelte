@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type { PassageRead } from "@/lib/client";
+  import type { PassageRead, ReviewRead } from "@/lib/client";
 
   import Modal from "@/components/Modal.svelte";
 
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
+  export let reviewList: Array<ReviewRead>;
 
   let possibleBranches: Array<string> = [];
   let branchProgress: Record<string, number> = {};
