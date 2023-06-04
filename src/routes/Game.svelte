@@ -461,7 +461,6 @@
     filledjournal = false;
     patienceLost = true;
   }
-  $: console.log(rideList);
 </script>
 
 <svelte:head>
