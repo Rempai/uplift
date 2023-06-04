@@ -456,7 +456,7 @@
       updateJournalData();
     }
   }
-//Je moeders
+
   $: if ($emotion <= 70) {
     filledjournal = false;
     patienceLost = true;
