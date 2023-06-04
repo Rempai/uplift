@@ -7,6 +7,7 @@
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
   import IoIosClose from "~icons/ion/close-outline";
+  import MingcuteUser4Fill from "~icons/mingcute/user-4-fill";
 
   export let journalData: Array<PassageRead>;
   export let resolutionData: RideRead;
@@ -96,13 +97,13 @@
         <Button
           onClick={gotoBranch}
           text="Go to branch"
-          class="w-48 h-fit flex justify-center mt-3 bg-aurora-orange text-sm !rounded-[0px] !px-2 !py-3 !shadow-[0px] self-end" />
+          class="w-48 h-fit flex justify-center mt-3 bg-aurora-orange text-base !rounded-[0px] !px-2 !py-3 !shadow-[0px] self-end" />
       </div>
       <div class="w-full flex-col overflow-y-auto overflow-x-hidden relative">
-        <div class="flex flex-col sticky top-0">
+        <div class="flex flex-col sticky top-0 z-10">
           <div class="flex bg-night-2 pb-[0.67rem]">
             <img
-              class="ml-2 mt-2 rounded-[100%] h-10 w-10 border-2 border-night-1"
+              class="ml-3 mt-2 rounded-[100%] h-10 w-10 border-2 border-night-1"
               src={currentRide.passenger.icon}
               alt="" />
             <p class="mt-4 ml-2">{currentRide.passenger.name}</p>
@@ -111,22 +112,27 @@
         </div>
         {#if currentTab}
           {#each branchData as data}
-            <div
-              class={data.speaker === "You"
-                ? "flex flex-col items-end text-end w-full px-3 mt-2 rounded-b"
-                : "w-fit px-3 mt-2 rounded-b"}>
-              <p
-                class={data.speaker === "You"
-                  ? "bg-frost-4 w-fit p-1 rounded-t mr-2"
-                  : "bg-aurora-green w-fit p-1 rounded-t ml-2"}>
-                {data.speaker}
-              </p>
-              <p
-                class={data.speaker === "You"
-                  ? "bg-frost-4 p-1 mr-2 rounded-b rounded-tl"
-                  : "bg-aurora-green p-1 ml-2 rounded-b rounded-tr"}>
-                {@html data.content}
-              </p>
+            <div class={data.speaker === "You" ? "w-full flex justify-end" : "w-full flex"}>
+              {#if data.speaker !== "You"}
+                <img
+                  class="w-10 h-10 rounded-[100%] ml-2"
+                  src={currentRide.passenger.icon}
+                  alt="" />
+                <div
+                  class="left bubble mb-8 flex flex-col w-1/3 text-night-2"
+                  style="background-color: {data.attribute.color}">
+                  <p>
+                    {@html data.content}
+                  </p>
+                </div>
+              {:else}
+                <div class="right bubble mb-8 flex flex-col w-1/3 bg-aurora-green text-night-2">
+                  <p>
+                    {@html data.content}
+                  </p>
+                </div>
+                <MingcuteUser4Fill class="w-12 h-12" />
+              {/if}
             </div>
           {/each}
         {/if}
@@ -135,13 +141,9 @@
     {#if open === 2}
       <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap w-full pb-3">
         <Form handleSubmit={submitForm} on:back={() => history.back()}>
-          <div slot="forms" class="flex w-full ml-8 mt-2">
+          <div slot="forms" class="flex w-full mx-auto items-center">
             <div class="flex flex-col w-1/2">
-              <div class="flex flex-col items-center">
-                <img src="logo.png" alt="" class="w-32" />
-                <p class="font-bold text-md mt-3">Problem</p>
-              </div>
-              <div class="justify-start items-start grow mr-2">
+              <div class="justify-start items-start grow m-8 mt-3 mb-0">
                 <label class="bg-aurora-orange p-2 !mb-0 !m-0 rounded-t" for="mainProblem"
                   >Main Problem</label>
                 <input
@@ -174,13 +176,9 @@
                   class="w-full !rounded-[0px] !rounded-b" />
               </div>
             </div>
-            <div class="border-2 border-night-1" />
+            <div class="border-2 border-night-1 h-2/3" />
             <div class="flex flex-col w-1/2">
-              <div class="flex flex-col items-center">
-                <img src="logo.png" alt="test" class="w-32" />
-                <p class="font-bold text-md mt-3">Problem</p>
-              </div>
-              <div class="ml-2 mr-8 rounded overflow-hidden h-full">
+              <div class="rounded overflow-hidden h-full m-8 mt-3 mb-1">
                 <div class="bg-aurora-orange text-left p-2"><b>Virtue of courage</b></div>
                 <table class="w-full">
                   <thead>
@@ -238,7 +236,7 @@
             }}
             class="!shadow-transparent !p-1 ">
             <div slot="icon">
-              <IoIosClose font-size="2em" class="text-aurora-red" />
+              <IoIosClose font-size="1.5em" class="text-aurora-red mr-2 mt-[0.7rem]" />
             </div>
           </Button>
         {/if}
@@ -262,3 +260,28 @@
     </div>
   </div>
 {/if}
+
+<style>
+  .bubble {
+    --r: 25px; /* the radius */
+    --t: 30px; /* the size of the tail */
+
+    padding: calc(2 * var(--r) / 3);
+    -webkit-mask: radial-gradient(var(--t) at var(--_d) 100%, #0000 98%, #000 102%) var(--_d) 0 /
+        calc(100% - var(--r)) var(--t) no-repeat,
+      conic-gradient(at var(--r) var(--r), #000 75%, #0000 0) calc(var(--r) / -2)
+        calc(var(--r) / -2) padding-box,
+      radial-gradient(50% 50% at center center, #000 98%, #0000 101%) 0 100% / var(--r) var(--r)
+        space padding-box;
+  }
+  .left {
+    --_d: 0%;
+    border-left: var(--t) solid #0000;
+    place-self: start;
+  }
+  .right {
+    --_d: 100%;
+    border-right: var(--t) solid #0000;
+    place-self: end;
+  }
+</style>

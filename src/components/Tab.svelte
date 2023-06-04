@@ -13,13 +13,13 @@
   const handleClick = (tabValue) => () => (activeTabValue = tabValue);
 </script>
 
-<ul class="flex-col flex-wrap w-full">
+<ul class="flex-col flex-wrap w-full items-center">
   {#if Array.isArray(items)}
     {#each items as item}
       <li
         class={activeTabValue === item.value
-          ? "hover:bg-frost-2 bg-frost-3 border-y border-night-1 h-fit"
-          : "hover:bg-frost-2 border-y border-night-1 h-fit"}>
+          ? "hover:bg-frost-2 bg-frost-3 border-b-4 border-night-1 h-[3.9rem] flex items-center"
+          : "hover:bg-frost-2 border-b-4 border-night-1 h-[3.9rem] flex items-center"}>
         <span
           on:keypress
           on:click={handleClick(item.value)}
