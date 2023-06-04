@@ -549,6 +549,7 @@
             {resolutionData}
             {currentRide}
             on:report={showResolution}
+            on:closed={toggleJournal}
             on:gotoTab={gotoBranch} />
         </div>
       {/if}
