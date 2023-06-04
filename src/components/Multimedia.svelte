@@ -8,6 +8,7 @@
   import Modal from "@/components/Modal.svelte";
   import Button from "@/components/Button.svelte";
   import Form from "@/components/Form.svelte";
+  import Tooltip from "@/components/Tooltip.svelte";
 
   import IoIosCard from "~icons/ion/card-outline";
   import IoIosLocationOutline from "~icons/ion/location-outline";
@@ -18,6 +19,7 @@
   import IonStar from "~icons/ion/star";
   import IonStarOutline from "~icons/ion/star-outline";
   import ClarityLicenseSolid from "~icons/clarity/license-solid";
+  import MSLock from "~icons/material-symbols/lock";
 
   export let passage: PassageRead | null = null;
   export let showReviewList = false;
@@ -29,7 +31,7 @@
   export let animalease: boolean;
 
   export let allAchievements: Array<AchievementRead>;
-  export let unlockedAchievements: Array<AchievementRead>;
+  export let unlockedAchievementsIds = [];
 
   export let audioAmbient;
   export let volumeAmbient: number;
@@ -46,7 +48,10 @@
   let volumeRadio = 1;
   let audioRadio;
 
+  let showInfo = false;
+
   let screenHeight: number = window.innerHeight;
+  let screenWidth: number = window.innerWidth;
 
   const dispatch = createEventDispatcher();
 
@@ -116,12 +121,18 @@
       }
       return prevReview;
     }, null);
-
     return review ? review.stars : null;
+  };
+
+  const handleAchievement = (achievementId: number) => {
+    // TODO: Achievement emotion meter: emotion stays above level whole game
+    // TODO: Tutorial
+    dispatch("achievement", { achievementId });
   };
 
   window.addEventListener("resize", () => {
     screenHeight = window.innerHeight;
+    screenWidth = window.innerWidth;
   });
 
   function handleVolumeChangeAmbient(event) {
@@ -146,7 +157,10 @@
   $: if (reviewList) {
     reviewList = reviewList.reverse();
   }
-
+  //Achievement coolsong
+  $: if (radioSelect === 4) {
+    handleAchievement(5);
+  }
   $: dialogIconSrc =
     passage && dialogToggled
       ? "multimedia/Dialogue_white_icon.png"
@@ -166,15 +180,38 @@
     volume={volumeRadio} />
 {/if}
 
+{#if showInfo}
+  <img
+    src="cheatsheet.png"
+    alt=""
+    class="absolute h-screen w-full z-50 bg-center bg-cover bg-no-repeat"
+    style="background-size: 100% 100%"
+    on:click={() => (showInfo = !showInfo)}
+    on:keypress />
+{/if}
+
 <Modal showModal={modalOpened} on:click={handleModal} {modalHeader} on:closed={handleModal}>
   {#if activeContent === "Achievements"}
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
-        {#each allAchievements as _}
-          <div
-            class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-            <span class="text-2xl">?</span>
-          </div>
+        {#each allAchievements as ach}
+          {#if unlockedAchievementsIds.includes(ach.id)}
+            <div class="relative">
+              <Tooltip title={ach.description} position={"top"}>
+                <div
+                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
+                  <p class="text-sm text-center">{ach.name}</p>
+                </div>
+              </Tooltip>
+            </div>
+          {:else}
+            <div
+              class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+              <span class="text-2xl">
+                <MSLock class="text-storm-3" />
+              </span>
+            </div>
+          {/if}
         {/each}
       </div>
     </div>
@@ -433,7 +470,7 @@
 <div class="flex justify-center items-end h-full" style="padding-bottom: {screenHeight / 14.9}px">
   <div
     class="bg-night-1 flex rounded border-night-3 border-8"
-    style="width: {screenHeight / 2.9}px; height: {screenHeight / 4.1}px">
+    style="width: {screenWidth / 6}px; height: {screenHeight / 4.1}px">
     <div class="flex flex-col items-center justify-evenly w-12 bg-night-2 mr-2 rounded-r">
       <Button
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
@@ -443,7 +480,7 @@
         </div>
       </Button>
       <Button
-        onClick={() => forward("Info")}
+        onClick={() => (showInfo = !showInfo)}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
         <div slot="icon">
           <img src="multimedia/Info_Icon.png" alt="info" />
@@ -458,7 +495,7 @@
         </div>
       </Button>
     </div>
-    <div class="flex flex-col flex-1 justify-center">
+    <div class="flex flex-col w-full justify-center">
       <div class="flex gap-2 p-2">
         <Button
           onClick={() => forward("Achievements")}
