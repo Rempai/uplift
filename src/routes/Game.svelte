@@ -308,7 +308,12 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    var reviewScore = patienceLost ? 6 : Number(passage.branch.replace(/\D/g, ""));
+    var reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    if(patienceLost)
+    {
+      let test = await CharactersService.getReviews().then((res) => res.find((obj) => (obj.rideId === currentRide.id) && obj.stars === 0));
+      reviewScore = test.id;
+    }
 
     const input: ReviewedUserCreate = {
       userId: parsedJWT.sub,
@@ -337,10 +342,7 @@
     }
     // Achievement: Completed all rides
     // handleAchievement(9);
-  };
 
-  const losePatience = () => {
-    createReview();
     quitRide();
   };
 
@@ -593,7 +595,7 @@
                   color={dialog.attribute.color} />
               {:else}
                 <Dialog
-                  on:next={losePatience}
+                  on:next={createReview}
                   continueButton={true}
                   text="You pissed off {currentRide.passenger
                     .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
