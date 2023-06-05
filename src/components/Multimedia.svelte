@@ -473,7 +473,7 @@
     style="width: {screenWidth / 6}px; height: {screenHeight / 4.1}px">
     <div class="flex flex-col items-center justify-evenly w-12 bg-night-2 mr-2 rounded-r">
       <Button
-        class="w-6 h-6 !p-0 !shadow-transparent !rounded-none testing"
+        class="w-6 h-6 !p-0 !shadow-transparent !rounded-none diverLicense"
         onClick={() => dispatch("driverModal")}>
         <div
           class:cursor-not-allowed={reviewList && reviewList.length === 0}

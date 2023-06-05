@@ -608,8 +608,7 @@
           {/await}
         </div>
         <Progress {allPassages} {passedPassages} {reviewList} />
-      <Arrow targetElement={passage} showArrow={false}/>
-
+        <Arrow targetElement={passage} showArrow={false} />
       {/if}
       <Multimedia
         on:dialog={toggleDialog}
@@ -619,7 +618,7 @@
         on:logout={handleLogout}
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
-        on:toggleAmbient  ={toggleAmbient}
+        on:toggleAmbient={toggleAmbient}
         on:toggleAnimalease={toggleAnimalease}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
