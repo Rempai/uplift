@@ -22,7 +22,7 @@
   import MSLock from "~icons/material-symbols/lock";
 
   export let passage: PassageRead | null = null;
-  export let showReviewList = false;
+  export let showReviewList: boolean;
   export let reviewList: Array<ReviewRead>;
   export let rideList: Array<RideRead>;
   export let filledjournal: boolean;
@@ -67,6 +67,7 @@
   };
 
   const handleModal = () => {
+    if (activeContent === "Reviews") dispatch("toggleReview")
     if (modalOpened === true) activeContent = null;
     journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
