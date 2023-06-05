@@ -80,16 +80,11 @@
     branchData = [];
     getData(currentTab);
   }
-
-  // Make outer container with flex col and with a fixed `em` width and height.
-  // First col: get 1/th width of parent container, flex col, all children in this container with full
-  // middle col: 80% of max width of parent. flex row, padding on first row and items-center.
-  // third col: use tab component, change the style, flex col, h-1/2 on each
 </script>
 
 {#if openJournal}
   <div
-    class="bg-night-3 flex mx-auto max-w-5xl rounded-[10%] h-full border-4 border-night-1 z-20 overflow-hidden">
+    class="bg-night-3 flex mx-auto max-w-5xl rounded h-full border-4 border-night-1 z-20 overflow-hidden">
     {#if open === 1}
       <div
         class="flex h-full w-min flex-wrap overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
@@ -139,7 +134,7 @@
       </div>
     {/if}
     {#if open === 2}
-      <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap w-full pb-3">
+      <div class="overflow-hidden overflow-y-auto flex flex-col flex-wrap w-full pb-3 h-full justify-center">
         <Form handleSubmit={submitForm} on:back={() => history.back()}>
           <div slot="forms" class="flex w-full mx-auto items-center">
             <div class="flex flex-col w-1/2">
@@ -234,9 +229,9 @@
               dispatch("closed");
               openJournal = false;
             }}
-            class="!shadow-transparent !p-1 ">
+            class="!shadow-transparent flex justify-center items-center w-full h-full">
             <div slot="icon">
-              <IoIosClose font-size="1.5em" class="text-aurora-red mr-2 mt-[0.7rem]" />
+              <IoIosClose font-size="1.5em" class="text-aurora-red h-12" />
             </div>
           </Button>
         {/if}
@@ -263,8 +258,8 @@
 
 <style>
   .bubble {
-    --r: 25px; /* the radius */
-    --t: 30px; /* the size of the tail */
+    --r: 25px;
+    --t: 30px;
 
     padding: calc(2 * var(--r) / 3);
     -webkit-mask: radial-gradient(var(--t) at var(--_d) 100%, #0000 98%, #000 102%) var(--_d) 0 /
