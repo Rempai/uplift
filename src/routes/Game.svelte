@@ -564,11 +564,16 @@
       </Modal>
     {:else}
       {#if journal}
-        <div in:fade class="w-9/12 z-30">
+        <div
+          in:fade
+          class="mx-auto absolute left-0 right-0 top-16 h-[50%]"
+          style="border-radius: 50%">
           <Journal
             {journalData}
             {resolutionData}
+            {currentRide}
             on:report={showResolution}
+            on:closed={toggleJournal}
             on:gotoTab={gotoBranch} />
         </div>
       {/if}

@@ -11,6 +11,8 @@
 
   export let enctype = "application/x-www-form-urlencoded";
 
+  export let submitButton = "mt-4 bg-frost-4";
+
   export let handleSubmit;
 
   const submitAndRefresh = (target) => {
@@ -59,7 +61,7 @@
         {/each}
       </ul>
     </div>
-    <Button type="submit" text="submit" class="mt-4 bg-frost-4" />
+    <Button type="submit" text="submit" class={submitButton} />
   </form>
   {#if backButton}
     <Button onClick={() => dispatch("back")} text="go back" class="mt-4 bg-aurora-red" />
