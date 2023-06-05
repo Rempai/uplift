@@ -308,7 +308,7 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    var reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    let reviewScore = Number(passage.branch.replace(/\D/g, ""));
     if (patienceLost) {
       let test = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
