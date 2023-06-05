@@ -37,6 +37,7 @@
   import DriverModal from "@/components/DriverModal.svelte";
 
   import Background from "/background.webm";
+  import Arrow from "@/components/Arrow.svelte";
 
   let messages: Array<string> = [];
 
@@ -86,6 +87,7 @@
   let showReviewList = false;
 
   let showDriverModal = false;
+  let showArrow = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -606,6 +608,8 @@
           {/await}
         </div>
         <Progress {allPassages} {passedPassages} {reviewList} />
+      <Arrow targetElement={passage} showArrow={false}/>
+
       {/if}
       <Multimedia
         on:dialog={toggleDialog}
@@ -615,7 +619,7 @@
         on:logout={handleLogout}
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
-        on:toggleAmbient={toggleAmbient}
+        on:toggleAmbient  ={toggleAmbient}
         on:toggleAnimalease={toggleAnimalease}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
