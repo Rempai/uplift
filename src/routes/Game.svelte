@@ -218,6 +218,13 @@
     }
 
     if (passage.branch.includes("FinishNow")) {
+      if (passage.passage.includes("ScuffResolutionSkip")) {
+        resolutionData.mainProblem = "bruh";
+        resolutionData.partiesInvolved = "bruh";
+        resolutionData.mainCause = "bruh";
+        resolution = true;
+        return;
+      }
       createReview();
       toggleDialog();
       journalData = [];
