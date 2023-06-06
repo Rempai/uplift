@@ -67,7 +67,6 @@
 
   let filledjournal = true;
   let patienceLost = false;
-  let tutorialCompleted = false;
 
   let triggerAchievement = false;
   let achievementCarousel = [];
@@ -149,7 +148,7 @@
 
   const toggleJournal = () => {
     journal = !journal;
-    dialog = false;
+    dialog = !dialog;
   };
 
   const toggleDialog = () => {
@@ -331,14 +330,20 @@
       handleAchievement(1);
     }
 
-    if (reviewList) {
+    const lastReview = reviewList.at(-1);
+
+    if (lastReview) {
       // Achievement: 5 stars on Ride Paolo
-      if (reviewList.at(-1).stars === 5) {
+      if (lastReview.stars === 5) {
         handleAchievement(2);
       }
       // Achievement: 4 stars on a Ride Paolo
-      if (reviewList.at(-1).stars === 4) {
+      if (lastReview.stars === 4) {
         handleAchievement(4);
+      }
+      //Achievement: Tutorial complete
+      if (lastReview.description.includes("Finished Tutorial")) {
+        handleAchievement(6);
       }
     }
     // Achievement: Completed all rides
@@ -399,7 +404,6 @@
       achievementId: achievementId,
       reviewList: reviewList,
       currentRide: currentRide,
-      tutorialCompleted: tutorialCompleted,
       rideList: rideList,
       resolutionData: resolutionData,
     });
