@@ -87,7 +87,7 @@
 </Modal>
 
 <div
-  class="flex w-full justify-end absolute z-10"
+  class="inline-flex w-28 justify-end absolute z-10"
   style="bottom: {screenHeight / 3.97}px; right: {screenWidth / 3.715}px">
   <div
     on:click={popup}
@@ -112,7 +112,7 @@
   }
 
   progress::-webkit-progress-bar {
-    background-color: #5e81ac;
+    background-color: #2e3440;
     border-radius: 99em;
   }
 </style>

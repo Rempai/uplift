@@ -149,7 +149,7 @@
 
   const toggleJournal = () => {
     journal = !journal;
-    dialog = false;
+    journal ? (dialog = false) : (dialog = true);
   };
 
   const toggleDialog = () => {
@@ -606,7 +606,9 @@
             {/await}
           {/await}
         </div>
-        <Progress {allPassages} {passedPassages} />
+        {#if passage}
+          <Progress {allPassages} {passedPassages} />
+        {/if}
       {/if}
       <Multimedia
         on:dialog={toggleDialog}
