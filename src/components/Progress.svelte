@@ -87,7 +87,7 @@
 </Modal>
 
 <div
-  class="inline-flex w-28 justify-end absolute z-10"
+  class="inline-flex w-fill justify-end absolute z-10"
   style="bottom: {screenHeight / 3.97}px; right: {screenWidth / 3.715}px">
   <div
     on:click={popup}
