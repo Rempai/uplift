@@ -232,7 +232,7 @@
             }}
             class="!shadow-transparent flex justify-center items-center w-full h-full">
             <div slot="icon">
-              <IoIosClose font-size="1.5em" class="text-aurora-red h-12" />
+              <IoIosClose font-size="1.5em" class="text-aurora-red h-[2.53rem]" />
             </div>
           </Button>
         {/if}
