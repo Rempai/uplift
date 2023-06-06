@@ -126,7 +126,6 @@
 
   const handleAchievement = (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    // TODO: Tutorial
     dispatch("achievement", { achievementId });
   };
 
@@ -205,12 +204,14 @@
               </Tooltip>
             </div>
           {:else}
-            <div
-              class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-              <span class="text-2xl">
-                <MSLock class="text-storm-3" />
-              </span>
-            </div>
+            <Tooltip title={ach.description} position={"top"}>
+              <div
+                class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+                <span class="text-2xl">
+                  <MSLock class="text-storm-3" />
+                </span>
+              </div>
+            </Tooltip>
           {/if}
         {/each}
       </div>
@@ -218,42 +219,40 @@
   {:else if activeContent === "Reviews"}
     <div class="px-4 mt-3">
       {#if reviewList.length}
-        {#await reviewList then reviewer}
-          {#each reviewer as data}
-            <div
-              class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
-              on:click={() => showSingleReview(data)}
-              on:keypress>
-              <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
-              <div class="overflow-x-hidden whitespace-nowrap">
-                <p class="flex items-center">
-                  <IoIosCard font-size="1.2em" class="mr-2" />
-                  {data.ride.passenger.name}
-                </p>
-                <p class="flex items-center">
-                  <IoIosCalendar font-size="1.2em" class="mr-2" />
-                  {formatDate(data.date)}
-                </p>
-                <div class="inline-flex items-center">
-                  {#each Array(data.stars) as _}
-                    {#if data.stars === 5}
-                      <IonStar font-size="1.2em" class="w-5 mr-2 text-aurora-yellow" />
-                    {:else}
-                      <IonStar class="w-5 mr-2" font-size="1.2em" />
-                    {/if}
-                  {/each}
-                  {#if data.stars < 5}
-                    {#each Array(5 - data.stars) as _}
-                      <IoIosStarOutline class="w-5 mr-2 text-frost-3" font-size="1.2em" />
-                    {/each}
+        {#each reviewList as data}
+          <div
+            class="mb-6 gap-3 w-full rounded flex items-center hover:bg-night-2 cursor-pointer"
+            on:click={() => showSingleReview(data)}
+            on:keypress>
+            <img class="rounded w-24 h-full" src={data.ride.passenger.icon} alt="" />
+            <div class="overflow-x-hidden whitespace-nowrap">
+              <p class="flex items-center">
+                <IoIosCard font-size="1.2em" class="mr-2" />
+                {data.ride.passenger.name}
+              </p>
+              <p class="flex items-center">
+                <IoIosCalendar font-size="1.2em" class="mr-2" />
+                {formatDate(data.date)}
+              </p>
+              <div class="inline-flex items-center">
+                {#each Array(data.stars) as _}
+                  {#if data.stars === 5}
+                    <IonStar font-size="1.2em" class="w-5 mr-2 text-aurora-yellow" />
+                  {:else}
+                    <IonStar class="w-5 mr-2" font-size="1.2em" />
                   {/if}
-                </div>
-                <p class="text-ellipsis overflow-hidden">{data.description}</p>
+                {/each}
+                {#if data.stars < 5}
+                  {#each Array(5 - data.stars) as _}
+                    <IoIosStarOutline class="w-5 mr-2 text-frost-3" font-size="1.2em" />
+                  {/each}
+                {/if}
               </div>
+              <p class="text-ellipsis overflow-hidden">{data.description}</p>
             </div>
-            <hr class="border-night-2 m-2 w-11/12 mx-auto" />
-          {/each}
-        {/await}
+          </div>
+          <hr class="border-night-2 m-2 w-11/12 mx-auto" />
+        {/each}
       {:else}
         <p class="text-center w-full">
           You have no reviews, please <span

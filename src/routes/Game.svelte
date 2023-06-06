@@ -68,7 +68,6 @@
 
   let filledjournal = true;
   let patienceLost = false;
-  let tutorialCompleted = false;
 
   let triggerAchievement = false;
   let achievementCarousel = [];
@@ -158,7 +157,7 @@
 
   const toggleJournal = () => {
     journal = !journal;
-    dialog = false;
+    dialog = !dialog;
   };
 
   const toggleDialog = () => {
@@ -317,7 +316,13 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    var reviewScore = patienceLost ? 6 : Number(passage.branch.replace(/\D/g, ""));
+    let reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    if (patienceLost) {
+      let test = await CharactersService.getReviews().then((res) =>
+        res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
+      );
+      reviewScore = test.id;
+    }
 
     const input: ReviewedUserCreate = {
       userId: parsedJWT.sub,
@@ -334,22 +339,25 @@
       handleAchievement(1);
     }
 
-    if (reviewList) {
+    const lastReview = reviewList.at(-1);
+
+    if (lastReview) {
       // Achievement: 5 stars on Ride Paolo
-      if (reviewList.at(-1).stars === 5) {
+      if (lastReview.stars === 5) {
         handleAchievement(2);
       }
       // Achievement: 4 stars on a Ride Paolo
-      if (reviewList.at(-1).stars === 4) {
+      if (lastReview.stars === 4) {
         handleAchievement(4);
+      }
+      //Achievement: Tutorial complete
+      if (lastReview.description.includes("Finished Tutorial")) {
+        handleAchievement(6);
       }
     }
     // Achievement: Completed all rides
     // handleAchievement(9);
-  };
 
-  const losePatience = () => {
-    createReview();
     quitRide();
   };
 
@@ -405,7 +413,6 @@
       achievementId: achievementId,
       reviewList: reviewList,
       currentRide: currentRide,
-      tutorialCompleted: tutorialCompleted,
       rideList: rideList,
       resolutionData: resolutionData,
     });
@@ -602,7 +609,7 @@
                   color={dialog.attribute.color} />
               {:else}
                 <Dialog
-                  on:next={losePatience}
+                  on:next={createReview}
                   continueButton={true}
                   text="You pissed off {currentRide.passenger
                     .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
