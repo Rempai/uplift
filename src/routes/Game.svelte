@@ -137,10 +137,7 @@
     await getUnlockedAchievements();
 
     if (register || reviewList.length === 0) {
-      const tutorialElement = document.createElement("div");
-      const clickEvent = new CustomEvent("click", { detail: 1 });
-      tutorialElement.dispatchEvent(clickEvent);
-      selectRide(clickEvent);
+      selectRide(new CustomEvent("", { detail: rideList.find((ride) => ride.id === 1) }));
     }
 
     login = false;
@@ -168,7 +165,6 @@
 
   const selectRide = async (event: CustomEvent) => {
     const ride: RideRead = event.detail;
-
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
