@@ -87,13 +87,13 @@
 </Modal>
 
 <div
-  class="inline-flex w-fill justify-end absolute z-10"
-  style="bottom: {screenHeight / 3.97}px; right: {screenWidth / 3.715}px">
+  class="inline-flex w-fill justify-end absolute z-10 rounded"
+  style="bottom: {screenHeight / 3.98}px; right: {screenWidth / 3.715}px">
   <div
     on:click={popup}
     on:keypress
     class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
-    style="width: {screenWidth / 11.98}px; height: {screenHeight / 18.89}px;">
+    style="width: {screenWidth / 11.94}px; height: {screenHeight / 18}px;">
     {#if allPassages && allPassages.length > 0}
       {progression}%
     {/if}
