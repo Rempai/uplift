@@ -222,7 +222,6 @@
         resolutionData.mainProblem = "bruh";
         resolutionData.partiesInvolved = "bruh";
         resolutionData.mainCause = "bruh";
-        console.log(resolutionData);
         resolution = true;
         return;
       }
