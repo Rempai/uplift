@@ -632,6 +632,7 @@
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
         on:toggleAnimalease={toggleAnimalease}
+        on:toggleReview={() => (showReviewList = false)}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
         {animalease}
