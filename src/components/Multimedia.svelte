@@ -67,7 +67,7 @@
   };
 
   const handleModal = () => {
-    if (activeContent === "Reviews") dispatch("toggleReview")
+    if (activeContent === "Reviews") dispatch("toggleReview");
     if (modalOpened === true) activeContent = null;
     journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
