@@ -22,6 +22,7 @@
 {#if href}
   <a {href} class={classes}>{text}<slot name="icon" /></a>
 {:else}
+  <!-- svelte-ignore a11y-autofocus -->
   <button {type} {autofocus} class={classes} aria-label={ariaLabel} {id} on:click={onClick}
     >{text}<slot name="icon" /></button>
 {/if}
