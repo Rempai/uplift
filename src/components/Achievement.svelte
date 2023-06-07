@@ -14,11 +14,6 @@
   const audio = new Audio("achievement-sylized-fx-2.wav");
   const dispatch = createEventDispatcher();
 
-  const resetTrigger = () => {
-    triggerAchievement = !triggerAchievement;
-    achievementTitle = "";
-  };
-
   $: if (triggerAchievement) {
     if (triggerAchievement === true) {
       audio.play();
@@ -33,7 +28,8 @@
   }
 
   onDestroy(() => {
-    resetTrigger();
+    triggerAchievement = !triggerAchievement;
+    achievementTitle = "";
     rotationAngle.set(0);
     audio.pause();
   });
@@ -48,7 +44,7 @@
         out:fly={{ x: 125, duration: 700, easing: cubicOut }}>
         <div id="background" class="bg-night-1 rounded h-full">
           <div
-            on:click={resetTrigger}
+            on:click={() => dispatch("killAchievement")}
             on:keypress
             id="border"
             class="border-8 border-frost-3 rounded outline outline-8 outline-offset-0 outline-storm-4 flex h-full w-full pl-3 items-center">

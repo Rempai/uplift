@@ -195,25 +195,27 @@
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
         {#each allAchievements as ach}
-          {#if unlockedAchievementsIds.includes(ach.id)}
-            <div class="relative">
+          {#await unlockedAchievementsIds then _}
+            {#if unlockedAchievementsIds.includes(ach.id)}
+              <div class="relative">
+                <Tooltip title={ach.description} position={"top"}>
+                  <div
+                    class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
+                    <p class="text-sm text-center">{ach.name}</p>
+                  </div>
+                </Tooltip>
+              </div>
+            {:else}
               <Tooltip title={ach.description} position={"top"}>
                 <div
-                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
-                  <p class="text-sm text-center">{ach.name}</p>
+                  class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+                  <span class="text-2xl">
+                    <MSLock class="text-storm-3" />
+                  </span>
                 </div>
               </Tooltip>
-            </div>
-          {:else}
-            <Tooltip title={ach.description} position={"top"}>
-              <div
-                class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-                <span class="text-2xl">
-                  <MSLock class="text-storm-3" />
-                </span>
-              </div>
-            </Tooltip>
-          {/if}
+            {/if}
+          {/await}
         {/each}
       </div>
     </div>
