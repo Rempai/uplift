@@ -54,8 +54,6 @@
     dispatch("achievement", { achievementId });
   };
   $: if (reviewList) getReviewAverage();
-
-  $: console.log(parseInt(localStorage.getItem("currentColorIndex")));
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
