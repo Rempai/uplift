@@ -109,7 +109,12 @@
             <span
               style="background-color: {dialogColor}"
               class="rounded absolute bottom-4 right-4">
-              <Button onClick={() => dispatch("next")} text="Continue">
+              <Button
+                ariaLabel="Continue passage"
+                id="continue"
+                autofocus={true}
+                onClick={() => dispatch("next")}
+                text="Continue">
                 <div slot="icon" class="w-6 ml-3">
                   <MdChevronRight font-size="2em" class="text-storm-1" />
                 </div>
