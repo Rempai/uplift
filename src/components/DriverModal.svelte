@@ -34,8 +34,9 @@
       currentColorIndex = (currentColorIndex + 1) % colors.length;
     }
 
-    //Achievement changed driver's license colour
-    handleAchievement(3);
+    setTimeout(() => {
+      handleAchievement(3);
+    }, 2000);
     localStorage.setItem("currentColorIndex", currentColorIndex.toString());
   }
 
@@ -53,6 +54,8 @@
     dispatch("achievement", { achievementId });
   };
   $: if (reviewList) getReviewAverage();
+
+  $: console.log(parseInt(localStorage.getItem("currentColorIndex")));
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -77,7 +80,7 @@
           text="Close License"
           onClick={() => dialog.close()} />
       </div>
-      <button on:click|preventDefault={() => changeColor("right")} type="button"
+      <button on:click|nonpassive|preventDefault={() => changeColor("right")} type="button"
         ><IoIosChevronForwardOutline font-size="1.7em" /></button>
     </div>
     <div class="flex items-center text-lg justify-center">
