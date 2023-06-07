@@ -109,8 +109,8 @@
   const handleLogout = () => {
     localStorage.clear();
     login = true;
-    unlockedAchievements = [];
-    unlockedAchievementsIds = [];
+    unlockedAchievements.length = 0;
+    unlockedAchievementsIds.length = 0;
     quitRide();
   };
 
@@ -405,7 +405,7 @@
 
   const handleAchievement = async (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    triggerAchievement = await isAchieved({
+    let achievement = await isAchieved({
       userId: parsedJWT.sub,
       unlockedAchievementsIds: unlockedAchievementsIds,
       achievementId: achievementId,
@@ -414,12 +414,11 @@
       rideList: rideList,
       resolutionData: resolutionData,
     });
-
-    getUnlockedAchievements();
-
-    if (triggerAchievement === true) {
+    if (achievement) {
+      triggerAchievement = true;
       achievementCarousel.push(allAchievements[achievementId - 1].name);
     }
+    await getUnlockedAchievements();
   };
 
   onMount(async () => {
@@ -483,7 +482,7 @@
       <Achievement
         on:killAchievement={() => {
           triggerAchievement = false;
-          achievementCarousel = [];
+          achievementCarousel.length = 0;
         }}
         achievement={achievementCarousel}
         {triggerAchievement} />
