@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="absolute top-0 right-0 z-50">
+<div class="fixed top-0 right-0 z-50 overflow-visible">
   {#each achievement as ach}
     {#if triggerAchievement}
       <div
