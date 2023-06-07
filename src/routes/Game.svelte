@@ -480,7 +480,6 @@
     filledjournal = false;
     patienceLost = true;
   }
-  $: console.log(reviewList);
 </script>
 
 <svelte:head>
