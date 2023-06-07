@@ -331,7 +331,7 @@
 
     showReviewList = true;
     //Achievement: Completed first ride
-    if (reviewList.length === 1) {
+    if (reviewList.length === 2) {
       handleAchievement(1);
     }
 
