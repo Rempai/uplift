@@ -337,24 +337,27 @@
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
 
     showReviewList = true;
-    //Achievement: Completed first ride
-    if (reviewList.length === 2) {
-      handleAchievement(1);
-    }
 
-    const lastReview = reviewList.at(-1);
+    if (!(reviewList === undefined || reviewList.length === 0)) {
+      let lastReview = reviewList.at(-1);
 
-    if (lastReview) {
+      //Achievement: Completed first ride
+      if (lastReview.description != "Finished tutorial") {
+        handleAchievement(1);
+      }
+
       // Achievement: 5 stars on Ride Paolo
-      if (lastReview.stars === 5) {
+      if (lastReview.stars === 5 && lastReview.rideId === 2) {
         handleAchievement(2);
       }
+
       // Achievement: 4 stars on a Ride Paolo
-      if (lastReview.stars === 4) {
+      if (lastReview.stars === 4 && lastReview.rideId === 2) {
         handleAchievement(4);
       }
+
       //Achievement: Tutorial complete
-      if (lastReview.description.includes("Finished Tutorial")) {
+      if (lastReview.description === "Finished tutorial") {
         handleAchievement(6);
       }
     }
@@ -410,20 +413,22 @@
 
   const handleAchievement = async (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    let achievement = await isAchieved({
-      userId: parsedJWT.sub,
-      unlockedAchievementsIds: unlockedAchievementsIds,
-      achievementId: achievementId,
-      reviewList: reviewList,
-      currentRide: currentRide,
-      rideList: rideList,
-      resolutionData: resolutionData,
-    });
-    if (achievement) {
-      triggerAchievement = true;
-      achievementCarousel.push(allAchievements[achievementId - 1].name);
+    if (!unlockedAchievementsIds.includes(achievementId)) {
+      let achievement = await isAchieved({
+        userId: parsedJWT.sub,
+        unlockedAchievementsIds: unlockedAchievementsIds,
+        achievementId: achievementId,
+        reviewList: reviewList,
+        currentRide: currentRide,
+        rideList: rideList,
+        resolutionData: resolutionData,
+      });
+      if (achievement) {
+        triggerAchievement = true;
+        achievementCarousel.push(allAchievements[achievementId - 1].name);
+      }
+      await getUnlockedAchievements();
     }
-    await getUnlockedAchievements();
   };
 
   onMount(async () => {
@@ -475,6 +480,7 @@
     filledjournal = false;
     patienceLost = true;
   }
+  $: console.log(reviewList);
 </script>
 
 <svelte:head>
