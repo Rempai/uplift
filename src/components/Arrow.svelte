@@ -74,7 +74,7 @@
     id="tutorialArrow"
     class="absolute z-20"
     style:left="{left + (width - arrowWidth) / 2}px"
-    style:top="{top - height / 2}px">
+    style:top="{top - height}px">
     <BSArrow class="text-aurora-orange/100 brightness-125 animate-bounce" font-size="3em" />
   </div>
 {/if}
