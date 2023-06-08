@@ -1,19 +1,31 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import BSArrow from "~icons/bxs/down-arrow";
 
   export let targetElement;
   export let showArrow: boolean;
 
   // predefined elements of buttons in multimedia
-  let elements = {
-    contactsElement: document.querySelector('img[alt="contacts"]'),
-    achievementsElement: document.querySelector('img[alt="achievements"]'),
-    musicElement: document.querySelector('img[alt="music"]'),
-    notesElement: document.querySelector('img[alt="notes"]'),
-    reviewsElement: document.querySelector('img[alt="reviews"]'),
-    settingsElement: document.querySelector('img[alt="settings"]'),
-    licenseElement: document.getElementById("diverLicense"),
-  };
+
+  let contactsElement;
+  let achievementsElement;
+  let musicElement;
+  let notesElement;
+  let reviewsElement;
+  let settingsElement;
+  let licenseElement;
+  let progressElement;
+
+  onMount(() => {
+    contactsElement = document.querySelector('img[alt="contacts"]');
+    progressElement = document.querySelector(".progresstut");
+    achievementsElement = document.querySelector('img[alt="achievements"]');
+    musicElement = document.querySelector('img[alt="music"]');
+    notesElement = document.querySelector('img[alt="notes"]');
+    reviewsElement = document.querySelector('img[alt="reviews"]');
+    settingsElement = document.querySelector('img[alt="settings"]');
+    licenseElement = document.getElementById("diverLicense");
+  });
 
   let arrowWidth;
   let left = 0;
@@ -31,31 +43,29 @@
 
   $: if (targetElement) {
     if (targetElement.content.includes("clicking the contacts button")) {
-      getElementPosition(elements.contactsElement);
+      getElementPosition(contactsElement);
       showArrow = true;
     } else if (targetElement.content.includes("Try opening the journal")) {
-      getElementPosition(elements.notesElement);
+      getElementPosition(notesElement);
     } else if (targetElement.content.includes("the review section")) {
-      getElementPosition(elements.reviewsElement);
+      getElementPosition(reviewsElement);
       /*TODO:
-  Fix:Arrow isn't aligning properly on the icon of the driver license, need to fix.
-*/
+      Fix:Arrow isn't aligning properly on the icon of the driver license, need to fix.
+      */
     } else if (targetElement.content.includes("Try opening your license")) {
-      getElementPosition(elements.licenseElement);
+      getElementPosition(licenseElement);
     } else if (targetElement.content.includes("by opening the list of achievements")) {
-      getElementPosition(elements.achievementsElement);
+      getElementPosition(achievementsElement);
     } else if (targetElement.content.includes("Try opening your radio menu")) {
-      getElementPosition(elements.musicElement);
+      getElementPosition(musicElement);
     } else if (targetElement.content.includes("Try opening your settings")) {
-      getElementPosition(elements.settingsElement);
+      getElementPosition(settingsElement);
+    }
+    //TODO: Change passage to right sentence
+    else if (targetElement.content.includes("Just before we start")) {
+      getElementPosition(progressElement);
     }
   }
-
-  /*TODO:
-Fix:Does not work with custom components, only DOM elements
-Need to come up with better ideas for tutorial flow, if this is too difficult.
-Probably need to hardcode x,y coordinates for arrow.
-*/
 </script>
 
 {#if showArrow}

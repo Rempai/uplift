@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="fixed top-0 right-0 z-50 overflow-visible">
+<div class="fixed top-0 right-0 z-50 overflow-visible cursor-pointer">
   {#each achievement as ach}
     {#if triggerAchievement}
       <div

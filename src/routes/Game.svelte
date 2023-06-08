@@ -626,7 +626,7 @@
             {/await}
           {/await}
         </div>
-        <Progress {allPassages} {passedPassages} {reviewList} />
+        <Progress {allPassages} {passedPassages} />
         <Arrow targetElement={passage} showArrow={false} />
       {/if}
       <Multimedia
