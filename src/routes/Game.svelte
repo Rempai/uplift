@@ -316,10 +316,10 @@
 
     let reviewScore = Number(passage.branch.replace(/\D/g, ""));
     if (patienceLost) {
-      let test = await CharactersService.getReviews().then((res) =>
+      let review = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
       );
-      reviewScore = test.id;
+      reviewScore = review.id;
     }
 
     const input: ReviewedUserCreate = {
