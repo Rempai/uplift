@@ -184,7 +184,7 @@
   <img
     src="cheatsheet.png"
     alt=""
-    class="absolute h-screen w-full z-50 bg-center bg-cover bg-no-repeat"
+    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat"
     style="background-size: 100% 100%"
     on:click={() => (showInfo = !showInfo)}
     on:keypress />
@@ -480,8 +480,9 @@
           class:cursor-not-allowed={reviewList && reviewList.length === 0}
           class:hover:brightness-50={reviewList && reviewList.length === 0}
           class:brightness-50={reviewList && reviewList.length === 0}
+          id="diverLicense"
           slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" id="diverLicense" />
+          <ClarityLicenseSolid class="text-aurora-orange" />
         </div>
       </Button>
       <Button

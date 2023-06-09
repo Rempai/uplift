@@ -6,26 +6,7 @@
   export let showArrow: boolean;
 
   // predefined elements of buttons in multimedia
-
-  let contactsElement;
-  let achievementsElement;
-  let musicElement;
-  let notesElement;
-  let reviewsElement;
-  let settingsElement;
-  let licenseElement;
-  let progressElement;
-
-  onMount(() => {
-    contactsElement = document.querySelector('img[alt="contacts"]');
-    progressElement = document.querySelector(".progresstut");
-    achievementsElement = document.querySelector('img[alt="achievements"]');
-    musicElement = document.querySelector('img[alt="music"]');
-    notesElement = document.querySelector('img[alt="notes"]');
-    reviewsElement = document.querySelector('img[alt="reviews"]');
-    settingsElement = document.querySelector('img[alt="settings"]');
-    licenseElement = document.getElementById("diverLicense");
-  });
+  let elements = {};
 
   let arrowWidth;
   let left = 0;
@@ -33,37 +14,94 @@
   let width = 0;
   let height = 0;
 
+  onMount(() => {
+    elements = {
+      contacts: document.querySelector('img[alt="contacts"]'),
+      notes: document.querySelector('img[alt="notes"]'),
+      reviews: document.querySelector('img[alt="reviews"]'),
+      license: document.getElementById("diverLicense"),
+      achievements: document.querySelector('img[alt="achievements"]'),
+      music: document.querySelector('img[alt="music"]'),
+      settings: document.querySelector('img[alt="settings"]'),
+      progress: document.querySelector(".progresstut"),
+    };
+  });
+
   function getElementPosition(targetElement) {
     const props = targetElement.getClientRects();
     left = Math.round(props[0].left);
     top = Math.round(props[0].top);
     height = Math.round(props[0].height);
     width = Math.round(props[0].width);
+    showArrow = true;
   }
+
+  const restoreClasses = () => {
+    for (let key in elements) {
+      let element = elements[key];
+      element.classList.remove(
+        "border",
+        "border-4",
+        "border-aurora-yellow/70",
+        "rounded",
+        "outline-offset-2"
+      );
+      element.classList.add("cursor-not-allowed", "brightness-50");
+    }
+  };
+
+  const changeClasses = (currentElement) => {
+    currentElement.classList.remove("cursor-not-allowed", "brightness-50");
+
+    currentElement.classList.add(
+      "border",
+      "border-4",
+      "border-aurora-yellow/70",
+      "rounded",
+      "outline-offset-2"
+    );
+  };
 
   $: if (targetElement) {
     if (targetElement.content.includes("clicking the contacts button")) {
-      getElementPosition(contactsElement);
+      restoreClasses();
       showArrow = true;
+      getElementPosition(Object.values(elements)[0]);
+      changeClasses(Object.values(elements)[0]);
     } else if (targetElement.content.includes("Try opening the journal")) {
-      getElementPosition(notesElement);
+      restoreClasses();
+      getElementPosition(Object.values(elements)[1]);
+      //TODO: Fix icon background
+      changeClasses(Object.values(elements)[1]);
     } else if (targetElement.content.includes("the review section")) {
-      getElementPosition(reviewsElement);
+      restoreClasses();
+      getElementPosition(Object.values(elements)[2]);
+      changeClasses(Object.values(elements)[2]);
       /*TODO:
       Fix:Arrow isn't aligning properly on the icon of the driver license, need to fix.
       */
     } else if (targetElement.content.includes("Try opening your license")) {
-      getElementPosition(licenseElement);
+      restoreClasses();
+      getElementPosition(Object.values(elements)[3]);
+      changeClasses(Object.values(elements)[3]);
     } else if (targetElement.content.includes("by opening the list of achievements")) {
-      getElementPosition(achievementsElement);
+      restoreClasses();
+      getElementPosition(Object.values(elements)[4]);
+      changeClasses(Object.values(elements)[4]);
     } else if (targetElement.content.includes("Try opening your radio menu")) {
-      getElementPosition(musicElement);
+      restoreClasses();
+      getElementPosition(Object.values(elements)[5]);
+      changeClasses(Object.values(elements)[5]);
     } else if (targetElement.content.includes("Try opening your settings")) {
-      getElementPosition(settingsElement);
+      restoreClasses();
+      getElementPosition(Object.values(elements)[6]);
+      changeClasses(Object.values(elements)[6]);
     }
-    //TODO: Change passage to right sentence
+    //TODO: Change passage to right sentence, and add removeClasses for previous element, fix order of if statements
     else if (targetElement.content.includes("Just before we start")) {
-      getElementPosition(progressElement);
+      showArrow = true;
+      getElementPosition(Object.values(elements)[7]);
+      changeClasses(Object.values(elements)[7]);
     }
   }
 </script>
@@ -72,7 +110,7 @@
   <div
     bind:clientWidth={arrowWidth}
     id="tutorialArrow"
-    class="absolute z-20"
+    class="absolute z-50"
     style:left="{left + (width - arrowWidth) / 2}px"
     style:top="{top - height}px">
     <BSArrow class="text-aurora-orange/100 brightness-125 animate-bounce" font-size="3em" />
