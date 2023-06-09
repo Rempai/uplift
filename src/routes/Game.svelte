@@ -440,7 +440,6 @@
   $: if (passage) {
     if (allowAudioCall) {
       textParsed = textParser(passage.content);
-      console.log(passage);
       let processedText = passage.content.replace(/<[^>]+>/g, "");
       if (animalease && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
