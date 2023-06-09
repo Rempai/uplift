@@ -440,6 +440,8 @@
   $: if (passage) {
     if (allowAudioCall) {
       textParsed = textParser(passage.content);
+      console.log(passage);
+      let processedText = passage.content.replace(/<[^>]+>/g, "");
       if (animalease && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
@@ -447,7 +449,7 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            string: passage.content,
+            string: processedText,
           }),
         })
           .then((response) => response.blob())
