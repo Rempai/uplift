@@ -20,6 +20,7 @@
 
   let dialog: HTMLDialogElement;
   let rate: number;
+  let achieved;
   const dispatch = createEventDispatcher();
 
   $: if (dialog && showDriverModal) dialog.showModal();
@@ -33,7 +34,7 @@
     } else {
       currentColorIndex = (currentColorIndex + 1) % colors.length;
     }
-    if (currentColorIndex === 4 || currentColorIndex === 1) {
+    if (!achieved) {
       handleAchievement(3);
     }
     localStorage.setItem("currentColorIndex", currentColorIndex.toString());
@@ -50,6 +51,7 @@
   };
 
   const handleAchievement = (achievementId: number) => {
+    achieved = true;
     dispatch("achievement", { achievementId });
   };
   $: if (reviewList) getReviewAverage();
