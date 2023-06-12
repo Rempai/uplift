@@ -567,12 +567,14 @@
           onClick={toggleJournal}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={!passage || (reviewList && reviewList.length === 0)}
-              class:hover:brightness-50={!passage || (reviewList && reviewList.length === 0)}
-              class:brightness-50={!passage || (reviewList && reviewList.length === 0)}
-              src="multimedia/Notes_icon.png"
-              alt="notes" />
+            {#if passage && reviewList.length != 0}
+              <img src="multimedia/Notes_icon.png" alt="notes" />
+            {:else}
+              <img
+                class="cursor-not-allowed hover:brightness-50 brightness-50"
+                src="multimedia/Notes_icon.png"
+                alt="notes" />
+            {/if}
           </div>
         </Button>
         <Button

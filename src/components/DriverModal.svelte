@@ -33,10 +33,9 @@
     } else {
       currentColorIndex = (currentColorIndex + 1) % colors.length;
     }
-
-    setTimeout(() => {
+    if (currentColorIndex === 4 || currentColorIndex === 1) {
       handleAchievement(3);
-    }, 2000);
+    }
     localStorage.setItem("currentColorIndex", currentColorIndex.toString());
   }
 
@@ -75,7 +74,7 @@
         <span>Achievements: {unlockedAchievements.length}/{allAchievements.length}</span>
         <Button
           class="!border-night-1 bg-slate-300 hover:bg-storm-3 !text-night-1 text-2xl w-fit"
-          text="Close License"
+          text="Close Licence"
           onClick={() => dialog.close()} />
       </div>
       <button on:click|nonpassive|preventDefault={() => changeColor("right")} type="button"
