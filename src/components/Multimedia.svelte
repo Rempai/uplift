@@ -28,7 +28,7 @@
   export let filledjournal: boolean;
   export let journal: boolean;
   export let modalOpened: boolean;
-  export let animalease: boolean;
+  export let animalese: boolean;
 
   export let allAchievements: Array<AchievementRead>;
   export let unlockedAchievementsIds = [];
@@ -335,23 +335,23 @@
   {:else if activeContent === "Radio"}
     <div class="px-4 my-3 flex flex-col items-center gap-3">
       {#if passage}
-        {#if animalease}
+        {#if animalese}
           <Button
             onClick={() => {
               if (passage) {
-                dispatch("toggleAnimalease");
+                dispatch("toggleAnimalese");
               }
             }}
-            text="Disable Animalease"
+            text="Disable Animalese"
             class="bg-aurora-orange" />
         {:else}
           <Button
             onClick={() => {
               if (passage) {
-                dispatch("toggleAnimalease");
+                dispatch("toggleAnimalese");
               }
             }}
-            text="Enable Animalease"
+            text="Enable Animalese"
             class="bg-aurora-green" />
         {/if}
         <Button

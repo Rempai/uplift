@@ -75,7 +75,7 @@
   let unlockedAchievements = [];
 
   let ambientNoise = false;
-  let animalease = true;
+  let animalese = true;
   let volumeAmbient = 1;
   let allowAudioCall = true;
   let audioAmbient;
@@ -142,8 +142,8 @@
     ambientNoise = !ambientNoise;
   };
 
-  const toggleAnimalease = () => {
-    animalease = !animalease;
+  const toggleAnimalese = () => {
+    animalese = !animalese;
   };
 
   const toggleJournal = () => {
@@ -316,10 +316,10 @@
 
     let reviewScore = Number(passage.branch.replace(/\D/g, ""));
     if (patienceLost) {
-      let test = await CharactersService.getReviews().then((res) =>
+      let review = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
       );
-      reviewScore = test.id;
+      reviewScore = review.id;
     }
 
     const input: ReviewedUserCreate = {
@@ -440,14 +440,15 @@
   $: if (passage) {
     if (allowAudioCall) {
       textParsed = textParser(passage.content);
-      if (animalease && passage.speaker !== "You") {
+      let processedText = passage.content.replace(/<[^>]+>/g, "");
+      if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            string: passage.content,
+            string: processedText,
           }),
         })
           .then((response) => response.blob())
@@ -627,11 +628,11 @@
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
-        on:toggleAnimalease={toggleAnimalease}
+        on:toggleAnimalese={toggleAnimalese}
         on:toggleReview={() => (showReviewList = false)}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
-        {animalease}
+        {animalese}
         {showReviewList}
         {modalOpened}
         {passage}
