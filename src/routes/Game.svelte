@@ -75,7 +75,7 @@
   let unlockedAchievements = [];
 
   let ambientNoise = false;
-  let animalease = true;
+  let animalese = true;
   let volumeAmbient = 1;
   let allowAudioCall = true;
   let audioAmbient;
@@ -142,8 +142,8 @@
     ambientNoise = !ambientNoise;
   };
 
-  const toggleAnimalease = () => {
-    animalease = !animalease;
+  const toggleAnimalese = () => {
+    animalese = !animalese;
   };
 
   const toggleJournal = () => {
@@ -441,7 +441,7 @@
     if (allowAudioCall) {
       textParsed = textParser(passage.content);
       let processedText = passage.content.replace(/<[^>]+>/g, "");
-      if (animalease && passage.speaker !== "You") {
+      if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
           headers: {
@@ -628,11 +628,11 @@
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
-        on:toggleAnimalease={toggleAnimalease}
+        on:toggleAnimalese={toggleAnimalese}
         on:toggleReview={() => (showReviewList = false)}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
-        {animalease}
+        {animalese}
         {showReviewList}
         {modalOpened}
         {passage}
