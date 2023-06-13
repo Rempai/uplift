@@ -628,6 +628,8 @@
           {/await}
         </div>
         <Progress {allPassages} {passedPassages} />
+      {/if}
+      {#if currentRide}
         <Arrow targetElement={passage} showArrow={false} />
       {/if}
       <Multimedia
