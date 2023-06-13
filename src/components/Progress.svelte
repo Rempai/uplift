@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PassageRead, ReviewRead } from "@/lib/client";
+  import type { PassageRead } from "@/lib/client";
 
   import Modal from "@/components/Modal.svelte";
 
