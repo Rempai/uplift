@@ -27,6 +27,7 @@
     if (typeof (str === "object")) {
       // @ts-ignore
       const res = Object.values(str)[1].value;
+      console.log(res);
 
       if (isJsonString(res)) {
         const obj = JSON.parse(res);
@@ -39,14 +40,17 @@
   const handleSubmit = async ({ target }) => {
     const login = await loginForAccessToken(target)
       .then((login) => {
-        return parseJwt(login.access_token);
-      })
-      .then((parsedJwt) => {
-        if (parsedJwt.role === "Admin" || parsedJwt.role === "Writer") {
-          push("/admin");
+        if (login.access_token != null) {
+          const parsedJwt = parseJwt(login.access_token).then((parsedJwt) => {
+            console.log(parsedJwt);
+            if (parsedJwt.role === "Admin" || parsedJwt.role === "Writer") {
+              push("/admin");
+            } else {
+              showError("User doesn't have admin or writer role.");
+            }
+          });
         } else {
-          showError("User doesn't have admin or writer role.");
-          push("/");
+          showError(ErrorMessage("Invalid email or password"));
         }
       })
       .catch((err) => {
