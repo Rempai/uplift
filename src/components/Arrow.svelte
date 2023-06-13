@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import BSArrow from "~icons/bxs/down-arrow";
 
   export let targetElement;
@@ -96,12 +96,15 @@
       restoreClasses();
       getElementPosition(Object.values(elements)[6]);
       changeClasses(Object.values(elements)[6]);
-    }
-    else if (targetElement.content.includes("the progress meter here in")) {
+    } else if (targetElement.content.includes("the progress meter here in")) {
       getElementPosition(Object.values(elements)[7]);
       changeClasses(Object.values(elements)[7]);
     }
   }
+
+  onDestroy(() => {
+    restoreClasses();
+  });
 </script>
 
 {#if showArrow}
