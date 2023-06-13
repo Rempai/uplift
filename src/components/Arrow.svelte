@@ -97,6 +97,7 @@
       getElementPosition(Object.values(elements)[6]);
       changeClasses(Object.values(elements)[6]);
     } else if (targetElement.content.includes("the progress meter here in")) {
+      restoreClasses();
       getElementPosition(Object.values(elements)[7]);
       changeClasses(Object.values(elements)[7]);
     }
@@ -111,7 +112,7 @@
   <div
     bind:clientWidth={arrowWidth}
     id="tutorialArrow"
-    class="absolute z-50"
+    class="absolute z-20"
     style:left="{left + (width - arrowWidth) / 2}px"
     style:top="{top - height}px">
     <BSArrow class="text-aurora-orange/100 brightness-125 animate-bounce" font-size="3em" />
