@@ -97,9 +97,7 @@
       getElementPosition(Object.values(elements)[6]);
       changeClasses(Object.values(elements)[6]);
     }
-    //TODO: Change passage to right sentence, and add removeClasses for previous element, fix order of if statements
-    else if (targetElement.content.includes("Just before we start")) {
-      showArrow = true;
+    else if (targetElement.content.includes("the progress meter here in")) {
       getElementPosition(Object.values(elements)[7]);
       changeClasses(Object.values(elements)[7]);
     }
