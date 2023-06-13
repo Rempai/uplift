@@ -92,7 +92,7 @@
   <div
     on:click={popup}
     on:keypress
-    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
+    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer progresstut"
     style="width: {screenWidth / 11.98}px; height: {screenHeight / 18.89}px;">
     {#if allPassages && allPassages.length > 0}
       {progression}%

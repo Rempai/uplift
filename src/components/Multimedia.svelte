@@ -184,7 +184,7 @@
   <img
     src="cheatsheet.png"
     alt=""
-    class="absolute h-screen w-full z-50 bg-center bg-cover bg-no-repeat"
+    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat"
     style="background-size: 100% 100%"
     on:click={() => (showInfo = !showInfo)}
     on:keypress />
@@ -476,7 +476,12 @@
         ariaLabel="Drivers license"
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
-        <div slot="icon">
+        <div
+          class:cursor-not-allowed={reviewList && reviewList.length === 0}
+          class:hover:brightness-50={reviewList && reviewList.length === 0}
+          class:brightness-50={reviewList && reviewList.length === 0}
+          id="diverLicense"
+          slot="icon">
           <ClarityLicenseSolid class="text-aurora-orange" />
         </div>
       </Button>
@@ -485,7 +490,11 @@
         ariaLabel="Information"
         onClick={() => (showInfo = !showInfo)}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
-        <div slot="icon">
+        <div
+          class:cursor-not-allowed={reviewList && reviewList.length === 0}
+          class:hover:brightness-50={reviewList && reviewList.length === 0}
+          class:brightness-50={reviewList && reviewList.length === 0}
+          slot="icon">
           <img src="multimedia/Info_Icon.png" alt="info" />
         </div>
       </Button>
@@ -494,10 +503,14 @@
         ariaLabel="Toggle Dialog"
         onClick={dialog}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
-        <div slot="icon">
+        <div
+          class:cursor-not-allowed={reviewList && reviewList.length === 0}
+          class:hover:brightness-50={reviewList && reviewList.length === 0}
+          class:brightness-50={reviewList && reviewList.length === 0}
+          slot="icon">
           <img
             src={dialogIconSrc}
-            alt="info"
+            alt="dialog"
             class:cursor-not-allowed={dialogIconSrc === "multimedia/Dialogue_red_icon.png"} />
         </div>
       </Button>
@@ -510,7 +523,12 @@
           onClick={() => forward("Achievements")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img src="multimedia/Achievements_icon.png" alt="achievements" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Achievements_icon.png"
+              alt="achievements" />
           </div>
         </Button>
         <Button
@@ -519,7 +537,12 @@
           onClick={() => forward("Rides")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img src="multimedia/Contacts_icon.png" alt="contacts" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Contacts_icon.png"
+              alt="contacts" />
           </div>
         </Button>
         <Button
@@ -528,7 +551,12 @@
           onClick={() => forward("Radio")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img src="multimedia/Music_icon.png" alt="music" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Music_icon.png"
+              alt="music" />
           </div>
         </Button>
       </div>
@@ -539,12 +567,14 @@
           onClick={toggleJournal}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={!passage}
-              class:hover:brightness-50={!passage}
-              class:brightness-50={!passage}
-              src="multimedia/Notes_icon.png"
-              alt="notes" />
+            {#if passage && reviewList.length != 0}
+              <img src="multimedia/Notes_icon.png" alt="notes" />
+            {:else}
+              <img
+                class="cursor-not-allowed hover:brightness-50 brightness-50"
+                src="multimedia/Notes_icon.png"
+                alt="notes" />
+            {/if}
           </div>
         </Button>
         <Button
@@ -553,7 +583,12 @@
           class="w-full h-full !p-0 !shadow-transparent"
           onClick={() => forward("Reviews")}>
           <div slot="icon">
-            <img src="multimedia/Reviews_icon.png" alt="reviews" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Reviews_icon.png"
+              alt="reviews" />
           </div>
         </Button>
         <Button
@@ -562,7 +597,12 @@
           class="w-full h-full !p-0 !shadow-transparent"
           onClick={() => forward("Settings")}>
           <div slot="icon">
-            <img src="multimedia/Settings_icon.png" alt="settings" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Settings_icon.png"
+              alt="settings" />
           </div>
         </Button>
       </div>
