@@ -85,6 +85,7 @@
     },
     configurable: true,
   });
+
   const handleClick = () => {
     $rendered = false;
     dispatch("next");

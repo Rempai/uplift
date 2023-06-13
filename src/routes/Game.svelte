@@ -35,9 +35,9 @@
   import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
   import DriverModal from "@/components/DriverModal.svelte";
+  import Arrow from "@/components/Arrow.svelte";
 
   import Background from "/background.webm";
-  import Arrow from "@/components/Arrow.svelte";
 
   let messages: Array<string> = [];
 

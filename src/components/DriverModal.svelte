@@ -21,6 +21,7 @@
   let dialog: HTMLDialogElement;
   let rate: number;
   let achieved;
+
   const dispatch = createEventDispatcher();
 
   $: if (dialog && showDriverModal) dialog.showModal();

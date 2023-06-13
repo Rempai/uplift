@@ -82,38 +82,25 @@
   $: if (targetElement) {
     restoreClasses(false);
 
-    if (targetElement.content.includes("clicking the contacts button")) {
+    const keyPassages = {
+      "clicking the contacts button": 0,
+      "Try opening the journal": 1,
+      "the review section": 2,
+      "Try opening your license": 3,
+      "by opening the list of achievements": 4,
+      "Try opening your radio menu": 5,
+      "Try opening your settings": 6,
+      "the progress meter here in": 7,
+    };
+
+    const foundPassage = Object.keys(keyPassages).find((key) =>
+      targetElement.content.includes(key)
+    );
+
+    if (foundPassage !== undefined) {
       restoreClasses(true);
-      getElementPosition(Object.values(elements)[0]);
-      changeClasses(Object.values(elements)[0]);
-    } else if (targetElement.content.includes("Try opening the journal")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[1]);
-      changeClasses(Object.values(elements)[1]);
-    } else if (targetElement.content.includes("the review section")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[2]);
-      changeClasses(Object.values(elements)[2]);
-    } else if (targetElement.content.includes("Try opening your license")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[3]);
-      changeClasses(Object.values(elements)[3]);
-    } else if (targetElement.content.includes("by opening the list of achievements")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[4]);
-      changeClasses(Object.values(elements)[4]);
-    } else if (targetElement.content.includes("Try opening your radio menu")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[5]);
-      changeClasses(Object.values(elements)[5]);
-    } else if (targetElement.content.includes("Try opening your settings")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[6]);
-      changeClasses(Object.values(elements)[6]);
-    } else if (targetElement.content.includes("the progress meter here in")) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[7]);
-      changeClasses(Object.values(elements)[7]);
+      getElementPosition(Object.values(elements)[keyPassages[foundPassage]]);
+      changeClasses(Object.values(elements)[keyPassages[foundPassage]]);
     }
   }
 
