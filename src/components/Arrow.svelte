@@ -36,17 +36,35 @@
     showArrow = true;
   }
 
-  const restoreClasses = () => {
-    for (let key in elements) {
-      let element = elements[key];
-      element.classList.remove(
-        "border",
-        "border-4",
-        "border-aurora-yellow/70",
-        "rounded",
-        "outline-offset-2"
-      );
-      element.classList.add("cursor-not-allowed", "brightness-50");
+  const restoreClasses = (timeout: boolean) => {
+    if (timeout) {
+      setTimeout(() => {
+        for (let key in elements) {
+          let element = elements[key];
+          element.classList.remove(
+            "border",
+            "border-4",
+            "border-aurora-yellow/70",
+            "rounded",
+            "outline-offset-2"
+          );
+          element.classList.add("cursor-not-allowed", "brightness-50");
+        }
+        showArrow = false;
+      }, 7000);
+    } else {
+      for (let key in elements) {
+        let element = elements[key];
+        element.classList.remove(
+          "border",
+          "border-4",
+          "border-aurora-yellow/70",
+          "rounded",
+          "outline-offset-2"
+        );
+        element.classList.add("cursor-not-allowed", "brightness-50");
+      }
+      showArrow = false;
     }
   };
 
@@ -63,37 +81,38 @@
   };
 
   $: if (targetElement) {
+    restoreClasses(false);
+
     if (targetElement.content.includes("clicking the contacts button")) {
-      restoreClasses();
-      showArrow = true;
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[0]);
       changeClasses(Object.values(elements)[0]);
     } else if (targetElement.content.includes("Try opening the journal")) {
-      restoreClasses();
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[1]);
       //TODO: Fix icon background
       changeClasses(Object.values(elements)[1]);
     } else if (targetElement.content.includes("the review section")) {
-      restoreClasses();
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[2]);
       changeClasses(Object.values(elements)[2]);
       /*TODO:
       Fix:Arrow isn't aligning properly on the icon of the driver license, need to fix.
       */
     } else if (targetElement.content.includes("Try opening your license")) {
-      restoreClasses();
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[3]);
       changeClasses(Object.values(elements)[3]);
     } else if (targetElement.content.includes("by opening the list of achievements")) {
-      restoreClasses();
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[4]);
       changeClasses(Object.values(elements)[4]);
     } else if (targetElement.content.includes("Try opening your radio menu")) {
-      restoreClasses();
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[5]);
       changeClasses(Object.values(elements)[5]);
     } else if (targetElement.content.includes("Try opening your settings")) {
-      restoreClasses();
+      restoreClasses(true);
       getElementPosition(Object.values(elements)[6]);
       changeClasses(Object.values(elements)[6]);
     } else if (targetElement.content.includes("the progress meter here in")) {
@@ -103,7 +122,7 @@
   }
 
   onDestroy(() => {
-    restoreClasses();
+    restoreClasses(false);
   });
 </script>
 

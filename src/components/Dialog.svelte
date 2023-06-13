@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, createEventDispatcher, onMount, afterUpdate } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   import { passageName, rendered } from "@/lib/stores";
 
