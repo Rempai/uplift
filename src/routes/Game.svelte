@@ -2,9 +2,8 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion } from "@/lib/stores";
+  import { passageName, emotion } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
-  import { validationErrorCheck } from "@/lib/validation";
   import {
     loginForAccessToken,
     registerForAccessToken,
@@ -88,35 +87,64 @@
   let showDriverModal = false;
 
   const submitLogin = async ({ target }) => {
-    const login = await loginForAccessToken(target);
-    if (login === true) {
-      startGame();
-    } else {
-      $validation = $validation;
-      showError(await validationErrorCheck(login, false));
-    }
+    await loginForAccessToken(target)
+      .then((response) => {
+        if (response.access_token != null) {
+          startGame();
+        } else {
+          showError(ErrorMessage(response));
+        }
+      })
+      .catch((err) => showError(ErrorMessage(err)));
   };
 
   const submitRegister = async ({ target }) => {
-    const register = await registerForAccessToken(target);
-    if (register === true) {
-      startGame();
-    } else {
-      $validation = $validation;
-      showError(await validationErrorCheck(register, false));
+    await registerForAccessToken(target)
+      .then((response) => {
+        if (response.access_token != null) {
+          startGame();
+        } else {
+          showError(ErrorMessage(response));
+        }
+      })
+      .catch((err) => {
+        showError(ErrorMessage(err));
+      });
+  };
+
+  const ErrorMessage = (str: string) => {
+    function isJsonString(str: string) {
+      try {
+        JSON.parse(str);
+      } catch {
+        return false;
+      }
+      return true;
     }
+
+    if (typeof (str === "object")) {
+      // @ts-ignore
+      const res = Object.values(str)[3].message;
+
+      if (isJsonString(res)) {
+        const obj = JSON.parse(res);
+        return obj[1].message;
+      } else if (typeof res === "string") {
+        return res;
+      }
+    }
+    return str;
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    login = true;
+    welcome = true;
     unlockedAchievements = [];
     unlockedAchievementsIds = [];
     quitRide();
   };
 
   const startGame = async () => {
-    $validation.length = 0;
     const token = localStorage.getItem("access_token");
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
@@ -126,15 +154,15 @@
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
-      .catch((err) => showError(err));
+      .catch((err) => showError(ErrorMessage(err)));
 
     await CharactersService.getReviews(parsedJWT.sub)
       .then((res) => (reviewList = res))
-      .catch((err) => showError(err));
+      .catch((err) => showError(ErrorMessage(err)));
 
     await UserService.getAchievements()
       .then((res) => (allAchievements = res))
-      .catch((err) => showError(err));
+      .catch((err) => showError(ErrorMessage(err)));
 
     await getUnlockedAchievements();
   };
@@ -164,7 +192,7 @@
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
-      .catch((err) => showError(err));
+      .catch((err) => showError(ErrorMessage(err)));
 
     currentRide = ride;
     dialog = true;
@@ -177,7 +205,8 @@
   };
 
   const showError = (err: string) => {
-    messages = [...messages, err];
+    const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
+    messages = [...messages, cleanedError];
   };
 
   const showResolution = ({ detail }) => {
@@ -189,7 +218,7 @@
   const updateAccount = async ({ detail }) => {
     await updateUserAccount(detail, parsedJWT.sub).then((res) => {
       if (!res && res.status !== 200) {
-        showError(res.statusText);
+        showError(ErrorMessage(res));
       } else {
         journal = false;
         modalOpened = false;
@@ -202,9 +231,9 @@
       .then(() => {
         localStorage.clear();
         showError("Deleted User");
-        login = true;
+        welcome = true;
       })
-      .catch((err) => showError(err));
+      .catch((err) => showError(ErrorMessage(err)));
     pausevideo();
   };
 
@@ -246,7 +275,7 @@
           dialog = false;
           pausevideo();
         })
-        .catch((err) => showError(err));
+        .catch((err) => showError(ErrorMessage(err)));
     }
     allowAudioCall = true;
   };
@@ -321,9 +350,11 @@
       reviewId: reviewScore,
       date: currentTime,
     };
-    await CharactersService.postReviewedUser(input).catch((err) => showError(err));
+    await CharactersService.postReviewedUser(input).catch((err) => showError(ErrorMessage(err)));
 
-    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) =>
+      showError(ErrorMessage(err))
+    );
 
     showReviewList = true;
     //Achievement: Completed first ride
@@ -382,7 +413,7 @@
   const getUnlockedAchievements = async () => {
     await UserService.getAchievements(parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
-      .catch((err) => showError(err));
+      .catch((err) => showError(ErrorMessage(err)));
 
     unlockedAchievements.forEach((item) => {
       if (!unlockedAchievementsIds.includes(item.achievementId)) {
