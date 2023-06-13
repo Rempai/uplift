@@ -1,9 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { passageName } from "@/lib/stores";
+  import { emotion, passageName, previousEmotion } from "@/lib/stores";
 
-  import MdChevronRight from "~icons/mdi/chevron-right";
+  import PhTriangleFill from "~icons/ph/triangle-fill";
+  import MingcuteUser4Fill from "~icons/mingcute/user-4-fill";
 
   import Button from "@/components/Button.svelte";
 
@@ -14,6 +15,11 @@
   export let font = "Roboto";
   export let fontSize = "1.2em";
   export let color = dialogColor;
+  let happyBaseUrl = "_happy.png";
+  let normalBaseUrl = ".png";
+  let angryBaseUrl = "_angry.png";
+  let annoyedBaseUrl = "_annoyed.png";
+  let fulUrl = "expressions/";
 
   export let text: string;
   export let continueButton: boolean;
@@ -85,41 +91,58 @@
     },
     configurable: true,
   });
+
+  $: {
+    if ($previousEmotion < $emotion) {
+      fulUrl += user.toLowerCase() + happyBaseUrl;
+    } else if ($previousEmotion > $emotion) {
+      fulUrl += user.toLowerCase() + annoyedBaseUrl;
+    } else if ($previousEmotion === $emotion) {
+      fulUrl = user.toLowerCase() + normalBaseUrl;
+    }
+
+    $previousEmotion = $emotion;
+  }
 </script>
 
-<div class="flex justify-center px-3">
-  <div
-    class="relative max-w-screen-lg w-full bg-night-3 shadow rounded border-4"
-    style="border-color: {dialogColor}">
+<div class="flex mx-auto relative max-w-6xl bg-night-1 h-56 rounded">
+  <div class="flex flex-col w-[99%] h-[95%] m-auto border-4 border-storm-1 bg-night-1 rounded">
+    <div class="flex absolute w-full bottom-[11.35em]">
+      <img src="logowhite.png" alt="" class="h-16 w-20 mx-auto" />
+    </div>
     <div class="flex">
-      <div class="h-10 shadow py-1 px-6 rounded-br" style="background-color: {dialogColor}">
-        <p class="font-bold text-xl whitespace-nowrap">{user}</p>
+      <div class="flex flex-col h-full p-2">
+        <div class="flex justify-center">
+          {user}
+        </div>
+        <div>
+          {#if user == "You"}
+            <MingcuteUser4Fill font-size="2em" class="h-44 w-44" />
+          {:else}
+            <img src={fulUrl} alt="" class="h-44 w-44 pb-2" />
+          {/if}
+        </div>
       </div>
-      <div class="w-full flex justify-start ml-2 h-48">
+      <div class="flex justify-center items-center mx-4 h-full w-4/5 relative">
         {#if text}
           {#await text then parsedText}
             <p
               style="font-family: {font}; font-size: {fontSize}; color: {color}"
-              class="break-words overflow-y-auto h-1/2"
               in:typewriter={{ delay: delay, speed: speed }}>
               {@html parsedText}
             </p>
           {/await}
           {#if continueButton}
-            <span
-              style="background-color: {dialogColor}"
-              class="rounded absolute bottom-4 right-4">
-              <Button
-                ariaLabel="Continue passage"
-                id="continue"
-                autofocus={true}
-                onClick={() => dispatch("next")}
-                text="Continue">
-                <div slot="icon" class="w-6 ml-3">
-                  <MdChevronRight font-size="2em" class="text-storm-1" />
-                </div>
-              </Button>
-            </span>
+            <Button
+              ariaLabel="Continue passage"
+              class="!shadow-transparent bottom-6 right-0 absolute !m-0 !p-0 outline-none"
+              id="continue"
+              autofocus={true}
+              onClick={() => dispatch("next")}>
+              <div slot="icon" class="w-fit element">
+                <PhTriangleFill font-size="1.5em" class="text-storm-1" />
+              </div>
+            </Button>
           {/if}
           <script>
             branch = (branchName) => {
@@ -131,3 +154,22 @@
     </div>
   </div>
 </div>
+
+<style>
+  @keyframes upAndDown {
+    0% {
+      transform: rotate(180deg) translateY(0);
+    }
+    50% {
+      transform: rotate(180deg) translateY(-8px);
+    }
+    100% {
+      transform: rotate(180deg) translateY(0);
+    }
+  }
+  .element {
+    animation-name: upAndDown;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+  }
+</style>
