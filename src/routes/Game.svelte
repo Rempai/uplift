@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion } from "@/lib/stores";
+  import { passageName, validation, emotion, rendered } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validationErrorCheck } from "@/lib/validation";
   import {
@@ -153,6 +153,7 @@
   };
 
   const toggleJournal = () => {
+    $rendered = true;
     journal = !journal;
     dialog = !dialog;
   };

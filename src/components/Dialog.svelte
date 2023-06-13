@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { onDestroy, createEventDispatcher, onMount, afterUpdate } from "svelte";
 
-  import { passageName } from "@/lib/stores";
+  import { passageName, rendered } from "@/lib/stores";
 
   import MdChevronRight from "~icons/mdi/chevron-right";
 
@@ -85,6 +85,10 @@
     },
     configurable: true,
   });
+  const handleClick = () => {
+    $rendered = false;
+    dispatch("next");
+  };
 </script>
 
 <div class="flex justify-center px-3">
@@ -98,12 +102,20 @@
       <div class="w-full flex justify-start ml-2 h-48">
         {#if text}
           {#await text then parsedText}
-            <p
-              style="font-family: {font}; font-size: {fontSize}; color: {color}"
-              class="break-words overflow-y-auto h-1/2"
-              in:typewriter={{ delay: delay, speed: speed }}>
-              {@html parsedText}
-            </p>
+            {#if $rendered}
+              <p
+                style="font-family: {font}; font-size: {fontSize}; color: {color}"
+                class="break-words overflow-y-auto h-1/2">
+                {@html parsedText}
+              </p>
+            {:else}
+              <p
+                style="font-family: {font}; font-size: {fontSize}; color: {color}"
+                class="break-words overflow-y-auto h-1/2"
+                in:typewriter={{ delay: delay, speed: speed }}>
+                {@html parsedText}
+              </p>
+            {/if}
           {/await}
           {#if continueButton}
             <span
@@ -113,7 +125,7 @@
                 ariaLabel="Continue passage"
                 id="continue"
                 autofocus={true}
-                onClick={() => dispatch("next")}
+                onClick={handleClick}
                 text="Continue">
                 <div slot="icon" class="w-6 ml-3">
                   <MdChevronRight font-size="2em" class="text-storm-1" />
