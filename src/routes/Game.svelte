@@ -629,9 +629,9 @@
           {/await}
         </div>
         <Progress {allPassages} {passedPassages} />
-      {/if}
-      {#if currentRide}
-        <Arrow targetElement={passage} showArrow={false} />
+        {#if currentRide.passenger.name == "Arty"}
+          <Arrow targetElement={passage} showArrow={false} />
+        {/if}
       {/if}
       <Multimedia
         on:dialog={toggleDialog}
