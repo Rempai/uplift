@@ -79,6 +79,15 @@
     );
   };
 
+  // Remove classes after tutorial is done
+  function removeClasses() {
+    const elements = document.querySelectorAll(".cursor-not-allowed, .brightness-50");
+
+    elements.forEach((element) => {
+      element.classList.remove("cursor-not-allowed", "brightness-50");
+    });
+  }
+
   $: if (targetElement) {
     restoreClasses(false);
 
@@ -106,6 +115,7 @@
 
   onDestroy(() => {
     restoreClasses(false);
+    removeClasses();
   });
 </script>
 
