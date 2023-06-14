@@ -37,8 +37,13 @@
   import DriverModal from "@/components/DriverModal.svelte";
 
   import Background from "/background.webm";
+  import Error from "@/components/Error.svelte";
 
-  let messages: Array<string> = [];
+  interface message {
+    id: number;
+    msg: string;
+  }
+  let messages: Array<message> = [];
 
   let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
@@ -176,7 +181,14 @@
   };
 
   const showError = (err: string) => {
-    messages = [...messages, err];
+    const date = new Date();
+    const id = date.getMilliseconds();
+    const newErr = { msg: err, id };
+    messages = [...messages, newErr];
+  };
+
+  const removeError = (id: number) => {
+    messages = messages.filter((message) => message.id !== id);
   };
 
   const showResolution = ({ detail }) => {
@@ -470,6 +482,11 @@
     filledjournal = false;
     patienceLost = true;
   }
+
+  $: {
+    // spam errors en zie hoe er nog errors overblijven.
+    console.log(messages);
+  }
 </script>
 
 <svelte:head>
@@ -494,7 +511,16 @@
     on:finishRide={finishRide}
     {resolution}
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
-  <Notification {messages} />
+
+  <div class="absolute right-0 w-full flex flex-col">
+    {#each messages as message}
+      <Error
+        message={`${message.msg} ${message.id}`}
+        id={message.id}
+        on:removeMessage={() => removeError(message.id)} />
+    {/each}
+  </div>
+
   <video
     class="fixed h-screen w-screen object-fill"
     loop
