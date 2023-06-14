@@ -122,7 +122,7 @@
       return true;
     }
 
-    if (typeof (str === "object")) {
+    if (typeof str === "object") {
       // @ts-ignore
       const res = Object.values(str)[3].message;
 

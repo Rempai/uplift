@@ -4,7 +4,7 @@ export const loginForAccessToken = async (target: HTMLFormElement) => {
   const urlSearchParams = new URLSearchParams(new FormData(target) as any);
 
   let returnValue;
-  const res = await AuthService.login(urlSearchParams)
+  await AuthService.login(urlSearchParams)
     .then((res) => {
       localStorage.setItem("access_token", res.access_token);
       localStorage.setItem("refresh_token", res.refresh_token);
@@ -26,7 +26,7 @@ export const registerForAccessToken = async (target: HTMLFormElement) => {
   };
 
   let returnValue;
-  const res = await AuthService.register(register)
+  await AuthService.register(register)
     .then((res) => {
       localStorage.setItem("access_token", res.access_token);
       localStorage.setItem("refresh_token", res.refresh_token);

@@ -21,7 +21,6 @@ export const isAchieved = async ({
   reviewList = null,
   rideList = null,
   resolutionData = null,
-  tutorialCompleted = null,
 }: achievementObj) => {
   switch (achievementId) {
     case 1:
