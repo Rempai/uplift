@@ -153,6 +153,10 @@
     audioRadio = this;
   }
 
+  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"];
+  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
+  $: bgColor = colors[currentColorIndex];
+
   const toggleCheatSheet = () => {
     if (passage && dialogToggled === true){
       dialog();

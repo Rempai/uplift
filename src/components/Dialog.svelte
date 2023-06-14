@@ -116,7 +116,7 @@
   }
 </script>
 
-<div class="flex lg:mx-auto relative max-w-6xl bg-night-1 h-56 rounded mx-4">
+<div class="flex 2xl:mx-auto relative max-w-5xl bg-night-1 h-56 rounded mx-4">
   <div class="flex flex-col w-[99%] h-[95%] m-auto border-4 border-storm-1 bg-night-1 rounded">
     <div class="flex absolute w-full bottom-[11.35em]">
       <img src="logowhite.png" alt="" class="h-16 w-20 mx-auto" />

@@ -58,7 +58,7 @@
 
   let resolution = false;
   let resolutionData: RideRead;
-  let solution: string;
+  let solutionInput = "";
 
   let parsedJWT: jwtObject;
 
@@ -86,7 +86,6 @@
   let showReviewList = false;
 
   let showDriverModal = false;
-  let showArrow = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -308,8 +307,8 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
-    solution = event.detail;
-    nextPassage(currentRide?.passenger.name + solution + "You" + 1);
+    solutionInput = event.detail;
+    nextPassage(currentRide?.passenger.name + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -321,12 +320,17 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    let reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    let reviewScore: number;
     if (patienceLost) {
       let review = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
       );
       reviewScore = review.id;
+    } else {
+      reviewScore = await CharactersService.getReviews().then(
+        (res) =>
+          res.find((obj) => obj.rideId === currentRide.id && obj.solution === solutionInput).id
+      );
     }
 
     const input: ReviewedUserCreate = {
@@ -334,37 +338,39 @@
       reviewId: reviewScore,
       date: currentTime,
     };
+
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+    await CharactersService.getReviews(null, parsedJWT.sub)
+      .then(() => {
+        showReviewList = true;
+        if (!(reviewList === undefined || reviewList.length === 0)) {
+          let lastReview = reviewList.at(-1);
 
-    showReviewList = true;
+          //Achievement: Completed first ride
+          if (lastReview.description != "Finished tutorial") {
+            handleAchievement(1);
+          }
 
-    if (!(reviewList === undefined || reviewList.length === 0)) {
-      let lastReview = reviewList.at(-1);
+          // Achievement: 5 stars on Ride Paolo
+          if (lastReview.stars === 5 && lastReview.rideId === 2) {
+            handleAchievement(2);
+          }
 
-      //Achievement: Completed first ride
-      if (lastReview.description != "Finished tutorial") {
-        handleAchievement(1);
-      }
+          // Achievement: 4 stars on a Ride Paolo
+          if (lastReview.stars === 4 && lastReview.rideId === 2) {
+            handleAchievement(4);
+          }
 
-      // Achievement: 5 stars on Ride Paolo
-      if (lastReview.stars === 5 && lastReview.rideId === 2) {
-        handleAchievement(2);
-      }
-
-      // Achievement: 4 stars on a Ride Paolo
-      if (lastReview.stars === 4 && lastReview.rideId === 2) {
-        handleAchievement(4);
-      }
-
-      //Achievement: Tutorial complete
-      if (lastReview.description === "Finished tutorial") {
-        handleAchievement(6);
-      }
-    }
-    // Achievement: Completed all rides
-    // handleAchievement(9);
+          //Achievement: Tutorial complete
+          if (lastReview.description === "Finished tutorial") {
+            handleAchievement(6);
+          }
+        }
+        // Achievement: Completed all rides
+        // handleAchievement(9);
+      })
+      .catch((err) => showError(err));
 
     quitRide();
   };
@@ -605,7 +611,7 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute left-0 right-0 top-8 lg:top-48 m-auto z-20">
+        <div in:fade class="absolute inset-0 top-8 lg:top-48 m-auto z-20">
           {#await passage then dialog}
             {#await textParsed then parsedText}
               {#if !patienceLost}
@@ -631,8 +637,8 @@
           {/await}
         </div>
         <Progress {allPassages} {passedPassages} />
-        {#if currentRide.passenger.name === "Arty"}
-          <Arrow {passage} showArrow={true} />
+        {#if currentRide.passenger.name == "Arty"}
+          <Arrow {passage} />
         {/if}
       {/if}
       <Multimedia

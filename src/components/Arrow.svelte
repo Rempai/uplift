@@ -4,7 +4,8 @@
   import BSArrow from "~icons/bxs/down-arrow";
 
   export let passage;
-  export let showArrow: boolean;
+
+  let showArrow = false;
   let elements = {};
 
   let arrowWidth;

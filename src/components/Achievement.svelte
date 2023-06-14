@@ -11,7 +11,7 @@
   export let achievement = [];
 
   const rotationAngle = tweened(0);
-  const audio = new Audio("achievement-sylized-fx-2.wav");
+  const audio = new Audio("achievement-sylized-fx-2.mp3");
   const dispatch = createEventDispatcher();
 
   $: if (triggerAchievement) {
