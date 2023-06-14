@@ -12,6 +12,8 @@
   let progression = 0;
   let showModal = false;
 
+  let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue("font-size"));
+
   const branches = () => {
     allPassages.forEach((obj) => {
       if (!possibleBranches.find((e) => e === obj.branch) && !obj.branch.includes("Finish")) {
@@ -87,13 +89,13 @@
 </Modal>
 
 <div
-  class="inline-flex w-fill justify-end absolute z-10 rounded"
-  style="bottom: {screenHeight / 3.98}px; right: {screenWidth / 3.715}px">
+  class="inline-flex w-fill justify-end absolute z-10"
+  style="bottom: {(screenHeight / 3.98) / fontsize}em; right: {(screenWidth / 3.715) / fontsize}em ">
   <div
     on:click={popup}
     on:keypress
     class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
-    style="width: {screenWidth / 11.94}px; height: {screenHeight / 18}px;">
+    style="width: {(screenWidth / 11.88) / fontsize}em; height: {(screenHeight / 18) / fontsize}em;">
     {#if allPassages && allPassages.length > 0}
       {progression}%
     {/if}
