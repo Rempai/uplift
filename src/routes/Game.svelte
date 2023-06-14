@@ -341,7 +341,8 @@
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub)
-      .then(() => {
+      .then((res) => {
+        reviewList = res;
         showReviewList = true;
         if (!(reviewList === undefined || reviewList.length === 0)) {
           let lastReview = reviewList.at(-1);
@@ -514,7 +515,7 @@
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
   <Notification {messages} />
   <video
-    class="fixed h-screen w-screen object-fill"
+    class="fixed h-screen w-screen object-cover overflow-hidden"
     loop
     muted
     autoplay={typeof passage === "object"}>
