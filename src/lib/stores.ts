@@ -6,3 +6,4 @@ export const validation = writable<Array<any>>([]);
 export const emotion = writable<number>(100);
 export const previousEmotion = writable<number>(100);
 export const expression = writable<string>("normal");
+export const rendered = writable<boolean>(false);

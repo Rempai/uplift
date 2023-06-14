@@ -92,10 +92,10 @@
         if (response.access_token != null) {
           startGame();
         } else {
-          showError(ErrorMessage(response));
+          ErrorMessage(response);
         }
       })
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
   };
 
   const submitRegister = async ({ target }) => {
@@ -104,11 +104,11 @@
         if (response.access_token != null) {
           startGame();
         } else {
-          showError(ErrorMessage(response));
+          ErrorMessage(response);
         }
       })
       .catch((err) => {
-        showError(ErrorMessage(err));
+        ErrorMessage(err);
       });
   };
 
@@ -128,12 +128,19 @@
 
       if (isJsonString(res)) {
         const obj = JSON.parse(res);
-        return obj[1].message;
+        if (obj.length === 1) {
+          showError(obj[0].message);
+        } else if (obj.length > 1) {
+          obj.forEach((element) => {
+            showError(element.message);
+          });
+        }
       } else if (typeof res === "string") {
-        return res;
+        showError(res);
+      } else {
+        showError(str);
       }
     }
-    return str;
   };
 
   const handleLogout = () => {
@@ -154,15 +161,15 @@
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
 
     await CharactersService.getReviews(parsedJWT.sub)
       .then((res) => (reviewList = res))
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
 
     await UserService.getAchievements()
       .then((res) => (allAchievements = res))
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
 
     await getUnlockedAchievements();
   };
@@ -176,6 +183,7 @@
   };
 
   const toggleJournal = () => {
+    journal = !journal
     journal ? (dialog = false) : (dialog = true);
   };
 
@@ -191,7 +199,7 @@
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
 
     currentRide = ride;
     dialog = true;
@@ -217,7 +225,7 @@
   const updateAccount = async ({ detail }) => {
     await updateUserAccount(detail, parsedJWT.sub).then((res) => {
       if (!res && res.status !== 200) {
-        showError(ErrorMessage(res));
+        ErrorMessage(res);
       } else {
         journal = false;
         modalOpened = false;
@@ -232,7 +240,7 @@
         showError("Deleted User");
         welcome = true;
       })
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
     pausevideo();
   };
 
@@ -274,7 +282,7 @@
           dialog = false;
           pausevideo();
         })
-        .catch((err) => showError(ErrorMessage(err)));
+        .catch((err) => ErrorMessage(err));
     }
     allowAudioCall = true;
   };
@@ -349,10 +357,10 @@
       reviewId: reviewScore,
       date: currentTime,
     };
-    await CharactersService.postReviewedUser(input).catch((err) => showError(ErrorMessage(err)));
+    await CharactersService.postReviewedUser(input).catch((err) => ErrorMessage(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) =>
-      showError(ErrorMessage(err))
+      ErrorMessage(err)
     );
 
     showReviewList = true;
@@ -412,7 +420,7 @@
   const getUnlockedAchievements = async () => {
     await UserService.getAchievements(parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
-      .catch((err) => showError(ErrorMessage(err)));
+      .catch((err) => ErrorMessage(err));
 
     unlockedAchievements.forEach((item) => {
       if (!unlockedAchievementsIds.includes(item.achievementId)) {
