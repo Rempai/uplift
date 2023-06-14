@@ -328,8 +328,9 @@
       );
       reviewScore = review.id;
     } else {
-      reviewScore = await CharactersService.getReviews().then((res) =>
-        res.find((obj) => obj.rideId === currentRide.id && obj.solution === solutionInput).id
+      reviewScore = await CharactersService.getReviews().then(
+        (res) =>
+          res.find((obj) => obj.rideId === currentRide.id && obj.solution === solutionInput).id
       );
     }
 
