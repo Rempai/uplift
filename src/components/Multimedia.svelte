@@ -179,8 +179,6 @@
       : passage
       ? "multimedia/Dialogue_green_icon.png"
       : "multimedia/Dialogue_red_icon.png";
-
-  $: console.log(journalToggled);
 </script>
 
 {#if radioSelect}
