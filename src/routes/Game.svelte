@@ -145,7 +145,7 @@
 
   const handleLogout = () => {
     localStorage.clear();
-    register = true;
+    welcome = true;
     unlockedAchievements.length = 0;
     unlockedAchievementsIds.length = 0;
     quitRide();
@@ -243,7 +243,7 @@
       .then(() => {
         localStorage.clear();
         showError("Deleted User");
-        register = true;
+        welcome = true;
       })
       .catch((err) => showError(err));
     pausevideo();
