@@ -183,7 +183,7 @@
   };
 
   const toggleJournal = () => {
-    journal = !journal
+    journal = !journal;
     journal ? (dialog = false) : (dialog = true);
   };
 
@@ -359,9 +359,7 @@
     };
     await CharactersService.postReviewedUser(input).catch((err) => ErrorMessage(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) =>
-      ErrorMessage(err)
-    );
+    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => ErrorMessage(err));
 
     showReviewList = true;
     //Achievement: Completed first ride
