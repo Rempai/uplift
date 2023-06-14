@@ -150,6 +150,10 @@
     audioRadio = this;
   }
 
+  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"];
+  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
+  $: bgColor = colors[currentColorIndex];
+
   $: if (showReviewList) {
     forward("Reviews");
   }
@@ -482,7 +486,7 @@
           class:brightness-50={reviewList && reviewList.length === 0}
           id="diverLicense"
           slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" />
+          <ClarityLicenseSolid class="text-aurora-orange text-{bgColor}" />
         </div>
       </Button>
       <Button
