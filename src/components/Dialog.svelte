@@ -1,12 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { emotion, passageName, previousEmotion } from "@/lib/stores";
+  import { emotion, passageName, previousEmotion, expression } from "@/lib/stores";
+
+  import Button from "@/components/Button.svelte";
 
   import PhTriangleFill from "~icons/ph/triangle-fill";
   import MingcuteUser4Fill from "~icons/mingcute/user-4-fill";
-
-  import Button from "@/components/Button.svelte";
 
   export let user = "You";
   export let dialogColor = "#88C0D0";
@@ -15,14 +15,14 @@
   export let font = "Roboto";
   export let fontSize = "1.2em";
   export let color = dialogColor;
+  export let text: string;
+  export let continueButton: boolean;
+
   let happyBaseUrl = "_happy.png";
   let normalBaseUrl = ".png";
   let angryBaseUrl = "_angry.png";
   let annoyedBaseUrl = "_annoyed.png";
   let fulUrl = "expressions/";
-
-  export let text: string;
-  export let continueButton: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -92,13 +92,19 @@
     configurable: true,
   });
 
-  $: {
+  $: if (user !== "You") {
     if ($previousEmotion < $emotion) {
-      fulUrl += user.toLowerCase() + happyBaseUrl;
+      $expression = "happy";
     } else if ($previousEmotion > $emotion) {
-      fulUrl += user.toLowerCase() + annoyedBaseUrl;
-    } else if ($previousEmotion === $emotion) {
-      fulUrl = user.toLowerCase() + normalBaseUrl;
+      if ($expression === "annoyed") {
+        $expression = "angry";
+      } else if ($expression === "angry") {
+        $expression = "annoyed";
+      } else {
+        $expression = "annoyed";
+      }
+    } else {
+      $expression = "normal";
     }
 
     $previousEmotion = $emotion;
@@ -113,13 +119,22 @@
     <div class="flex">
       <div class="flex flex-col h-full p-2">
         <div class="flex justify-center">
-          {user}
+          <p class="font-extrabold" style="color: {color};">{user}</p>
         </div>
         <div>
           {#if user == "You"}
             <MingcuteUser4Fill font-size="2em" class="h-44 w-44" />
-          {:else}
-            <img src={fulUrl} alt="" class="h-44 w-44 pb-2" />
+          {:else if $expression === "normal"}
+            <img src={user.toLowerCase() + normalBaseUrl} alt="" class="h-44 w-44 pb-2" />
+          {:else if $expression === "happy"}
+            <img src={fulUrl + user.toLowerCase() + happyBaseUrl} alt="" class="h-44 w-44 pb-2" />
+          {:else if $expression === "annoyed"}
+            <img
+              src={fulUrl + user.toLowerCase() + annoyedBaseUrl}
+              alt=""
+              class="h-44 w-44 pb-2" />
+          {:else if $expression === "angry"}
+            <img src={fulUrl + user.toLowerCase() + angryBaseUrl} alt="" class="h-44 w-44 pb-2" />
           {/if}
         </div>
       </div>
