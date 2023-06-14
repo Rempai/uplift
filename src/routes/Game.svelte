@@ -340,37 +340,39 @@
 
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub).then(() => {
-      showReviewList = true;
-      if (!(reviewList === undefined || reviewList.length === 0)) {
-        let lastReview = reviewList.at(-1);
+    await CharactersService.getReviews(null, parsedJWT.sub)
+      .then(() => {
+        showReviewList = true;
+        if (!(reviewList === undefined || reviewList.length === 0)) {
+          let lastReview = reviewList.at(-1);
 
-        //Achievement: Completed first ride
-        if (lastReview.description != "Finished tutorial") {
-          handleAchievement(1);
+          //Achievement: Completed first ride
+          if (lastReview.description != "Finished tutorial") {
+            handleAchievement(1);
+          }
+
+          // Achievement: 5 stars on Ride Paolo
+          if (lastReview.stars === 5 && lastReview.rideId === 2) {
+            handleAchievement(2);
+          }
+
+          // Achievement: 4 stars on a Ride Paolo
+          if (lastReview.stars === 4 && lastReview.rideId === 2) {
+            handleAchievement(4);
+          }
+
+          //Achievement: Tutorial complete
+          if (lastReview.description === "Finished tutorial") {
+            handleAchievement(6);
+          }
         }
+        // Achievement: Completed all rides
+        // handleAchievement(9);
+      })
+      .catch((err) => showError(err));
 
-        // Achievement: 5 stars on Ride Paolo
-        if (lastReview.stars === 5 && lastReview.rideId === 2) {
-          handleAchievement(2);
-        }
-
-        // Achievement: 4 stars on a Ride Paolo
-        if (lastReview.stars === 4 && lastReview.rideId === 2) {
-          handleAchievement(4);
-        }
-
-        //Achievement: Tutorial complete
-        if (lastReview.description === "Finished tutorial") {
-          handleAchievement(6);
-        }
-      }
-      // Achievement: Completed all rides
-      // handleAchievement(9);
-      }).catch((err) => showError(err));
-
-      quitRide();
-    };
+    quitRide();
+  };
 
   const clearResolutionData = () => {
     resolutionData = {
