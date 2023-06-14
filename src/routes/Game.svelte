@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, rendered } from "@/lib/stores";
+  import { passageName, validation, emotion, rendered, rideQuit } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -194,9 +194,10 @@
   };
 
   const toggleDialog = () => {
+    $rendered = true;
     dialog = !dialog;
     journal = false;
-    allowAudioCall = dialog;
+    allowAudioCall = !allowAudioCall;
   };
 
   const selectRide = async (event: CustomEvent) => {
@@ -422,8 +423,9 @@
   };
 
   const quitRide = () => {
-    passage = undefined;
+    $rideQuit = true;
     currentRide = undefined;
+    passage = undefined;
     ambientNoise = false;
     pausevideo();
     journalData = [];
@@ -469,10 +471,10 @@
         resolutionData: resolutionData,
       });
       if (achievement) {
+        await getUnlockedAchievements();
         triggerAchievement = true;
         achievementCarousel.push(allAchievements[achievementId - 1].name);
       }
-      await getUnlockedAchievements();
     }
   };
 
@@ -674,7 +676,7 @@
         </div>
         <Progress {allPassages} {passedPassages} />
         {#if currentRide.passenger.name == "Arty"}
-          <Arrow targetElement={passage} />
+          <Arrow {passage} />
         {/if}
       {/if}
       <Multimedia

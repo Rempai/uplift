@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import { rideQuit, rendered } from "@/lib/stores";
   import BSArrow from "~icons/bxs/down-arrow";
 
-  export let targetElement;
+  export let passage;
 
   let showArrow = false;
-
   let elements = {};
 
   let arrowWidth;
@@ -25,6 +25,13 @@
       settings: document.querySelector('img[alt="settings"]'),
       progress: document.querySelector(".progresstut"),
     };
+
+    for (let key in elements) {
+      const element = elements[key];
+      if (key != "journal") {
+        element.classList.add("cursor-not-allowed", "brightness-50");
+      }
+    }
   });
 
   function getElementPosition(targetElement) {
@@ -36,7 +43,7 @@
     showArrow = true;
   }
 
-  const restoreClasses = (timeout: boolean) => {
+  export const restoreClasses = (timeout: boolean) => {
     if (timeout) {
       setTimeout(() => {
         for (let key in elements) {
@@ -82,14 +89,15 @@
 
   // Remove classes after tutorial is done
   function removeClasses() {
-    const elements = document.querySelectorAll(".cursor-not-allowed, .brightness-50");
-
-    elements.forEach((element) => {
-      element.classList.remove("cursor-not-allowed", "brightness-50");
-    });
+    for (let key in elements) {
+      const element = elements[key];
+      if (key !== "journal") {
+        element.classList.remove("cursor-not-allowed", "brightness-50");
+      }
+    }
   }
 
-  $: if (targetElement) {
+  $: if (passage) {
     restoreClasses(false);
 
     const keyPassages = {
@@ -103,20 +111,20 @@
       "the progress meter here in": 7,
     };
 
-    const foundPassage = Object.keys(keyPassages).find((key) =>
-      targetElement.content.includes(key)
-    );
+    const foundPassage = Object.keys(keyPassages).find((key) => passage.content.includes(key));
 
-    if (foundPassage !== undefined) {
+    if (foundPassage !== undefined && $rendered === false) {
       restoreClasses(true);
       getElementPosition(Object.values(elements)[keyPassages[foundPassage]]);
       changeClasses(Object.values(elements)[keyPassages[foundPassage]]);
     }
   }
-
   onDestroy(() => {
-    restoreClasses(false);
-    removeClasses();
+    if ($rideQuit.valueOf() !== true) {
+      restoreClasses(false);
+    } else {
+      removeClasses();
+    }
   });
 </script>
 
