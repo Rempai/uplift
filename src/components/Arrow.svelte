@@ -19,7 +19,7 @@
       contacts: document.querySelector('img[alt="contacts"]'),
       notes: document.querySelector('img[alt="notes"]'),
       reviews: document.querySelector('img[alt="reviews"]'),
-      license: document.getElementById("diverLicense"),
+      license: document.querySelector(".diverLicense"),
       achievements: document.querySelector('img[alt="achievements"]'),
       music: document.querySelector('img[alt="music"]'),
       settings: document.querySelector('img[alt="settings"]'),
