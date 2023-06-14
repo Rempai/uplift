@@ -489,8 +489,8 @@
         ariaLabel="Drivers license"
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
-        <div class="brightness-50 cursor-not-allowed" id="diverLicense" slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" />
+        <div slot="icon">
+          <ClarityLicenseSolid class="text-aurora-orange diverLicense"/>
         </div>
       </Button>
       <Button
