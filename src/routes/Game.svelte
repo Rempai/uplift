@@ -86,7 +86,8 @@
   let showReviewList = false;
 
   let showDriverModal = false;
-  let showArrow = false;
+
+  let solutionInput = "";
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -307,8 +308,8 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
-    solution = event.detail;
-    nextPassage(currentRide?.passenger.name + solution + "You" + 1);
+    solutionInput = event.detail;
+    nextPassage(currentRide?.passenger.name + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -320,12 +321,17 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    let reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    let reviewScore: number;
     if (patienceLost) {
       let review = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
       );
       reviewScore = review.id;
+    } else {
+      reviewScore = await CharactersService.getReviews().then(
+        (res) =>
+          res.find((obj) => obj.rideId === currentRide.id && obj.solution === solutionInput).id
+      );
     }
 
     const input: ReviewedUserCreate = {
@@ -333,6 +339,7 @@
       reviewId: reviewScore,
       date: currentTime,
     };
+
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
@@ -630,7 +637,7 @@
         </div>
         <Progress {allPassages} {passedPassages} />
         {#if currentRide.passenger.name == "Arty"}
-          <Arrow targetElement={passage} showArrow={false} />
+          <Arrow targetElement={passage} />
         {/if}
       {/if}
       <Multimedia
