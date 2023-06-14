@@ -176,7 +176,6 @@
   };
 
   const toggleJournal = () => {
-    journal = !journal;
     journal ? (dialog = false) : (dialog = true);
   };
 
