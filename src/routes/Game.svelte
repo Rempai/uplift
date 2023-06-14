@@ -58,7 +58,7 @@
 
   let resolution = false;
   let resolutionData: RideRead;
-  let solution: string;
+  let solutionInput = "";
 
   let parsedJWT: jwtObject;
 
@@ -86,8 +86,6 @@
   let showReviewList = false;
 
   let showDriverModal = false;
-
-  let solutionInput = "";
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -342,38 +340,37 @@
 
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+    await CharactersService.getReviews(null, parsedJWT.sub).then(() => {
+      showReviewList = true;
+      if (!(reviewList === undefined || reviewList.length === 0)) {
+        let lastReview = reviewList.at(-1);
 
-    showReviewList = true;
+        //Achievement: Completed first ride
+        if (lastReview.description != "Finished tutorial") {
+          handleAchievement(1);
+        }
 
-    if (!(reviewList === undefined || reviewList.length === 0)) {
-      let lastReview = reviewList.at(-1);
+        // Achievement: 5 stars on Ride Paolo
+        if (lastReview.stars === 5 && lastReview.rideId === 2) {
+          handleAchievement(2);
+        }
 
-      //Achievement: Completed first ride
-      if (lastReview.description != "Finished tutorial") {
-        handleAchievement(1);
+        // Achievement: 4 stars on a Ride Paolo
+        if (lastReview.stars === 4 && lastReview.rideId === 2) {
+          handleAchievement(4);
+        }
+
+        //Achievement: Tutorial complete
+        if (lastReview.description === "Finished tutorial") {
+          handleAchievement(6);
+        }
       }
+      // Achievement: Completed all rides
+      // handleAchievement(9);
+      }).catch((err) => showError(err));
 
-      // Achievement: 5 stars on Ride Paolo
-      if (lastReview.stars === 5 && lastReview.rideId === 2) {
-        handleAchievement(2);
-      }
-
-      // Achievement: 4 stars on a Ride Paolo
-      if (lastReview.stars === 4 && lastReview.rideId === 2) {
-        handleAchievement(4);
-      }
-
-      //Achievement: Tutorial complete
-      if (lastReview.description === "Finished tutorial") {
-        handleAchievement(6);
-      }
-    }
-    // Achievement: Completed all rides
-    // handleAchievement(9);
-
-    quitRide();
-  };
+      quitRide();
+    };
 
   const clearResolutionData = () => {
     resolutionData = {
@@ -610,7 +607,7 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute left-0 right-0 top-8 lg:top-48 m-auto z-20">
+        <div in:fade class="absolute inset-0 top-8 lg:top-48 m-auto z-20">
           {#await passage then dialog}
             {#await textParsed then parsedText}
               {#if !patienceLost}
