@@ -4,7 +4,6 @@
 
   import { passageName, validation, emotion, rendered } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
-  import { validationErrorCheck } from "@/lib/validation";
   import {
     loginForAccessToken,
     registerForAccessToken,
@@ -88,28 +87,65 @@
   let showDriverModal = false;
 
   const submitLogin = async ({ target }) => {
-    const login = await loginForAccessToken(target);
-    if (login === true) {
-      startGame();
-    } else {
-      $validation = $validation;
-      showError(await validationErrorCheck(login, false));
-    }
+    await loginForAccessToken(target)
+      .then((response) => {
+        if (response.access_token != null) {
+          startGame();
+        } else {
+          ErrorMessage(response);
+        }
+      })
+      .catch((err) => ErrorMessage(err));
   };
 
   const submitRegister = async ({ target }) => {
-    const register = await registerForAccessToken(target);
-    if (register === true) {
-      startGame();
-    } else {
-      $validation = $validation;
-      showError(await validationErrorCheck(register, false));
+    await registerForAccessToken(target)
+      .then((response) => {
+        if (response.access_token != null) {
+          startGame();
+        } else {
+          ErrorMessage(response);
+        }
+      })
+      .catch((err) => {
+        ErrorMessage(err);
+      });
+  };
+
+  const ErrorMessage = (str: string) => {
+    function isJsonString(str: string) {
+      try {
+        JSON.parse(str);
+      } catch {
+        return false;
+      }
+      return true;
+    }
+
+    if (typeof str === "object") {
+      // @ts-ignore
+      const res = Object.values(str)[3].message;
+
+      if (isJsonString(res)) {
+        const obj = JSON.parse(res);
+        if (obj.length === 1) {
+          showError(obj[0].message);
+        } else if (obj.length > 1) {
+          obj.forEach((element) => {
+            showError(element.message);
+          });
+        }
+      } else if (typeof res === "string") {
+        showError(res);
+      } else {
+        showError(str);
+      }
     }
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    login = true;
+    welcome = true;
     unlockedAchievements.length = 0;
     unlockedAchievementsIds.length = 0;
     quitRide();
@@ -154,7 +190,7 @@
   const toggleJournal = () => {
     $rendered = true;
     journal = !journal;
-    dialog = !dialog;
+    journal ? (dialog = false) : (dialog = true);
   };
 
   const toggleDialog = () => {
@@ -181,7 +217,8 @@
   };
 
   const showError = (err: string) => {
-    messages = [...messages, err];
+    const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
+    messages = [...messages, cleanedError];
   };
 
   const showResolution = ({ detail }) => {
@@ -206,7 +243,7 @@
       .then(() => {
         localStorage.clear();
         showError("Deleted User");
-        login = true;
+        welcome = true;
       })
       .catch((err) => showError(err));
     pausevideo();
