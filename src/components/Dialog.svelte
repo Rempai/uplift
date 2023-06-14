@@ -146,11 +146,17 @@
       <div class="flex justify-center items-center mx-4 h-full w-4/5 relative">
         {#if text}
           {#await text then parsedText}
-            <p
-              style="font-family: {font}; font-size: {fontSize}; color: {color}"
-              in:typewriter={{ delay: delay, speed: speed }}>
-              {@html parsedText}
-            </p>
+            {#if $rendered}
+              <p style="font-family: {font}; font-size: {fontSize}; color: {color}">
+                {@html parsedText}
+              </p>
+            {:else}
+              <p
+                style="font-family: {font}; font-size: {fontSize}; color: {color}"
+                in:typewriter={{ delay: delay, speed: speed }}>
+                {@html parsedText}
+              </p>
+            {/if}
           {/await}
           {#if continueButton}
             <Button
