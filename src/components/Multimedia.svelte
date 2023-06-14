@@ -154,10 +154,7 @@
   }
 
   const toggleCheatSheet = () => {
-    if (passage && dialogToggled === true) {
-      dialog();
-    } else if (journalToggled) {
-      toggleJournal();
+    if (passage && dialogToggled === true){
       dialog();
     }
     showInfo = !showInfo;
@@ -174,12 +171,15 @@
   $: if (radioSelect === 4) {
     handleAchievement(5);
   }
+
   $: dialogIconSrc =
     passage && dialogToggled
       ? "multimedia/Dialogue_white_icon.png"
       : passage
       ? "multimedia/Dialogue_green_icon.png"
       : "multimedia/Dialogue_red_icon.png";
+
+  $: console.log(journalToggled);
 </script>
 
 {#if radioSelect}
@@ -489,8 +489,8 @@
         ariaLabel="Drivers license"
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
-        <div class="brightness-50 cursor-not-allowed" id="diverLicense" slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" />
+        <div slot="icon">
+          <ClarityLicenseSolid class="text-aurora-orange" id="diverLicense" />
         </div>
       </Button>
       <Button
