@@ -490,7 +490,7 @@
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
         <div slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange diverLicense"/>
+          <ClarityLicenseSolid class="text-aurora-orange diverLicense" />
         </div>
       </Button>
       <Button
