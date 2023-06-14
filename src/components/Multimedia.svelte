@@ -22,13 +22,13 @@
   import MSLock from "~icons/material-symbols/lock";
 
   export let passage: PassageRead | null = null;
-  export let showReviewList = false;
+  export let showReviewList: boolean;
   export let reviewList: Array<ReviewRead>;
   export let rideList: Array<RideRead>;
   export let filledjournal: boolean;
   export let journal: boolean;
   export let modalOpened: boolean;
-  export let animalease: boolean;
+  export let animalese: boolean;
 
   export let allAchievements: Array<AchievementRead>;
   export let unlockedAchievementsIds = [];
@@ -67,6 +67,7 @@
   };
 
   const handleModal = () => {
+    if (activeContent === "Reviews") dispatch("toggleReview");
     if (modalOpened === true) activeContent = null;
     journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
@@ -126,7 +127,6 @@
 
   const handleAchievement = (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    // TODO: Tutorial
     dispatch("achievement", { achievementId });
   };
 
@@ -149,6 +149,10 @@
     // eslint-disable-next-line  @typescript-eslint/no-this-alias
     audioRadio = this;
   }
+
+  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"];
+  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
+  $: bgColor = colors[currentColorIndex];
 
   $: if (showReviewList) {
     forward("Reviews");
@@ -184,7 +188,7 @@
   <img
     src="cheatsheet.png"
     alt=""
-    class="absolute h-screen w-full z-50 bg-center bg-cover bg-no-repeat"
+    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat"
     style="background-size: 100% 100%"
     on:click={() => (showInfo = !showInfo)}
     on:keypress />
@@ -195,25 +199,27 @@
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
         {#each allAchievements as ach}
-          {#if unlockedAchievementsIds.includes(ach.id)}
-            <div class="relative">
+          {#await unlockedAchievementsIds then _}
+            {#if unlockedAchievementsIds.includes(ach.id)}
+              <div class="relative">
+                <Tooltip title={ach.description} position={"top"}>
+                  <div
+                    class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
+                    <p class="text-sm text-center">{ach.name}</p>
+                  </div>
+                </Tooltip>
+              </div>
+            {:else}
               <Tooltip title={ach.description} position={"top"}>
                 <div
-                  class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
-                  <p class="text-sm text-center">{ach.name}</p>
+                  class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
+                  <span class="text-2xl">
+                    <MSLock class="text-storm-3" />
+                  </span>
                 </div>
               </Tooltip>
-            </div>
-          {:else}
-            <Tooltip title={ach.description} position={"top"}>
-              <div
-                class="text-xl py-4 px-2 cursor-pointer bg-aurora-red/40 hover:bg-aurora-red rounded border-dashed border-2 border-storm-3 w-20 h-20 flex justify-center items-center">
-                <span class="text-2xl">
-                  <MSLock class="text-storm-3" />
-                </span>
-              </div>
-            </Tooltip>
-          {/if}
+            {/if}
+          {/await}
         {/each}
       </div>
     </div>
@@ -282,13 +288,10 @@
           {:else}
             {#await rideList then ride}
               {#each ride as data}
-                <div>
-                  <div
-                    on:keypress
-                    on:click={() => select(data)}
-                    class="hover:bg-night-2 cursor-pointer rounded">
+                <button class="w-full" on:keypress on:click={() => select(data)}>
+                  <div class="hover:bg-night-2 cursor-pointer rounded">
                     <div class="gap-3 w-full flex items-center">
-                      <img class="rounded w-24 h-full" src={data.passenger.icon} alt="" />
+                      <img class="rounded w-24 h-full m-2 pb-1" src={data.passenger.icon} alt="" />
                       <div>
                         <p class="flex items-center">
                           <IoIosCard font-size="1.2em" class="mr-2" />{data.passenger.name}
@@ -306,7 +309,7 @@
                         </p>
                       </div>
                     </div>
-                    <div class="flex items-center m-1 ml-2 gap-1">
+                    <div class="flex items-center ml-2 gap-1 pb-2">
                       <p>Personal best:</p>
                       <div class="flex">
                         {#each { length: 5 } as _, i}
@@ -324,7 +327,7 @@
                     </div>
                   </div>
                   <hr class="border-night-2 m-2 w-11/12 mx-auto" />
-                </div>
+                </button>
               {/each}
             {/await}
           {/if}
@@ -336,23 +339,23 @@
   {:else if activeContent === "Radio"}
     <div class="px-4 my-3 flex flex-col items-center gap-3">
       {#if passage}
-        {#if animalease}
+        {#if animalese}
           <Button
             onClick={() => {
               if (passage) {
-                dispatch("toggleAnimalease");
+                dispatch("toggleAnimalese");
               }
             }}
-            text="Disable Animalease"
+            text="Disable Animalese"
             class="bg-aurora-orange" />
         {:else}
           <Button
             onClick={() => {
               if (passage) {
-                dispatch("toggleAnimalease");
+                dispatch("toggleAnimalese");
               }
             }}
-            text="Enable Animalease"
+            text="Enable Animalese"
             class="bg-aurora-green" />
         {/if}
         <Button
@@ -473,24 +476,45 @@
     style="width: {screenWidth / 6}px; height: {screenHeight / 4.1}px">
     <div class="flex flex-col items-center justify-evenly w-12 bg-night-2 mr-2 rounded-r">
       <Button
+        id="driversLicense"
+        ariaLabel="Drivers license"
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
-        <div slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" />
+        <div
+          class:cursor-not-allowed={reviewList && reviewList.length === 0}
+          class:hover:brightness-50={reviewList && reviewList.length === 0}
+          class:brightness-50={reviewList && reviewList.length === 0}
+          id="diverLicense"
+          slot="icon">
+          <ClarityLicenseSolid class="text-aurora-orange text-{bgColor}" />
         </div>
       </Button>
       <Button
+        id="info"
+        ariaLabel="Information"
         onClick={() => (showInfo = !showInfo)}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
-        <div slot="icon">
+        <div
+          class:cursor-not-allowed={reviewList && reviewList.length === 0}
+          class:hover:brightness-50={reviewList && reviewList.length === 0}
+          class:brightness-50={reviewList && reviewList.length === 0}
+          slot="icon">
           <img src="multimedia/Info_Icon.png" alt="info" />
         </div>
       </Button>
-      <Button onClick={dialog} class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
-        <div slot="icon">
+      <Button
+        id="dialog"
+        ariaLabel="Toggle Dialog"
+        onClick={dialog}
+        class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
+        <div
+          class:cursor-not-allowed={reviewList && reviewList.length === 0}
+          class:hover:brightness-50={reviewList && reviewList.length === 0}
+          class:brightness-50={reviewList && reviewList.length === 0}
+          slot="icon">
           <img
             src={dialogIconSrc}
-            alt="info"
+            alt="dialog"
             class:cursor-not-allowed={dialogIconSrc === "multimedia/Dialogue_red_icon.png"} />
         </div>
       </Button>
@@ -498,42 +522,91 @@
     <div class="flex flex-col w-full justify-center">
       <div class="flex gap-2 p-2">
         <Button
+          id="achievements"
+          ariaLabel="Achievements"
           onClick={() => forward("Achievements")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img src="multimedia/Achievements_icon.png" alt="achievements" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Achievements_icon.png"
+              alt="achievements" />
           </div>
         </Button>
-        <Button onClick={() => forward("Rides")} class="w-full h-full !p-0 !shadow-transparent">
+        <Button
+          id="rides"
+          ariaLabel="Rides"
+          onClick={() => forward("Rides")}
+          class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img src="multimedia/Contacts_icon.png" alt="contacts" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Contacts_icon.png"
+              alt="contacts" />
           </div>
         </Button>
-        <Button onClick={() => forward("Radio")} class="w-full h-full !p-0 !shadow-transparent">
+        <Button
+          id="radio"
+          ariaLabel="Radio"
+          onClick={() => forward("Radio")}
+          class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img src="multimedia/Music_icon.png" alt="music" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Music_icon.png"
+              alt="music" />
           </div>
         </Button>
       </div>
       <div class="flex gap-2 p-2">
-        <Button onClick={toggleJournal} class="w-full h-full !p-0 !shadow-transparent">
+        <Button
+          id="journal"
+          ariaLabel="Toggle journal"
+          onClick={toggleJournal}
+          class="w-full h-full !p-0 !shadow-transparent">
+          <div slot="icon">
+            {#if passage && reviewList.length != 0}
+              <img src="multimedia/Notes_icon.png" alt="notes" />
+            {:else}
+              <img
+                class="cursor-not-allowed hover:brightness-50 brightness-50"
+                src="multimedia/Notes_icon.png"
+                alt="notes" />
+            {/if}
+          </div>
+        </Button>
+        <Button
+          id="reviews"
+          ariaLabel="Reviews"
+          class="w-full h-full !p-0 !shadow-transparent"
+          onClick={() => forward("Reviews")}>
           <div slot="icon">
             <img
-              class:cursor-not-allowed={!passage}
-              class:hover:brightness-50={!passage}
-              class:brightness-50={!passage}
-              src="multimedia/Notes_icon.png"
-              alt="notes" />
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Reviews_icon.png"
+              alt="reviews" />
           </div>
         </Button>
-        <Button class="w-full h-full !p-0 !shadow-transparent" onClick={() => forward("Reviews")}>
+        <Button
+          id="settings"
+          ariaLabel="Settings"
+          class="w-full h-full !p-0 !shadow-transparent"
+          onClick={() => forward("Settings")}>
           <div slot="icon">
-            <img src="multimedia/Reviews_icon.png" alt="reviews" />
-          </div>
-        </Button>
-        <Button class="w-full h-full !p-0 !shadow-transparent" onClick={() => forward("Settings")}>
-          <div slot="icon">
-            <img src="multimedia/Settings_icon.png" alt="settings" />
+            <img
+              class:cursor-not-allowed={reviewList && reviewList.length === 0}
+              class:hover:brightness-50={reviewList && reviewList.length === 0}
+              class:brightness-50={reviewList && reviewList.length === 0}
+              src="multimedia/Settings_icon.png"
+              alt="settings" />
           </div>
         </Button>
       </div>

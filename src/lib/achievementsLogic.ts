@@ -10,7 +10,6 @@ type achievementObj = {
   rideList?: Array<RideRead> | null;
   reviewsAmount?: number | null;
   resolutionData?: RideRead | null;
-  tutorialCompleted?: boolean | null;
 };
 
 export const isAchieved = async ({
@@ -48,6 +47,12 @@ export const isAchieved = async ({
       }
       return false;
     case 5:
+      if (!unlockedAchievementsIds.includes(achievementId)) {
+        postUserAchievement(userId, achievementId);
+        return true;
+      }
+      return false;
+    case 6:
       if (!unlockedAchievementsIds.includes(achievementId)) {
         postUserAchievement(userId, achievementId);
         return true;
