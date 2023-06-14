@@ -85,9 +85,7 @@
       <span class="flex">
         {#each { length: 5 } as _, i}
           {#if i < Math.floor(rate)}
-            <IonStar
-              font-size="1em"
-              class={rate === 5 && i < 5 ? "w-5 text-aurora-yellow" : "w-5"} />
+            <IonStar font-size="1em" class="w-5" />
           {:else if i === Math.floor(rate) && rate % 1 !== 0}
             <IonHalfStar font-size="1em" class="w-5" />
           {:else}

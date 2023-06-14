@@ -617,7 +617,7 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute left-0 right-0 top-48 m-auto z-20">
+        <div in:fade class="absolute left-0 right-0 top-8 lg:top-48 m-auto z-20">
           {#await passage then dialog}
             {#await textParsed then parsedText}
               {#if !patienceLost}
