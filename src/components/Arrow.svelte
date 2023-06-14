@@ -118,14 +118,11 @@
       changeClasses(Object.values(elements)[keyPassages[foundPassage]]);
     }
   }
-  $: console.log($rideQuit.valueOf());
 
   onDestroy(() => {
     if ($rideQuit.valueOf() !== true) {
-      console.log("bar");
       restoreClasses(false);
     } else {
-      console.log("foo");
       removeClasses();
     }
   });
