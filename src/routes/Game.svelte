@@ -515,7 +515,7 @@
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
   <Notification {messages} />
   <video
-    class="fixed h-screen w-screen object-fill"
+    class="fixed h-screen w-screen object-cover overflow-hidden"
     loop
     muted
     autoplay={typeof passage === "object"}>
