@@ -153,11 +153,7 @@
     audioRadio = this;
   }
 
-
   const toggleCheatSheet = () => {
-    if (passage && dialogToggled === true){
-      dialog();
-    }
     showInfo = !showInfo;
   };
 
@@ -202,7 +198,7 @@
   <img
     src="cheatsheet.png"
     alt=""
-    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat z-10"
+    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat z-20"
     style="background-size: 100% 100%"
     on:click={toggleCheatSheet}
     on:keypress />
