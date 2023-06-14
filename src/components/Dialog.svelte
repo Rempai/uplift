@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { emotion, passageName, previousEmotion, expression } from "@/lib/stores";
+  import { emotion, passageName, previousEmotion, expression, rendered } from "@/lib/stores";
 
   import Button from "@/components/Button.svelte";
 
@@ -79,6 +79,11 @@
     return [];
   }
 
+  const handleClick = () => {
+    $rendered = false;
+    dispatch("next");
+  };
+
   let initialBranchName = "";
   Object.defineProperty(window, "initialBranchName", {
     get: function () {
@@ -153,7 +158,7 @@
               class="!shadow-transparent bottom-6 right-0 absolute !m-0 !p-0 outline-none"
               id="continue"
               autofocus={true}
-              onClick={() => dispatch("next")}>
+              onClick={handleClick}>
               <div slot="icon" class="w-fit element">
                 <PhTriangleFill font-size="1.5em" class="text-storm-1" />
               </div>

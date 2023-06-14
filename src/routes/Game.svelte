@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion } from "@/lib/stores";
+  import { passageName, validation, emotion, rendered } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validationErrorCheck } from "@/lib/validation";
   import {
@@ -35,6 +35,7 @@
   import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
   import DriverModal from "@/components/DriverModal.svelte";
+  import Arrow from "@/components/Arrow.svelte";
 
   import Background from "/background.webm";
 
@@ -75,7 +76,7 @@
   let unlockedAchievements = [];
 
   let ambientNoise = false;
-  let animalease = true;
+  let animalese = true;
   let volumeAmbient = 1;
   let allowAudioCall = true;
   let audioAmbient;
@@ -85,6 +86,7 @@
   let showReviewList = false;
 
   let showDriverModal = false;
+  let showArrow = false;
 
   const submitLogin = async ({ target }) => {
     const login = await loginForAccessToken(target);
@@ -120,9 +122,6 @@
     parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
-    login = false;
-    register = false;
-
     await CharactersService.getRides()
       .then((res) => (rideList = res))
       .catch((err) => showError(err));
@@ -136,17 +135,25 @@
       .catch((err) => showError(err));
 
     await getUnlockedAchievements();
+
+    if (register || reviewList.length === 0) {
+      selectRide(new CustomEvent("", { detail: rideList.find((ride) => ride.id === 1) }));
+    }
+
+    login = false;
+    register = false;
   };
 
   const toggleAmbient = () => {
     ambientNoise = !ambientNoise;
   };
 
-  const toggleAnimalease = () => {
-    animalease = !animalease;
+  const toggleAnimalese = () => {
+    animalese = !animalese;
   };
 
   const toggleJournal = () => {
+    $rendered = true;
     journal = !journal;
     dialog = !dialog;
   };
@@ -159,7 +166,6 @@
 
   const selectRide = async (event: CustomEvent) => {
     const ride: RideRead = event.detail;
-
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
@@ -316,10 +322,10 @@
 
     let reviewScore = Number(passage.branch.replace(/\D/g, ""));
     if (patienceLost) {
-      let test = await CharactersService.getReviews().then((res) =>
+      let review = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
       );
-      reviewScore = test.id;
+      reviewScore = review.id;
     }
 
     const input: ReviewedUserCreate = {
@@ -332,24 +338,27 @@
     await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
 
     showReviewList = true;
-    //Achievement: Completed first ride
-    if (reviewList.length === 1) {
-      handleAchievement(1);
-    }
 
-    const lastReview = reviewList.at(-1);
+    if (!(reviewList === undefined || reviewList.length === 0)) {
+      let lastReview = reviewList.at(-1);
 
-    if (lastReview) {
+      //Achievement: Completed first ride
+      if (lastReview.description != "Finished tutorial") {
+        handleAchievement(1);
+      }
+
       // Achievement: 5 stars on Ride Paolo
-      if (lastReview.stars === 5) {
+      if (lastReview.stars === 5 && lastReview.rideId === 2) {
         handleAchievement(2);
       }
+
       // Achievement: 4 stars on a Ride Paolo
-      if (lastReview.stars === 4) {
+      if (lastReview.stars === 4 && lastReview.rideId === 2) {
         handleAchievement(4);
       }
+
       //Achievement: Tutorial complete
-      if (lastReview.description.includes("Finished Tutorial")) {
+      if (lastReview.description === "Finished tutorial") {
         handleAchievement(6);
       }
     }
@@ -405,20 +414,22 @@
 
   const handleAchievement = async (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    let achievement = await isAchieved({
-      userId: parsedJWT.sub,
-      unlockedAchievementsIds: unlockedAchievementsIds,
-      achievementId: achievementId,
-      reviewList: reviewList,
-      currentRide: currentRide,
-      rideList: rideList,
-      resolutionData: resolutionData,
-    });
-    if (achievement) {
-      triggerAchievement = true;
-      achievementCarousel.push(allAchievements[achievementId - 1].name);
+    if (!unlockedAchievementsIds.includes(achievementId)) {
+      let achievement = await isAchieved({
+        userId: parsedJWT.sub,
+        unlockedAchievementsIds: unlockedAchievementsIds,
+        achievementId: achievementId,
+        reviewList: reviewList,
+        currentRide: currentRide,
+        rideList: rideList,
+        resolutionData: resolutionData,
+      });
+      if (achievement) {
+        triggerAchievement = true;
+        achievementCarousel.push(allAchievements[achievementId - 1].name);
+      }
+      await getUnlockedAchievements();
     }
-    await getUnlockedAchievements();
   };
 
   onMount(async () => {
@@ -440,14 +451,15 @@
   $: if (passage) {
     if (allowAudioCall) {
       textParsed = textParser(passage.content);
-      if (animalease && passage.speaker !== "You") {
+      let processedText = passage.content.replace(/<[^>]+>/g, "");
+      if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            string: passage.content,
+            string: processedText,
           }),
         })
           .then((response) => response.blob())
@@ -617,6 +629,9 @@
           {/await}
         </div>
         <Progress {allPassages} {passedPassages} />
+        {#if currentRide.passenger.name == "Arty"}
+          <Arrow targetElement={passage} showArrow={false} />
+        {/if}
       {/if}
       <Multimedia
         on:dialog={toggleDialog}
@@ -627,11 +642,11 @@
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
-        on:toggleAnimalease={toggleAnimalease}
+        on:toggleAnimalese={toggleAnimalese}
         on:toggleReview={() => (showReviewList = false)}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
-        {animalease}
+        {animalese}
         {showReviewList}
         {modalOpened}
         {passage}
