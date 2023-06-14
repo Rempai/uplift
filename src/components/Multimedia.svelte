@@ -153,9 +153,6 @@
     audioRadio = this;
   }
 
-  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"];
-  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
-  $: bgColor = colors[currentColorIndex];
 
   const toggleCheatSheet = () => {
     if (passage && dialogToggled === true){
@@ -163,6 +160,10 @@
     }
     showInfo = !showInfo;
   };
+
+  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"];
+  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
+  $: bgColor = colors[currentColorIndex];
 
   $: if (showReviewList) {
     forward("Reviews");
@@ -494,7 +495,7 @@
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
         <div slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" id="diverLicense" />
+          <ClarityLicenseSolid class="text-aurora-orange text-{bgColor}" id="diverLicense" />
         </div>
       </Button>
       <Button
