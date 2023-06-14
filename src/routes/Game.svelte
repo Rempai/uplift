@@ -486,7 +486,7 @@
     }
   }
 
-  $: if ($emotion <= 70) {
+  $: if ($emotion === 0) {
     filledjournal = false;
     patienceLost = true;
   }
