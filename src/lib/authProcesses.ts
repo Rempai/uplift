@@ -1,16 +1,19 @@
 import { AuthService, UserService, type Register } from "./client";
-import { validateData } from "./validation";
 
 export const loginForAccessToken = async (target: HTMLFormElement) => {
   const urlSearchParams = new URLSearchParams(new FormData(target) as any);
-  try {
-    const res = await AuthService.login(urlSearchParams);
-    localStorage.setItem("access_token", res.access_token);
-    localStorage.setItem("refresh_token", res.refresh_token);
-    return true;
-  } catch (e) {
-    return e;
-  }
+
+  let returnValue;
+  await AuthService.login(urlSearchParams)
+    .then((res) => {
+      localStorage.setItem("access_token", res.access_token);
+      localStorage.setItem("refresh_token", res.refresh_token);
+      returnValue = res;
+    })
+    .catch((err) => {
+      returnValue = err;
+    });
+  return returnValue;
 };
 
 export const registerForAccessToken = async (target: HTMLFormElement) => {
@@ -22,19 +25,17 @@ export const registerForAccessToken = async (target: HTMLFormElement) => {
     repeatPassword: value.repeatPassword as string,
   };
 
-  const returnvalue = await validateData("Register", value as Register, true).then(async () => {
-    try {
-      const res = await AuthService.register(register);
+  let returnValue;
+  await AuthService.register(register)
+    .then((res) => {
       localStorage.setItem("access_token", res.access_token);
       localStorage.setItem("refresh_token", res.refresh_token);
-      return true;
-    } catch (e) {
-      console.log(e);
-      return e as string;
-    }
-  });
-
-  return returnvalue;
+      returnValue = res;
+    })
+    .catch((err) => {
+      returnValue = err;
+    });
+  return returnValue;
 };
 
 export const updateUserAccount = async (target: HTMLFormElement, parse_jwt_sub: number) => {
