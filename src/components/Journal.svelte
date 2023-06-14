@@ -84,7 +84,7 @@
 
 {#if openJournal}
   <div
-    class="bg-night-3 flex mx-auto max-w-5xl rounded h-full border-4 border-night-1 z-20 overflow-hidden">
+    class="bg-night-3 flex mx-4 2xl:mx-auto max-w-5xl rounded h-full border-4 border-night-1 z-20 overflow-hidden">
     {#if open === 1}
       <div
         class="flex h-full w-min flex-wrap overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
