@@ -482,11 +482,6 @@
     filledjournal = false;
     patienceLost = true;
   }
-
-  $: {
-    // spam errors en zie hoe er nog errors overblijven.
-    console.log(messages);
-  }
 </script>
 
 <svelte:head>
@@ -515,7 +510,7 @@
   <div class="absolute right-0 w-full flex flex-col">
     {#each messages as message}
       <Error
-        message={`${message.msg} ${message.id}`}
+        message={message.msg}
         id={message.id}
         on:removeMessage={() => removeError(message.id)} />
     {/each}

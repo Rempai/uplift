@@ -7,8 +7,6 @@
 
   const dispatch = createEventDispatcher();
 
-  console.log(id);
-
   onMount(() => {
     setTimeout(() => {
       dispatch("removeMessage", id);
@@ -21,32 +19,23 @@
 </script>
 
 <div class="flex flex-col items-end space-y-4">
-  <div class="error" on:click={handleClick} on:keydown>
+  <div
+    class=" bg-aurora-red text-white p-4 rounded shadow z-50 transition w-80 mt-2 mr-2 cursor-pointer"
+    on:click={handleClick}
+    on:keydown>
     <p>{message}</p>
-    <div class="progress-bar" style={`animation-duration: ${duration}ms`} />
+    <div
+      class="progress-bar h-2 rounded bg-[#a8414a] mt-2"
+      style={`animation-duration: ${duration}ms`} />
   </div>
 </div>
 
 <style>
-  .error {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 9999;
-    transition: opacity 0.3s ease-in-out;
-    animation-fill-mode: forwards;
-    animation-timing-function: ease-out;
-  }
-
   .error p {
     margin: 0;
   }
 
   .progress-bar {
-    height: 5px;
-    background-color: rgba(255, 255, 255, 0.5);
     animation-name: progress;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
