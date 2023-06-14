@@ -38,6 +38,7 @@
   export let ambientNoise: boolean;
 
   let dialogToggled = false;
+  let journalToggled = false;
   let activeContent: string;
   let modalHeader = "Menu";
   let singleReviewData = {
@@ -68,6 +69,7 @@
 
   const handleModal = () => {
     if (activeContent === "Reviews") dispatch("toggleReview");
+    if (activeContent === "Achievements") dispatch("getAchievements");
     if (modalOpened === true) activeContent = null;
     journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
@@ -102,6 +104,7 @@
   const toggleJournal = () => {
     if (passage && filledjournal) {
       dispatch("journalPressed");
+      journalToggled = !journalToggled;
     }
   };
 
@@ -150,6 +153,16 @@
     audioRadio = this;
   }
 
+  const toggleCheatSheet = () => {
+    if (passage && dialogToggled === true) {
+      dialog();
+    } else if (journalToggled) {
+      toggleJournal();
+      dialog();
+    }
+    showInfo = !showInfo;
+  };
+
   $: if (showReviewList) {
     forward("Reviews");
   }
@@ -184,9 +197,9 @@
   <img
     src="cheatsheet.png"
     alt=""
-    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat"
+    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat z-10"
     style="background-size: 100% 100%"
-    on:click={() => (showInfo = !showInfo)}
+    on:click={toggleCheatSheet}
     on:keypress />
 {/if}
 
@@ -195,7 +208,7 @@
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
         {#each allAchievements as ach}
-          {#await unlockedAchievementsIds then _}
+          {#if unlockedAchievementsIds}
             {#if unlockedAchievementsIds.includes(ach.id)}
               <div class="relative">
                 <Tooltip title={ach.description} position={"top"}>
@@ -215,7 +228,7 @@
                 </div>
               </Tooltip>
             {/if}
-          {/await}
+          {/if}
         {/each}
       </div>
     </div>
@@ -476,25 +489,16 @@
         ariaLabel="Drivers license"
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
-        <div
-          class:cursor-not-allowed={reviewList && reviewList.length === 0}
-          class:hover:brightness-50={reviewList && reviewList.length === 0}
-          class:brightness-50={reviewList && reviewList.length === 0}
-          id="diverLicense"
-          slot="icon">
+        <div class="brightness-50 cursor-not-allowed" id="diverLicense" slot="icon">
           <ClarityLicenseSolid class="text-aurora-orange" />
         </div>
       </Button>
       <Button
         id="info"
         ariaLabel="Information"
-        onClick={() => (showInfo = !showInfo)}
+        onClick={toggleCheatSheet}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
-        <div
-          class:cursor-not-allowed={reviewList && reviewList.length === 0}
-          class:hover:brightness-50={reviewList && reviewList.length === 0}
-          class:brightness-50={reviewList && reviewList.length === 0}
-          slot="icon">
+        <div slot="icon">
           <img src="multimedia/Info_Icon.png" alt="info" />
         </div>
       </Button>
@@ -503,11 +507,7 @@
         ariaLabel="Toggle Dialog"
         onClick={dialog}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
-        <div
-          class:cursor-not-allowed={reviewList && reviewList.length === 0}
-          class:hover:brightness-50={reviewList && reviewList.length === 0}
-          class:brightness-50={reviewList && reviewList.length === 0}
-          slot="icon">
+        <div slot="icon">
           <img
             src={dialogIconSrc}
             alt="dialog"
@@ -523,12 +523,7 @@
           onClick={() => forward("Achievements")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={reviewList && reviewList.length === 0}
-              class:hover:brightness-50={reviewList && reviewList.length === 0}
-              class:brightness-50={reviewList && reviewList.length === 0}
-              src="multimedia/Achievements_icon.png"
-              alt="achievements" />
+            <img src="multimedia/Achievements_icon.png" alt="achievements" />
           </div>
         </Button>
         <Button
@@ -537,12 +532,7 @@
           onClick={() => forward("Rides")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={reviewList && reviewList.length === 0}
-              class:hover:brightness-50={reviewList && reviewList.length === 0}
-              class:brightness-50={reviewList && reviewList.length === 0}
-              src="multimedia/Contacts_icon.png"
-              alt="contacts" />
+            <img src="multimedia/Contacts_icon.png" alt="contacts" />
           </div>
         </Button>
         <Button
@@ -551,12 +541,7 @@
           onClick={() => forward("Radio")}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={reviewList && reviewList.length === 0}
-              class:hover:brightness-50={reviewList && reviewList.length === 0}
-              class:brightness-50={reviewList && reviewList.length === 0}
-              src="multimedia/Music_icon.png"
-              alt="music" />
+            <img src="multimedia/Music_icon.png" alt="music" />
           </div>
         </Button>
       </div>
@@ -583,12 +568,7 @@
           class="w-full h-full !p-0 !shadow-transparent"
           onClick={() => forward("Reviews")}>
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={reviewList && reviewList.length === 0}
-              class:hover:brightness-50={reviewList && reviewList.length === 0}
-              class:brightness-50={reviewList && reviewList.length === 0}
-              src="multimedia/Reviews_icon.png"
-              alt="reviews" />
+            <img src="multimedia/Reviews_icon.png" alt="reviews" />
           </div>
         </Button>
         <Button
@@ -597,12 +577,7 @@
           class="w-full h-full !p-0 !shadow-transparent"
           onClick={() => forward("Settings")}>
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={reviewList && reviewList.length === 0}
-              class:hover:brightness-50={reviewList && reviewList.length === 0}
-              class:brightness-50={reviewList && reviewList.length === 0}
-              src="multimedia/Settings_icon.png"
-              alt="settings" />
+            <img src="multimedia/Settings_icon.png" alt="settings" />
           </div>
         </Button>
       </div>
