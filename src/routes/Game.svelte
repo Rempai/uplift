@@ -342,7 +342,8 @@
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
     await CharactersService.getReviews(null, parsedJWT.sub)
-      .then(() => {
+      .then((res) => {
+        reviewList = res;
         showReviewList = true;
         if (!(reviewList === undefined || reviewList.length === 0)) {
           let lastReview = reviewList.at(-1);
@@ -516,7 +517,7 @@
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
   <Notification {messages} />
   <video
-    class="fixed h-screen w-screen object-fill"
+    class="fixed h-screen w-screen object-cover overflow-hidden"
     loop
     muted
     autoplay={typeof passage === "object"}>
@@ -611,7 +612,7 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute inset-0 top-8 lg:top-48 m-auto z-20">
+        <div in:fade class="absolute right-0 left-0 top-8 lg:top-48 m-auto z-20">
           {#await passage then dialog}
             {#await textParsed then parsedText}
               {#if !patienceLost}
