@@ -58,7 +58,7 @@
           element.classList.add("cursor-not-allowed", "brightness-50");
         }
         showArrow = false;
-      }, 200000);
+      }, 7000);
     } else {
       for (let key in elements) {
         let element = elements[key];
