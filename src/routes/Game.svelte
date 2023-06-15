@@ -201,6 +201,8 @@
   };
 
   const selectRide = async (event: CustomEvent) => {
+    $rideQuit = false;
+    $rendered = false;
     const ride: RideRead = event.detail;
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
@@ -424,6 +426,7 @@
 
   const quitRide = () => {
     $rideQuit = true;
+    $rendered = false;
     currentRide = undefined;
     passage = undefined;
     ambientNoise = false;
@@ -478,6 +481,12 @@
     }
   };
 
+  const toggleReview = () => {
+    if (passage === undefined) {
+      $rideQuit = true;
+    }
+    showReviewList = false;
+  };
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
@@ -689,7 +698,7 @@
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
         on:toggleAnimalese={toggleAnimalese}
-        on:toggleReview={() => (showReviewList = false)}
+        on:toggleReview={toggleReview}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
         {animalese}
