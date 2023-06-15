@@ -7,6 +7,7 @@
 
   let showArrow = false;
   let elements = {};
+  let element;
 
   let arrowWidth;
   let left = 0;
@@ -68,6 +69,7 @@
       "rounded",
       "outline-offset-2"
     );
+    element = currentElement;
   };
 
   // Remove classes after tutorial is done
@@ -102,7 +104,7 @@
     } else {
       const foundPassage = Object.keys(keyPassages).find((key) => passage.content.includes(key));
 
-      if (foundPassage !== undefined) {
+      if (foundPassage !== undefined && $rendered === false) {
         getElementPosition(Object.values(elements)[keyPassages[foundPassage]]);
         changeClasses(Object.values(elements)[keyPassages[foundPassage]]);
       }
@@ -114,6 +116,13 @@
     if ($rideQuit !== true) {
       restoreClasses();
     } else {
+      element.classList.remove(
+        "border",
+        "border-4",
+        "border-aurora-yellow/70",
+        "rounded",
+        "outline-offset-2"
+      );
       removeClasses();
     }
   });

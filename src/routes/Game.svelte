@@ -489,6 +489,7 @@
     }
     showReviewList = false;
   };
+
   onMount(async () => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
