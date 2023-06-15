@@ -177,7 +177,7 @@
   const showError = (err: string) => {
     const id = Math.random();
     const newErr = { msg: err, id };
-    $errors = [...$errors, newErr];
+    errors.update((e) => [...e, newErr]);
   };
 
   const showResolution = ({ detail }) => {
