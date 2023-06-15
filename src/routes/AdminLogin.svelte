@@ -18,7 +18,7 @@
             if (parsedJWT.role === "Admin" || parsedJWT.role === "Writer") {
               push("/admin");
             } else {
-              ErrorMessage("Does not have the required role");
+              showError("Does not have the required role");
             }
           });
         } else {
