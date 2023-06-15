@@ -116,13 +116,14 @@
     if ($rideQuit !== true) {
       restoreClasses();
     } else {
+      if(element){
       element.classList.remove(
         "border",
         "border-4",
         "border-aurora-yellow/70",
         "rounded",
         "outline-offset-2"
-      );
+      );}
       removeClasses();
     }
   });
