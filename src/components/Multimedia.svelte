@@ -4,6 +4,7 @@
   import type { AchievementRead, PassageRead, ReviewRead, RideRead } from "@/lib/client";
 
   import { radios } from "@/lib/radio";
+  import { parsedJWT } from "@/lib/stores";
 
   import Modal from "@/components/Modal.svelte";
   import Button from "@/components/Button.svelte";
@@ -163,6 +164,10 @@
 
   $: if (showReviewList) {
     forward("Reviews");
+  }
+
+  $: if ($parsedJWT) {
+    modalOpened = false;
   }
 
   $: if (reviewList) {
