@@ -135,7 +135,7 @@
     {/if}
     {#if open === 2}
       <div
-        class="overflow-auto flex flex-col flex-wrap w-full pb-3 pt-12 lg:pt-0 mt-3 h-full justify-center">
+        class="overflow-auto flex flex-col flex-wrap w-full pb-3 h-full justify-center">
         <Form handleSubmit={submitForm} on:back={() => history.back()}>
           <div slot="forms" class="flex w-full mx-auto items-center">
             <div class="flex flex-col w-80 lg:w-1/2">
