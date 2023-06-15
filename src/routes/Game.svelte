@@ -229,7 +229,9 @@
   };
 
   const updateAccount = async ({ detail }) => {
+    console.log(parsedJWT.sub);
     await updateUserAccount(detail, parsedJWT.sub).then((res) => {
+      console.log(res);
       if (!res && res.status !== 200) {
         showError(res.statusText);
       } else {

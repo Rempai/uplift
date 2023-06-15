@@ -30,7 +30,7 @@
 
   const showError = (err: string) => {
     const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
-    messages = [...messages, err];
+    messages = [...messages, cleanedError];
   };
 
   const ErrorMessage = (str: string) => {

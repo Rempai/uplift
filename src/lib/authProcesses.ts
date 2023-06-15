@@ -41,10 +41,13 @@ export const registerForAccessToken = async (target: HTMLFormElement) => {
 export const updateUserAccount = async (target: HTMLFormElement, parse_jwt_sub: number) => {
   const formData = new FormData(target);
   const value = Object.fromEntries(formData.entries());
+  console.log(value);
   try {
     await UserService.updateUser(parse_jwt_sub, value);
+    console.log(UserService.updateUser(parse_jwt_sub, value));
     return true;
   } catch (e) {
+    console.log(e);
     return e;
   }
 };
