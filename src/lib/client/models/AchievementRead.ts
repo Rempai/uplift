@@ -8,5 +8,6 @@ export type AchievementRead = {
   id: number;
   user?: UserRead;
   name: string;
+  icon: string;
   description: string;
 };
