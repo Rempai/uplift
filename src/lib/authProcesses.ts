@@ -1,4 +1,4 @@
-import { AuthService, UserService, type Register } from "./client";
+import { AuthService, UserService, type Register } from "@/lib/client";
 
 export const loginForAccessToken = async (target: HTMLFormElement) => {
   const urlSearchParams = new URLSearchParams(new FormData(target) as any);
@@ -43,9 +43,7 @@ export const updateUserAccount = async (target: HTMLFormElement, parse_jwt_sub: 
   const value = Object.fromEntries(formData.entries());
   console.log(value);
   try {
-    await UserService.updateUser(parse_jwt_sub, value);
-    console.log(UserService.updateUser(parse_jwt_sub, value));
-    return true;
+    return await UserService.updateUser(parse_jwt_sub, value);
   } catch (e) {
     console.log(e);
     return e;
