@@ -217,8 +217,8 @@
               <div class="relative">
                 <Tooltip title={ach.description} position={"top"}>
                   <div
-                    class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
-                    <p class="text-sm text-center">{ach.name}</p>
+                    class="cursor-pointer hover:brightness-110 rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center bg-contain bg-fixed bg-center">
+                    <img src={ach.icon} alt="" />
                   </div>
                 </Tooltip>
               </div>
