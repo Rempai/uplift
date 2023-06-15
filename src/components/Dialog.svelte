@@ -70,24 +70,30 @@
       <img src="logowhite.png" alt="" class="h-16 w-20 mx-auto" />
     </div>
     <div class="flex">
-      <div class="flex flex-col h-full p-2">
+      <div class="flex flex-col h-full pt-2">
         <div class="flex justify-center">
           <p class="font-extrabold" style="color: {color};">{user}</p>
         </div>
         <div>
           {#if user == "You"}
-            <MingcuteUser4Fill font-size="2em" class="h-44 w-44" />
+            <MingcuteUser4Fill class="h-44 w-44" />
           {:else if $expression === "normal"}
-            <img src={user.toLowerCase() + normalBaseUrl} alt="" class="h-44 w-44 pb-2" />
+            <img src={user.toLowerCase() + normalBaseUrl} alt="" class="h-44 w-44 pb-2 pl-1" />
           {:else if $expression === "happy"}
-            <img src={fulUrl + user.toLowerCase() + happyBaseUrl} alt="" class="h-44 w-44 pb-2" />
+            <img
+              src={fulUrl + user.toLowerCase() + happyBaseUrl}
+              alt=""
+              class="h-44 w-44 pb-2 pl-1" />
           {:else if $expression === "annoyed"}
             <img
               src={fulUrl + user.toLowerCase() + annoyedBaseUrl}
               alt=""
-              class="h-44 w-44 pb-2" />
+              class="h-44 w-44 pb-2 pl-1" />
           {:else if $expression === "angry"}
-            <img src={fulUrl + user.toLowerCase() + angryBaseUrl} alt="" class="h-44 w-44 pb-2" />
+            <img
+              src={fulUrl + user.toLowerCase() + angryBaseUrl}
+              alt=""
+              class="h-44 w-44 pb-2 pl-1" />
           {/if}
         </div>
       </div>
