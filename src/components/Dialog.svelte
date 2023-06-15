@@ -1,7 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { emotion, passageName, previousEmotion, expression, finishedPassageRender } from "@/lib/stores";
+  import {
+    emotion,
+    passageName,
+    previousEmotion,
+    expression,
+    finishedPassageRender,
+  } from "@/lib/stores";
 
   import MingcuteUser4Fill from "~icons/mingcute/user-4-fill";
 
