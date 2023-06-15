@@ -90,7 +90,7 @@
   };
 
   const dialog = () => {
-    if (passage !== null) {
+    if (passage) {
       dispatch("dialog");
       dialogToggled = !dialogToggled;
     }
