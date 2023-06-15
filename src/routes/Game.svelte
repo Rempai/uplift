@@ -378,7 +378,7 @@
 
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub)
+    await CharactersService.getReviews(parsedJWT.sub)
       .then((res) => {
         reviewList = res;
         showReviewList = true;
