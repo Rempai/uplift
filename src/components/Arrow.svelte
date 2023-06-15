@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { rideQuit, rendered } from "@/lib/stores";
   import BSArrow from "~icons/bxs/down-arrow";
 
@@ -43,36 +43,19 @@
     showArrow = true;
   }
 
-  export const restoreClasses = (timeout: boolean) => {
-    if (timeout) {
-      setTimeout(() => {
-        for (let key in elements) {
-          let element = elements[key];
-          element.classList.remove(
-            "border",
-            "border-4",
-            "border-aurora-yellow/70",
-            "rounded",
-            "outline-offset-2"
-          );
-          element.classList.add("cursor-not-allowed", "brightness-50");
-        }
-        showArrow = false;
-      }, 7000);
-    } else {
-      for (let key in elements) {
-        let element = elements[key];
-        element.classList.remove(
-          "border",
-          "border-4",
-          "border-aurora-yellow/70",
-          "rounded",
-          "outline-offset-2"
-        );
-        element.classList.add("cursor-not-allowed", "brightness-50");
-      }
-      showArrow = false;
+  const restoreClasses = () => {
+    for (let key in elements) {
+      let element = elements[key];
+      element.classList.remove(
+        "border",
+        "border-4",
+        "border-aurora-yellow/70",
+        "rounded",
+        "outline-offset-2"
+      );
+      element.classList.add("cursor-not-allowed", "brightness-50");
     }
+    showArrow = false;
   };
 
   const changeClasses = (currentElement) => {
@@ -98,30 +81,38 @@
   }
 
   $: if (passage) {
-    restoreClasses(false);
-
     const keyPassages = {
       "clicking the contacts button": 0,
       "Try opening the journal": 1,
       "the review section": 2,
-      "Try opening your license": 3,
+      "Try opening your licence": 3,
       "by opening the list of achievements": 4,
       "Try opening your radio menu": 5,
       "Try opening your settings": 6,
       "the progress meter here in": 7,
     };
 
-    const foundPassage = Object.keys(keyPassages).find((key) => passage.content.includes(key));
+    if (
+      passage.content.includes("You could go more in depth about") ||
+      passage.content.includes("Mistakes happen.") ||
+      passage.content.includes("You are almost finished") ||
+      passage.content.includes("Now that you have finished this branch")
+    ) {
+      restoreClasses();
+    } else {
+      const foundPassage = Object.keys(keyPassages).find((key) => passage.content.includes(key));
 
-    if (foundPassage !== undefined && $rendered === false) {
-      restoreClasses(true);
-      getElementPosition(Object.values(elements)[keyPassages[foundPassage]]);
-      changeClasses(Object.values(elements)[keyPassages[foundPassage]]);
+      if (foundPassage !== undefined) {
+        getElementPosition(Object.values(elements)[keyPassages[foundPassage]]);
+        changeClasses(Object.values(elements)[keyPassages[foundPassage]]);
+      }
     }
   }
+
   onDestroy(() => {
-    if ($rideQuit.valueOf() !== true) {
-      restoreClasses(false);
+    tick();
+    if ($rideQuit !== true) {
+      restoreClasses();
     } else {
       removeClasses();
     }
