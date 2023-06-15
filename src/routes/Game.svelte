@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion } from "@/lib/stores";
+  import { passageName, validation, emotion, errors } from "@/lib/stores";
   import { parseJwt, type jwtObject } from "@/lib/jwtParser";
   import { validationErrorCheck } from "@/lib/validation";
   import {
@@ -38,12 +38,6 @@
 
   import Background from "/background.webm";
   import Error from "@/components/Error.svelte";
-
-  interface message {
-    id: number;
-    msg: string;
-  }
-  let messages: Array<message> = [];
 
   let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
@@ -181,14 +175,10 @@
   };
 
   const showError = (err: string) => {
-    const date = new Date();
-    const id = date.getMilliseconds();
+    const id = Math.random();
     const newErr = { msg: err, id };
-    messages = [...messages, newErr];
-  };
-
-  const removeError = (id: number) => {
-    messages = messages.filter((message) => message.id !== id);
+    $errors.concat(newErr);
+    $errors = $errors;
   };
 
   const showResolution = ({ detail }) => {
@@ -508,11 +498,8 @@
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
 
   <div class="absolute right-0 w-full flex flex-col">
-    {#each messages as message}
-      <Error
-        message={message.msg}
-        id={message.id}
-        on:removeMessage={() => removeError(message.id)} />
+    {#each $errors as error}
+      <Error message={error.msg} id={error.id} />
     {/each}
   </div>
 
