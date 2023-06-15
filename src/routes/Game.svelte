@@ -346,6 +346,8 @@
   };
 
   const finishRide = async (event: CustomEvent) => {
+    $rideQuit = true;
+    $rendered = false;
     solutionInput = event.detail;
     nextPassage(currentRide?.passenger.name + solutionInput + "You" + 1);
     journalData = [];
