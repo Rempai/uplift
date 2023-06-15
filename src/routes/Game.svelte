@@ -2,8 +2,8 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, rendered, rideQuit } from "@/lib/stores";
-  import { parseJwt, type jwtObject } from "@/lib/jwtParser";
+  import { passageName, validation, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
+  import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
     registerForAccessToken,
@@ -58,8 +58,6 @@
   let resolutionData: RideRead;
   let solutionInput = "";
 
-  let parsedJWT: jwtObject;
-
   let login = false;
   let register = false;
   let welcome = false;
@@ -80,7 +78,6 @@
   let audioAmbient;
   let audio;
 
-  let modalOpened = false;
   let showReviewList = false;
 
   let showDriverModal = false;
@@ -153,14 +150,14 @@
   const startGame = async () => {
     $validation.length = 0;
     const token = localStorage.getItem("access_token");
-    parsedJWT = await parseJwt(token);
+    $parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
       .catch((err) => showError(err));
 
-    await CharactersService.getReviews(parsedJWT.sub)
+    await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => (reviewList = res))
       .catch((err) => showError(err));
 
@@ -228,18 +225,19 @@
   };
 
   const updateAccount = async ({ detail }) => {
-    await updateUserAccount(detail, parsedJWT.sub).then((res) => {
-      if (!res && res.status !== 200) {
-        showError(res.statusText);
-      } else {
-        journal = false;
-        modalOpened = false;
-      }
-    });
+    const res = await updateUserAccount(detail, $parsedJWT.sub);
+    if (res.access_token) {
+      localStorage.setItem("access_token", res.access_token);
+      localStorage.setItem("refresh_token", res.refresh_token);
+      OpenAPI.TOKEN = res.access_token;
+      $parsedJWT = await parseJwt(res.access_token);
+    } else {
+      ErrorMessage(res);
+    }
   };
 
   const deleteUser = async () => {
-    await UserService.deleteUser(parsedJWT.sub)
+    await UserService.deleteUser($parsedJWT.sub)
       .then(() => {
         localStorage.clear();
         showError("Deleted User");
@@ -278,8 +276,10 @@
   const nextPassage = (name: string) => {
     let passageFind = allPassages.find((p) => p.passage === name);
 
-    if (passageFind.content.match("{user}")) {
-      passageFind.content = passageFind.content.replace("{user}", parsedJWT.username);
+    if (passageFind) {
+      if (passageFind.content.match("{user}")) {
+        passageFind.content = passageFind.content.replace("{user}", $parsedJWT.username);
+      }
     }
 
     if (passageFind && !passedPassages.includes(passageFind.passage)) {
@@ -289,7 +289,7 @@
     }
 
     if (passageFind == undefined) {
-      CharactersService.getReviews(parsedJWT.sub)
+      CharactersService.getReviews($parsedJWT.sub)
         .then((res) => {
           reviewList = res;
           passage = undefined;
@@ -366,14 +366,14 @@
     }
 
     const input: ReviewedUserCreate = {
-      userId: parsedJWT.sub,
+      userId: $parsedJWT.sub,
       reviewId: reviewScore,
       date: currentTime,
     };
 
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(parsedJWT.sub)
+    await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => {
         reviewList = res;
         showReviewList = true;
@@ -419,6 +419,7 @@
 
   const quitRide = () => {
     $rideQuit = true;
+    $passageName = "";
     currentRide = undefined;
     passage = undefined;
     ambientNoise = false;
@@ -442,7 +443,7 @@
   }
 
   const getUnlockedAchievements = async () => {
-    await UserService.getAchievements(parsedJWT.sub)
+    await UserService.getAchievements($parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
 
@@ -457,7 +458,7 @@
     // TODO: Achievement emotion meter: emotion stays above level whole game
     if (!unlockedAchievementsIds.includes(achievementId)) {
       let achievement = await isAchieved({
-        userId: parsedJWT.sub,
+        userId: $parsedJWT.sub,
         unlockedAchievementsIds: unlockedAchievementsIds,
         achievementId: achievementId,
         reviewList: reviewList,
@@ -563,7 +564,7 @@
       bind:showDriverModal
       on:achievement={(event) => handleAchievement(event.detail.achievementId)}
       lang="NL"
-      username={parsedJWT.username}
+      username={$parsedJWT.username}
       {allAchievements}
       {unlockedAchievements}
       {reviewList} />
@@ -682,9 +683,9 @@
         on:toggleReview={() => (showReviewList = false)}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
+        modalOpened={false}
         {animalese}
         {showReviewList}
-        {modalOpened}
         {passage}
         {reviewList}
         {rideList}
