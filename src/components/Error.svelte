@@ -6,7 +6,6 @@
   export let id;
 
   const deleteError = () => {
-    //$errors = $errors.filter((error) => error.id !== id);
     errors.update((e) => e.filter((error) => error.id !== id));
   };
 </script>
