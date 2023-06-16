@@ -340,7 +340,7 @@
 
   const finishRide = (event: CustomEvent) => {
     solutionInput = event.detail;
-    nextPassage(currentRide?.passenger.name + solutionInput + "You" + 1);
+    nextPassage(currentRide.passenger.name + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();

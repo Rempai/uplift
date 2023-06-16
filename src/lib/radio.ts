@@ -15,7 +15,7 @@ export const radios = [
   },
   {
     id: 3,
-    name: "ClassicFM",
+    name: "ClassicNL",
     source: "https://jfm1.hostingradio.ru:14536/gcstream.mp3",
   },
   {
