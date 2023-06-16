@@ -26,7 +26,6 @@
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
   import Form from "@/components/Form.svelte";
-  import Notification from "@/components/Notification.svelte";
   import Modal from "@/components/Modal.svelte";
   import CustomMenu from "@/components/contextMenu/CustomMenu.svelte";
   import Journal from "@/components/Journal.svelte";
