@@ -4,5 +4,6 @@
 
 export type AchievementCreate = {
   name: string;
+  icon: string;
   description: string;
 };

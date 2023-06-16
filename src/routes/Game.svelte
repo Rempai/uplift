@@ -2,8 +2,8 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, rendered, rideQuit } from "@/lib/stores";
-  import { parseJwt, type jwtObject } from "@/lib/jwtParser";
+  import { passageName, validation, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
+  import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
     registerForAccessToken,
@@ -48,7 +48,6 @@
 
   let dialog = false;
   let passage: PassageRead;
-  let textParsed: Promise<string>;
 
   let journal = false;
   let journalData: Array<PassageRead> = [];
@@ -58,8 +57,6 @@
   let resolution = false;
   let resolutionData: RideRead;
   let solutionInput = "";
-
-  let parsedJWT: jwtObject;
 
   let login = false;
   let register = false;
@@ -81,7 +78,6 @@
   let audioAmbient;
   let audio;
 
-  let modalOpened = false;
   let showReviewList = false;
 
   let showDriverModal = false;
@@ -154,14 +150,14 @@
   const startGame = async () => {
     $validation.length = 0;
     const token = localStorage.getItem("access_token");
-    parsedJWT = await parseJwt(token);
+    $parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
       .catch((err) => showError(err));
 
-    await CharactersService.getReviews(parsedJWT.sub)
+    await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => (reviewList = res))
       .catch((err) => showError(err));
 
@@ -231,18 +227,19 @@
   };
 
   const updateAccount = async ({ detail }) => {
-    await updateUserAccount(detail, parsedJWT.sub).then((res) => {
-      if (!res && res.status !== 200) {
-        showError(res.statusText);
-      } else {
-        journal = false;
-        modalOpened = false;
-      }
-    });
+    const res = await updateUserAccount(detail, $parsedJWT.sub);
+    if (res.access_token) {
+      localStorage.setItem("access_token", res.access_token);
+      localStorage.setItem("refresh_token", res.refresh_token);
+      OpenAPI.TOKEN = res.access_token;
+      $parsedJWT = await parseJwt(res.access_token);
+    } else {
+      ErrorMessage(res);
+    }
   };
 
   const deleteUser = async () => {
-    UserService.deleteUser(parsedJWT.sub)
+    await UserService.deleteUser($parsedJWT.sub)
       .then(() => {
         localStorage.clear();
         showError("Deleted User");
@@ -279,16 +276,22 @@
   };
 
   const nextPassage = (name: string) => {
-    passage = allPassages.find((p) => p.passage === name);
+    let passageFind = allPassages.find((p) => p.passage === name);
 
-    if (passage && !passedPassages.includes(passage.passage)) {
-      emotion.update((e) => e + passage.emotion);
-      if (!passage.branch.includes("Finish") && !(passage.emotion < 0))
-        passedPassages = [...passedPassages, passage.passage];
+    if (passageFind) {
+      if (passageFind.content.match("{user}")) {
+        passageFind.content = passageFind.content.replace("{user}", $parsedJWT.username);
+      }
     }
 
-    if (passage == undefined) {
-      CharactersService.getReviews(parsedJWT.sub)
+    if (passageFind && !passedPassages.includes(passageFind.passage)) {
+      emotion.update((e) => e + passageFind.emotion);
+      if (!passageFind.branch.includes("Finish") && !(passageFind.emotion < 0))
+        passedPassages = [...passedPassages, passageFind.passage];
+    }
+
+    if (passageFind == undefined) {
+      CharactersService.getReviews($parsedJWT.sub)
         .then((res) => {
           reviewList = res;
           passage = undefined;
@@ -300,21 +303,13 @@
         .catch((err) => showError(err));
     }
     allowAudioCall = true;
+
+    passage = passageFind;
   };
 
-  const textParser = async (text: string) => {
-    if (text) {
-      if (text.match("{user}")) {
-        text = text.replace("{user}", parsedJWT.username);
-      }
-    }
-    return text;
-  };
-
-  const updateJournalData = async () => {
+  const updateJournalData = () => {
     // Workaround for adding {user} template parsing for the journal
     let dialogUpdate = passage;
-    dialogUpdate.content = await textParsed;
     // Prevent duplicate passages in journal
     if (journalData.length !== 0) {
       let alreadyInJournal = false;
@@ -329,7 +324,7 @@
     } else journalData.push(dialogUpdate);
   };
 
-  const updateContextData = async (event: CustomEvent) => {
+  const updateContextData = (event: CustomEvent) => {
     if (event.detail.type === "mainProblem") {
       resolutionData.mainProblem = event.detail.text;
     } else if (event.detail.type === "partiesInvolved") {
@@ -339,7 +334,7 @@
     }
   };
 
-  const gotoBranch = async (event: CustomEvent) => {
+  const gotoBranch = (event: CustomEvent) => {
     journal = false;
     dialog = true;
     nextPassage(event.detail.passage);
@@ -375,14 +370,14 @@
     }
 
     const input: ReviewedUserCreate = {
-      userId: parsedJWT.sub,
+      userId: $parsedJWT.sub,
       reviewId: reviewScore,
       date: currentTime,
     };
 
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub)
+    await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => {
         reviewList = res;
         showReviewList = true;
@@ -429,6 +424,7 @@
   const quitRide = () => {
     $rideQuit = true;
     $rendered = false;
+    $passageName = "";
     currentRide = undefined;
     passage = undefined;
     ambientNoise = false;
@@ -452,7 +448,7 @@
   }
 
   const getUnlockedAchievements = async () => {
-    await UserService.getAchievements(parsedJWT.sub)
+    await UserService.getAchievements($parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
 
@@ -467,7 +463,7 @@
     // TODO: Achievement emotion meter: emotion stays above level whole game
     if (!unlockedAchievementsIds.includes(achievementId)) {
       let achievement = await isAchieved({
-        userId: parsedJWT.sub,
+        userId: $parsedJWT.sub,
         unlockedAchievementsIds: unlockedAchievementsIds,
         achievementId: achievementId,
         reviewList: reviewList,
@@ -508,7 +504,6 @@
 
   $: if (passage) {
     if (allowAudioCall) {
-      textParsed = textParser(passage.content);
       let processedText = passage.content.replace(/<[^>]+>/g, "");
       if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
@@ -581,7 +576,7 @@
       bind:showDriverModal
       on:achievement={(event) => handleAchievement(event.detail.achievementId)}
       lang="NL"
-      username={parsedJWT.username}
+      username={$parsedJWT.username}
       {allAchievements}
       {unlockedAchievements}
       {reviewList} />
@@ -661,30 +656,26 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute right-0 left-0 top-8 lg:top-48 m-auto z-20">
-          {#await passage then dialog}
-            {#await textParsed then parsedText}
-              {#if !patienceLost}
-                <Dialog
-                  on:next={nextPassageName}
-                  continueButton={dialog.continueButton}
-                  user={dialog.speaker}
-                  dialogColor={dialog.attribute.color}
-                  text={parsedText}
-                  font={dialog.attribute.fontFamily}
-                  fontSize={dialog.attribute.fontSize}
-                  color={dialog.attribute.color} />
-              {:else}
-                <Dialog
-                  on:next={createReview}
-                  continueButton={true}
-                  text="You pissed off {currentRide.passenger
-                    .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
-                  dialogColor="#BF616A"
-                  color="#e5e9f0" />
-              {/if}
-            {/await}
-          {/await}
+        <div in:fade class="absolute right-0 left-0 top-16 lg:top-48 m-auto z-20 px-4">
+          {#if passage}
+            {#if !patienceLost}
+              <Dialog
+                on:next={nextPassageName}
+                continueButton={passage.continueButton}
+                user={passage.speaker}
+                text={passage.content}
+                font={passage.attribute.fontFamily}
+                fontSize={passage.attribute.fontSize}
+                color={passage.attribute.color} />
+            {:else}
+              <Dialog
+                on:next={createReview}
+                continueButton={true}
+                text="You pissed off {currentRide.passenger
+                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                color="#e5e9f0" />
+            {/if}
+          {/if}
         </div>
         <Progress {allPassages} {passedPassages} />
         {#if currentRide.passenger.name == "Arty"}
@@ -704,9 +695,9 @@
         on:toggleReview={toggleReview}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
+        modalOpened={false}
         {animalese}
         {showReviewList}
-        {modalOpened}
         {passage}
         {reviewList}
         {rideList}

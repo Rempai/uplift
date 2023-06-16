@@ -27,6 +27,8 @@ export const userHTML = `
 export const achievementHTML = `
   <label for="name">Name</label>
   <input required type="text" name="name" placeholder="Got 5 stars" />
+  <label for="icon">Icon</label>
+  <input required type="text" name="icon" placeholder="achievements/firstRide.png" />
   <label for="description">Description</label>
   <input required type="text" name="description" placeholder="You got 5 stars" />
 `;
@@ -152,6 +154,8 @@ export function achievementEditHTML(data: AchievementUpdate): string {
   return `
   <label for="name">Name</label>
   <input required type="text" name="name" placeholder="Got 5 stars" value="${data.name}" />
+  <label for="icon">Icon</label>
+  <input required type="text" name="icon" placeholder="achievements/firstRide.png" value="${data.icon}" />
   <label for="description">Description</label>
   <input required type="text" name="description" placeholder="You got 5 stars" value="${data.description}" />
   `;
