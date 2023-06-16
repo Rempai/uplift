@@ -142,8 +142,8 @@
   const handleLogout = () => {
     localStorage.clear();
     welcome = true;
-    unlockedAchievements.length = 0;
-    unlockedAchievementsIds.length = 0;
+    unlockedAchievements = [];
+    unlockedAchievementsIds = [];
     quitRide();
   };
 
@@ -247,6 +247,9 @@
       })
       .catch((err) => showError(err));
     pausevideo();
+
+    unlockedAchievements = [];
+    unlockedAchievementsIds = [];
   };
 
   const nextPassageName = () => {
