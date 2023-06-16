@@ -136,6 +136,8 @@
       } else {
         showError(str);
       }
+    } else if (typeof str === "string") {
+      showError(str);
     }
   };
 
@@ -155,15 +157,15 @@
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => (reviewList = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     await UserService.getAchievements()
       .then((res) => (allAchievements = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     await getUnlockedAchievements();
 
@@ -201,7 +203,7 @@
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     currentRide = ride;
     dialog = true;
@@ -225,25 +227,35 @@
   };
 
   const updateAccount = async ({ detail }) => {
-    const res = await updateUserAccount(detail, $parsedJWT.sub);
-    if (res.access_token) {
-      localStorage.setItem("access_token", res.access_token);
-      localStorage.setItem("refresh_token", res.refresh_token);
-      OpenAPI.TOKEN = res.access_token;
-      $parsedJWT = await parseJwt(res.access_token);
-    } else {
-      ErrorMessage(res);
-    }
+    await updateUserAccount(detail, $parsedJWT.sub)
+      .then((res) => {
+        if (res.access_token) {
+          parseJwt(res.access_token).then((parsedJwt) => {
+            if ($parsedJWT.username != parsedJwt.username) {
+              localStorage.setItem("access_token", res.access_token);
+              localStorage.setItem("refresh_token", res.refresh_token);
+              OpenAPI.TOKEN = res.access_token;
+              ErrorMessage("Username has been changed to " + parsedJwt.username);
+            } else {
+              showError("That is your current username");
+            }
+          });
+        } else {
+          // @ts-ignore
+          ErrorMessage(Object.values(res)[3].message);
+        }
+      })
+      .catch((err) => ErrorMessage(err));
   };
 
   const deleteUser = async () => {
     await UserService.deleteUser($parsedJWT.sub)
       .then(() => {
         localStorage.clear();
-        showError("Deleted User");
+        ErrorMessage("Deleted User");
         welcome = true;
       })
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
     pausevideo();
   };
 
@@ -298,7 +310,7 @@
           dialog = false;
           pausevideo();
         })
-        .catch((err) => showError(err));
+        .catch((err) => ErrorMessage(err));
     }
     allowAudioCall = true;
 
@@ -371,7 +383,7 @@
       date: currentTime,
     };
 
-    await CharactersService.postReviewedUser(input).catch((err) => showError(err));
+    await CharactersService.postReviewedUser(input).catch((err) => ErrorMessage(err));
 
     await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => {
@@ -403,7 +415,7 @@
         // Achievement: Completed all rides
         // handleAchievement(9);
       })
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     quitRide();
   };
@@ -445,7 +457,7 @@
   const getUnlockedAchievements = async () => {
     await UserService.getAchievements($parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     unlockedAchievements.forEach((item) => {
       if (!unlockedAchievementsIds.includes(item.achievementId)) {
