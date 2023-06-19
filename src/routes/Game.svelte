@@ -236,13 +236,12 @@
               localStorage.setItem("refresh_token", res.refresh_token);
               OpenAPI.TOKEN = res.access_token;
               ErrorMessage("Username has been changed to " + parsedJwt.username);
-            } else {
-              showError("That is your current username");
+            } else if ($parsedJWT.username === parsedJwt.username && true) {
+              ErrorMessage("That is your current username");
             }
           });
         } else {
-          // @ts-ignore
-          ErrorMessage(Object.values(res)[3].message);
+          ErrorMessage(res);
         }
       })
       .catch((err) => ErrorMessage(err));
