@@ -3,6 +3,7 @@
 
   export let items = [];
   export let activeTabValue;
+  export let passenger;
 
   onMount(() => {
     if (Array.isArray(items) && items.length && items[0].value) {
@@ -23,8 +24,12 @@
         <span
           on:keypress
           on:click={handleClick(item.value)}
-          class="px-2 py-3 cursor-pointer whitespace-nowrap inline-flex justify-center items-center w-full">
-          {item.label}
+          class="px-2 py-3 cursor-pointer whitespace-nowrap inline-flex justify-center items-center w-full capitalize">
+          {#if item.label !== "Trunk"}
+            {item.label.split(passenger)[1]}
+          {:else}
+            {item.label}
+          {/if}
         </span>
       </li>
     {/each}
