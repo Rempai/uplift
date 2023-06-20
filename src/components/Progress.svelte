@@ -92,9 +92,10 @@
   class="flex w-fill justify-end absolute z-10"
   style="bottom: {screenHeight / 3.98 / fontsize}em; right: {screenWidth / 3.716 / fontsize}em ">
   <div
+    id="storyProgress"
     on:click={popup}
     on:keypress
-    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer progresstut"
+    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
     style="height: {screenHeight / 18 / fontsize}em; width: {screenWidth / 11.84 / fontsize}em;">
     {#if allPassages && allPassages.length > 0}
       {progression}%
