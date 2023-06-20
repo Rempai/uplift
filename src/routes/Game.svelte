@@ -665,7 +665,7 @@
             {/if}
           {/if}
         </div>
-        <Progress {allPassages} {passedPassages} />
+        <Progress passenger={currentRide.passenger.name} {allPassages} {passedPassages} />
         {#if currentRide.passenger.name == "Arty"}
           <Arrow {passage} />
         {/if}

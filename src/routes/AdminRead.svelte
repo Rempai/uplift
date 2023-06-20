@@ -17,7 +17,7 @@
 </script>
 
 <svelte:head>
-  <title>Uplift | Read</title>
+  <title>Admin | Read</title>
 </svelte:head>
 
 <div class="md:flex min-h-screen admin-space" style="margin-top: {contentMargin}px;">

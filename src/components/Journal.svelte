@@ -88,7 +88,10 @@
     {#if open === 1}
       <div
         class="flex h-full w-min flex-wrap overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
-        <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+        <Tabs
+          bind:activeTabValue={currentTab}
+          passenger={currentRide.passenger.name}
+          items={tabItems} />
         <Button
           onClick={gotoBranch}
           text="Go to branch"
