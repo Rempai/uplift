@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-
+  import { createEventDispatcher, onDestroy } from "svelte";
   import {
     emotion,
     passageName,
     previousEmotion,
     expression,
     finishedPassageRender,
+    rendered,
   } from "@/lib/stores";
 
   import MingcuteUser4Fill from "~icons/mingcute/user-4-fill";
@@ -68,6 +68,10 @@
   $: if (text) {
     $finishedPassageRender = true;
   }
+
+  onDestroy(() => {
+    $rendered = true;
+  });
 </script>
 
 <div class="flex mx-auto relative max-w-5xl bg-night-1 h-56 rounded">
