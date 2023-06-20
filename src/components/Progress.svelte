@@ -5,6 +5,7 @@
 
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
+  export let passenger: string;
 
   let possibleBranches: Array<string> = [];
   let branchProgress: Record<string, number> = {};
@@ -82,7 +83,13 @@
           class="bg-night-1 rounded-[80em] top-5 w-full p-1"
           max="100"
           value={branchProgress[branch] ?? 0} />
-        <p class="pt-2">{branch}</p>
+        <p class="pt-2 capitalize">
+          {#if branch !== "Trunk"}
+            {branch.split(passenger)[1]}
+          {:else}
+            {branch}
+          {/if}
+        </p>
       </div>
     {/each}
   </div>

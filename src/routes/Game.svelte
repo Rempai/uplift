@@ -353,7 +353,7 @@
     $rideQuit = true;
     $rendered = false;
     solutionInput = event.detail;
-    nextPassage(currentRide?.passenger.name + solutionInput + "You" + 1);
+    nextPassage(currentRide.passenger.name + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -689,7 +689,7 @@
             {/if}
           {/if}
         </div>
-        <Progress {allPassages} {passedPassages} />
+        <Progress passenger={currentRide.passenger.name} {allPassages} {passedPassages} />
         {#if currentRide.passenger.name == "Arty"}
           <Arrow {passage} />
         {/if}

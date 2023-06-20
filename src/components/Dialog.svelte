@@ -7,6 +7,7 @@
     expression,
     finishedPassageRender,
     rendered,
+    parsedJWT,
   } from "@/lib/stores";
 
   import MingcuteUser4Fill from "~icons/mingcute/user-4-fill";
@@ -82,7 +83,13 @@
     <div class="flex">
       <div class="flex flex-col h-full pt-2">
         <div class="flex justify-center">
-          <p class="font-extrabold" style="color: {color};">{user}</p>
+          <p class="font-extrabold" style="color: {color};">
+            {#if user == "You"}
+              {$parsedJWT.username}
+            {:else}
+              {user}
+            {/if}
+          </p>
         </div>
         <div>
           {#if user == "You"}
