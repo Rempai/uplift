@@ -45,6 +45,13 @@ export const updateUserAccount = async (target: HTMLFormElement, parse_jwt_sub: 
   let returnValue;
   await UserService.updateUser(parse_jwt_sub, value)
     .then((update) => {
+      if (value.password != null || value.newPassword != null || value.repeatPassword != null) {
+        returnValue = "password";
+      } else {
+        returnValue = "username";
+      }
+      // @ts-ignore
+      update.type = returnValue;
       returnValue = update;
     })
     .catch((err) => {

@@ -236,9 +236,12 @@
               localStorage.setItem("refresh_token", res.refresh_token);
               OpenAPI.TOKEN = res.access_token;
               ErrorMessage("Username has been changed to " + parsedJwt.username);
-            } else if ($parsedJWT.username === parsedJwt.username && true) {
+            } else if ($parsedJWT.username === parsedJwt.username && res.type === "username") {
               ErrorMessage("That is your current username");
+            } else if (res.type === "password") {
+              ErrorMessage("Your password has been changed");
             }
+            2;
           });
         } else {
           ErrorMessage(res);
