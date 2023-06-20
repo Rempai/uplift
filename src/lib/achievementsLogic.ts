@@ -28,7 +28,7 @@ export const isAchieved = async ({
         return true;
       }
       return false;
-    case 2:
+    case 10:
       if (!unlockedAchievementsIds.includes(achievementId)) {
         postUserAchievement(userId, achievementId);
         return true;
@@ -71,6 +71,8 @@ export const isAchieved = async ({
           correctMainCauses.includes(mainCause.trim()) &&
           correctPartiesInvolved.includes(partiesInvolved.trim())
         ) {
+          console.log("jem");
+
           postUserAchievement(userId, achievementId);
           return true;
         }
@@ -79,10 +81,12 @@ export const isAchieved = async ({
     case 9:
       if (!unlockedAchievementsIds.includes(achievementId)) {
         if (rideList && reviewList) {
-          const reviews = reviewList.filter((review) => review.stars > 3);
+          const reviews = reviewList.filter((review) => review.stars > 2);
 
           for (const ride of rideList) {
-            const reviewExists = reviews.filter((review) => review.rideId === ride.id);
+            const reviewExists = reviews.filter(
+              (review) => review.ride.id === ride.id && review.ride.id !== 1
+            );
 
             if (!reviewExists) {
               return false;
