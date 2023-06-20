@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
 
   export let items = [];
-  export let activeTabValue;
-  export let passenger;
+  export let activeTabValue: number;
+  export let passenger: String;
 
   onMount(() => {
     if (Array.isArray(items) && items.length && items[0].value) {
