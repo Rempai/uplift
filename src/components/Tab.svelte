@@ -3,7 +3,7 @@
 
   export let items = [];
   export let activeTabValue: number;
-  export let passenger: String;
+  export let passenger: string;
 
   onMount(() => {
     if (Array.isArray(items) && items.length && items[0].value) {
