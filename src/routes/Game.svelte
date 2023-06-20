@@ -2,15 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import {
-    passageName,
-    validation,
-    emotion,
-    rendered,
-    rideQuit,
-    parsedJWT,
-    achievementCar,
-  } from "@/lib/stores";
+  import { passageName, validation, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
   import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -483,7 +475,7 @@
     if (achievement) {
       await getUnlockedAchievements();
       triggerAchievement = true;
-      $achievementCar.push(allAchievements[achievementId - 1].name);
+      achievementCarousel.push(allAchievements[achievementId - 1].name);
     }
   };
 
@@ -552,17 +544,13 @@
 <main>
   {#await reviewList then _}
     {#if triggerAchievement}
-      <div class="fixed top-0 right-0 z-50 overflow-visible cursor-pointer">
-        {#each $achievementCar as ach}
-          <Achievement
-            achievementTitle={ach}
-            on:killAchievement={() => {
-              triggerAchievement = false;
-              $achievementCar = [];
-            }}
-            {triggerAchievement} />
-        {/each}
-      </div>
+      <Achievement
+        on:killAchievement={() => {
+          triggerAchievement = false;
+          achievementCarousel = [];
+        }}
+        {achievementCarousel}
+        {triggerAchievement} />
     {/if}
   {/await}
   <Resolution

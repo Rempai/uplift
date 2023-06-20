@@ -14,4 +14,3 @@ export const rideQuit = writable<boolean>(false);
 export const finishedPassageRender = writable<boolean>(false);
 export const tutorialElements = writable<Object>();
 export const tutorialImageElements = writable<Object>();
-export const achievementCar = writable<Array<string>>([]);
