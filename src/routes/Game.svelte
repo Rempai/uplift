@@ -492,7 +492,7 @@
 
   $: if (passage) {
     if (allowAudioCall) {
-      let processedText = passage.content.replace(/<[^>]+>/g, "");
+      let processedText = passage.content.replace(/<i>[\s\S]*?<\/i>/g, "").replace(/<[^>]+>/g, "");
       if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
