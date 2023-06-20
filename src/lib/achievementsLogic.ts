@@ -71,8 +71,6 @@ export const isAchieved = async ({
           correctMainCauses.includes(mainCause.trim()) &&
           correctPartiesInvolved.includes(partiesInvolved.trim())
         ) {
-          console.log("jem");
-
           postUserAchievement(userId, achievementId);
           return true;
         }

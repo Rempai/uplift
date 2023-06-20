@@ -2,7 +2,15 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
+  import {
+    passageName,
+    validation,
+    emotion,
+    rendered,
+    rideQuit,
+    parsedJWT,
+    achievementCar,
+  } from "@/lib/stores";
   import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -184,13 +192,11 @@
   };
 
   const toggleJournal = () => {
-    $rendered = true;
     journal = !journal;
     journal ? (dialog = false) : (dialog = true);
   };
 
   const toggleDialog = () => {
-    $rendered = true;
     dialog = !dialog;
     journal = false;
     allowAudioCall = !allowAudioCall;
@@ -393,12 +399,12 @@
           }
 
           // Achievement: 5 stars on Ride Paolo
-          if (lastReview.stars === 5 && lastReview.rideId === 2) {
-            handleAchievement(2);
+          if (lastReview.stars === 5 && lastReview.ride.id === 2) {
+            handleAchievement(10);
           }
 
           // Achievement: 4 stars on a Ride Paolo
-          if (lastReview.stars === 4 && lastReview.rideId === 2) {
+          if (lastReview.stars === 4 && lastReview.ride.id === 2) {
             handleAchievement(4);
           }
 
@@ -461,24 +467,23 @@
       }
     });
   };
-
+  let achievement;
   const handleAchievement = async (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    if (!unlockedAchievementsIds.includes(achievementId)) {
-      let achievement = await isAchieved({
-        userId: $parsedJWT.sub,
-        unlockedAchievementsIds: unlockedAchievementsIds,
-        achievementId: achievementId,
-        reviewList: reviewList,
-        currentRide: currentRide,
-        rideList: rideList,
-        resolutionData: resolutionData,
-      });
-      if (achievement) {
-        await getUnlockedAchievements();
-        triggerAchievement = true;
-        achievementCarousel.push(allAchievements[achievementId - 1].name);
-      }
+    achievement = await isAchieved({
+      userId: $parsedJWT.sub,
+      unlockedAchievementsIds: unlockedAchievementsIds,
+      achievementId: achievementId,
+      reviewList: reviewList,
+      currentRide: currentRide,
+      rideList: rideList,
+      resolutionData: resolutionData,
+    });
+
+    if (achievement) {
+      await getUnlockedAchievements();
+      triggerAchievement = true;
+      $achievementCar.push(allAchievements[achievementId - 1].name);
     }
   };
 
@@ -547,13 +552,17 @@
 <main>
   {#await reviewList then _}
     {#if triggerAchievement}
-      <Achievement
-        on:killAchievement={() => {
-          triggerAchievement = false;
-          achievementCarousel.length = 0;
-        }}
-        achievement={achievementCarousel}
-        {triggerAchievement} />
+      <div class="fixed top-0 right-0 z-50 overflow-visible cursor-pointer">
+        {#each $achievementCar as ach}
+          <Achievement
+            achievementTitle={ach}
+            on:killAchievement={() => {
+              triggerAchievement = false;
+              $achievementCar = [];
+            }}
+            {triggerAchievement} />
+        {/each}
+      </div>
     {/if}
   {/await}
   <Resolution
