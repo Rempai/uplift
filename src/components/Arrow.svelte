@@ -39,17 +39,19 @@
       settings: document.querySelector('img[alt="settings"]'),
     };
 
-    // for (let key in buttonElements) {
-    //   const buttonElement = buttonElements[key];
+    for (let key in buttonElements) {
+      const buttonElement = buttonElements[key];
 
-    //   if (key != "settings" && key != "radio") {
-    //     buttonElement.classList.add("pointer-events-none");
-    //   }
-    // }
+      if (key != "settings" && key != "radio") {
+        buttonElement.classList.add("pointer-events-none");
+      }
+    }
 
     for (let key in imgElements) {
       const imgElement = imgElements[key];
-      imgElement.classList.add("brightness-50");
+      if (key != "settings" && key != "radio") {
+        imgElement.classList.add("brightness-50");
+      }
     }
     $tutorialElements = buttonElements;
     $tutorialImageElements = imgElements;
@@ -67,7 +69,7 @@
     showArrow = true;
   }
 
-  const hideElement = () => {
+  const hideElements = () => {
     for (let key in $tutorialImageElements) {
       let element = $tutorialImageElements[key];
 
@@ -78,13 +80,17 @@
         "rounded",
         "outline-offset-2"
       );
-      element.classList.add("brightness-50");
+      if (key != "settings" && key != "radio") {
+        element.classList.add("brightness-50");
+      }
     }
 
-    // for (let key in $tutorialElements) {
-    //   let element = $tutorialElements[key];
-    //   element.classList.add("pointer-events-none");
-    // }
+    for (let key in $tutorialElements) {
+      let element = $tutorialElements[key];
+      if (key != "settings" && key != "radio") {
+        element.classList.add("pointer-events-none");
+      }
+    }
     showArrow = false;
   };
 
@@ -155,7 +161,7 @@
       passage.content.includes("You are almost finished") ||
       passage.content.includes("Now that you have finished this branch")
     ) {
-      hideElement();
+      hideElements();
     } else {
       const foundPassage = Object.keys(keyPassages).find((key) => passage.content.includes(key));
       if (foundPassage !== undefined) {
@@ -167,7 +173,9 @@
 
   onDestroy(() => {
     if ($rideQuit !== true) {
-      hideElement();
+      if (!lastElement === $tutorialElements["journal"]) {
+        hideElements();
+      }
     } else {
       if (lastElement) {
         lastElement.classList.remove(
