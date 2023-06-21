@@ -12,5 +12,5 @@ export const expression = writable<string>("normal");
 export const rendered = writable<boolean>(false);
 export const rideQuit = writable<boolean>(false);
 export const finishedPassageRender = writable<boolean>(false);
-export const tutorialElements = writable<Object>();
-export const tutorialImageElements = writable<Object>();
+export const tutorialElements = writable<any>();
+export const tutorialImageElements = writable<any>();
