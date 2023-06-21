@@ -241,7 +241,6 @@
             } else if (res.type === "password") {
               ErrorMessage("Your password has been changed");
             }
-            2;
           });
         } else {
           ErrorMessage(res);
