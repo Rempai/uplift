@@ -6,7 +6,7 @@
 
   import Button from "@/components/Button.svelte";
 
-  import MaterialSymbolsCancelOutline from '~icons/material-symbols/cancel-outline';
+  import MaterialSymbolsCancelOutline from "~icons/material-symbols/cancel-outline";
 
   export let message = "";
   export let id: number;
@@ -42,13 +42,11 @@
           <MaterialSymbolsCancelOutline class="text-storm-3" />
         </div>
       </Button>
-      <div>
-      </div>
+      <div />
       <p>{message}</p>
       <div
         class="progress-bar h-2 rounded bg-[#a8414a] mt-2"
-        style={`animation-duration: 5000ms`}
-      />
+        style={`animation-duration: 5000ms`} />
     </div>
   </div>
 {/if}
