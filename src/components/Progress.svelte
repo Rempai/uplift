@@ -5,12 +5,15 @@
 
   export let allPassages: Array<PassageRead>;
   export let passedPassages: Array<string> = [];
+  export let passenger: string;
 
   let possibleBranches: Array<string> = [];
   let branchProgress: Record<string, number> = {};
 
   let progression = 0;
   let showModal = false;
+
+  let fontsize = parseFloat(window.getComputedStyle(document.body).getPropertyValue("font-size"));
 
   const branches = () => {
     allPassages.forEach((obj) => {
@@ -80,20 +83,26 @@
           class="bg-night-1 rounded-[80em] top-5 w-full p-1"
           max="100"
           value={branchProgress[branch] ?? 0} />
-        <p class="pt-2">{branch}</p>
+        <p class="pt-2 capitalize">
+          {#if branch !== "Trunk"}
+            {branch.split(passenger)[1]}
+          {:else}
+            {branch}
+          {/if}
+        </p>
       </div>
     {/each}
   </div>
 </Modal>
 
 <div
-  class="flex w-full justify-end absolute z-10"
-  style="bottom: {screenHeight / 3.97}px; right: {screenWidth / 3.715}px">
+  class="flex w-fill justify-end absolute z-10"
+  style="bottom: {screenHeight / 3.98 / fontsize}em; right: {screenWidth / 3.716 / fontsize}em ">
   <div
     on:click={popup}
     on:keypress
-    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer"
-    style="width: {screenWidth / 11.98}px; height: {screenHeight / 18.89}px;">
+    class="hover:bg-night-2 transition bg-night-1 flex justify-center items-center cursor-pointer progresstut"
+    style="height: {screenHeight / 18 / fontsize}em; width: {screenWidth / 11.84 / fontsize}em;">
     {#if allPassages && allPassages.length > 0}
       {progression}%
     {/if}
@@ -112,7 +121,7 @@
   }
 
   progress::-webkit-progress-bar {
-    background-color: #5e81ac;
+    background-color: #2e3440;
     border-radius: 99em;
   }
 </style>

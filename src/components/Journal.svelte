@@ -84,11 +84,14 @@
 
 {#if openJournal}
   <div
-    class="bg-night-3 flex mx-auto max-w-5xl rounded h-full border-4 border-night-1 z-20 overflow-hidden">
+    class="bg-night-3 flex mx-4 2xl:mx-auto max-w-5xl rounded h-full border-4 border-night-1 z-20 overflow-hidden">
     {#if open === 1}
       <div
         class="flex h-full w-min flex-wrap overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
-        <Tabs bind:activeTabValue={currentTab} items={tabItems} />
+        <Tabs
+          bind:activeTabValue={currentTab}
+          passenger={currentRide.passenger.name}
+          items={tabItems} />
         <Button
           onClick={gotoBranch}
           text="Go to branch"
@@ -134,12 +137,11 @@
       </div>
     {/if}
     {#if open === 2}
-      <div
-        class="overflow-hidden overflow-y-auto flex flex-col flex-wrap w-full pb-3 h-full justify-center">
+      <div class="overflow-auto flex flex-col flex-wrap w-full pb-3 h-full justify-center">
         <Form handleSubmit={submitForm} on:back={() => history.back()}>
           <div slot="forms" class="flex w-full mx-auto items-center">
-            <div class="flex flex-col w-1/2">
-              <div class="justify-start items-start grow m-8 mt-3 mb-0">
+            <div class="flex flex-col w-80 lg:w-1/2">
+              <div class="justify-start items-start grow m-8 mt-6 mb-0">
                 <label class="bg-aurora-orange p-2 !mb-0 !m-0 rounded-t" for="mainProblem"
                   >Main Problem</label>
                 <input
@@ -173,7 +175,7 @@
               </div>
             </div>
             <div class="border-2 border-night-1 h-2/3" />
-            <div class="flex flex-col w-1/2">
+            <div class="flex flex-col w-fit lg:w-1/2">
               <div class="rounded overflow-hidden h-full m-8 mt-3 mb-1">
                 <div class="bg-aurora-orange text-left p-2"><b>Virtue of courage</b></div>
                 <table class="w-full">

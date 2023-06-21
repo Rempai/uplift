@@ -20,6 +20,8 @@
 
   let dialog: HTMLDialogElement;
   let rate: number;
+  let achieved;
+
   const dispatch = createEventDispatcher();
 
   $: if (dialog && showDriverModal) dialog.showModal();
@@ -33,9 +35,9 @@
     } else {
       currentColorIndex = (currentColorIndex + 1) % colors.length;
     }
-
-    //Achievement changed driver's license colour
-    handleAchievement(3);
+    if (!achieved) {
+      handleAchievement(3);
+    }
     localStorage.setItem("currentColorIndex", currentColorIndex.toString());
   }
 
@@ -50,6 +52,7 @@
   };
 
   const handleAchievement = (achievementId: number) => {
+    achieved = true;
     dispatch("achievement", { achievementId });
   };
   $: if (reviewList) getReviewAverage();
@@ -74,10 +77,10 @@
         <span>Achievements: {unlockedAchievements.length}/{allAchievements.length}</span>
         <Button
           class="!border-night-1 bg-slate-300 hover:bg-storm-3 !text-night-1 text-2xl w-fit"
-          text="Close License"
+          text="Close Licence"
           onClick={() => dialog.close()} />
       </div>
-      <button on:click|preventDefault={() => changeColor("right")} type="button"
+      <button on:click|nonpassive|preventDefault={() => changeColor("right")} type="button"
         ><IoIosChevronForwardOutline font-size="1.7em" /></button>
     </div>
     <div class="flex items-center text-lg justify-center">
@@ -85,9 +88,7 @@
       <span class="flex">
         {#each { length: 5 } as _, i}
           {#if i < Math.floor(rate)}
-            <IonStar
-              font-size="1em"
-              class={rate === 5 && i < 5 ? "w-5 text-aurora-yellow" : "w-5"} />
+            <IonStar font-size="1em" class="w-5" />
           {:else if i === Math.floor(rate) && rate % 1 !== 0}
             <IonHalfStar font-size="1em" class="w-5" />
           {:else}

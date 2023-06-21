@@ -11,7 +11,7 @@
   export let achievement = [];
 
   const rotationAngle = tweened(0);
-  const audio = new Audio("achievement-sylized-fx-2.wav");
+  const audio = new Audio("achievement-sylized-fx-2.mp3");
   const dispatch = createEventDispatcher();
 
   $: if (triggerAchievement) {
@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="absolute top-0 right-0 z-50">
+<div class="fixed top-0 right-0 z-50 overflow-visible cursor-pointer">
   {#each achievement as ach}
     {#if triggerAchievement}
       <div

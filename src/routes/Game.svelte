@@ -2,9 +2,16 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, errors } from "@/lib/stores";
-  import { parseJwt, type jwtObject } from "@/lib/jwtParser";
-  import { validationErrorCheck } from "@/lib/validation";
+  import {
+    passageName,
+    validation,
+    emotion,
+    rendered,
+    rideQuit,
+    parsedJWT,
+    errors,
+  } from "@/lib/stores";
+  import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
     registerForAccessToken,
@@ -34,6 +41,7 @@
   import Progress from "@/components/Progress.svelte";
   import Multimedia from "@/components/Multimedia.svelte";
   import DriverModal from "@/components/DriverModal.svelte";
+  import Arrow from "@/components/Arrow.svelte";
 
   import Background from "/background.webm";
   import Error from "@/components/Error.svelte";
@@ -46,7 +54,6 @@
 
   let dialog = false;
   let passage: PassageRead;
-  let textParsed: Promise<string>;
 
   let journal = false;
   let journalData: Array<PassageRead> = [];
@@ -55,9 +62,7 @@
 
   let resolution = false;
   let resolutionData: RideRead;
-  let solution: string;
-
-  let parsedJWT: jwtObject;
+  let solutionInput = "";
 
   let login = false;
   let register = false;
@@ -73,40 +78,76 @@
   let unlockedAchievements = [];
 
   let ambientNoise = false;
-  let animalease = true;
+  let animalese = true;
   let volumeAmbient = 1;
   let allowAudioCall = true;
   let audioAmbient;
   let audio;
 
-  let modalOpened = false;
   let showReviewList = false;
 
   let showDriverModal = false;
 
   const submitLogin = async ({ target }) => {
-    const login = await loginForAccessToken(target);
-    if (login === true) {
-      startGame();
-    } else {
-      $validation = $validation;
-      showError(await validationErrorCheck(login, false));
-    }
+    await loginForAccessToken(target)
+      .then((response) => {
+        if (response.access_token != null) {
+          startGame();
+        } else {
+          ErrorMessage(response);
+        }
+      })
+      .catch((err) => ErrorMessage(err));
   };
 
   const submitRegister = async ({ target }) => {
-    const register = await registerForAccessToken(target);
-    if (register === true) {
-      startGame();
-    } else {
-      $validation = $validation;
-      showError(await validationErrorCheck(register, false));
+    await registerForAccessToken(target)
+      .then((response) => {
+        if (response.access_token != null) {
+          startGame();
+        } else {
+          ErrorMessage(response);
+        }
+      })
+      .catch((err) => {
+        ErrorMessage(err);
+      });
+  };
+
+  const ErrorMessage = (str: string) => {
+    function isJsonString(str: string) {
+      try {
+        JSON.parse(str);
+      } catch {
+        return false;
+      }
+      return true;
+    }
+
+    if (typeof str === "object") {
+      // @ts-ignore
+      const res = Object.values(str)[3].message;
+
+      if (isJsonString(res)) {
+        const obj = JSON.parse(res);
+        if (obj.length === 1) {
+          showError(obj[0].message);
+        } else if (obj.length > 1) {
+          obj.forEach((element) => {
+            showError(element.message);
+          });
+        }
+      } else if (typeof res === "string") {
+        showError(res);
+      } else {
+        showError(str);
+      }
     }
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    login = true;
+    welcome = true;
     unlockedAchievements.length = 0;
     unlockedAchievementsIds.length = 0;
     quitRide();
@@ -115,17 +156,14 @@
   const startGame = async () => {
     $validation.length = 0;
     const token = localStorage.getItem("access_token");
-    parsedJWT = await parseJwt(token);
+    $parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
-
-    login = false;
-    register = false;
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
       .catch((err) => showError(err));
 
-    await CharactersService.getReviews(parsedJWT.sub)
+    await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => (reviewList = res))
       .catch((err) => showError(err));
 
@@ -134,30 +172,38 @@
       .catch((err) => showError(err));
 
     await getUnlockedAchievements();
+
+    if (register || reviewList.length === 0) {
+      selectRide(new CustomEvent("", { detail: rideList.find((ride) => ride.id === 1) }));
+    }
+
+    login = false;
+    register = false;
   };
 
   const toggleAmbient = () => {
     ambientNoise = !ambientNoise;
   };
 
-  const toggleAnimalease = () => {
-    animalease = !animalease;
+  const toggleAnimalese = () => {
+    animalese = !animalese;
   };
 
   const toggleJournal = () => {
+    $rendered = true;
     journal = !journal;
-    dialog = !dialog;
+    journal ? (dialog = false) : (dialog = true);
   };
 
   const toggleDialog = () => {
+    $rendered = true;
     dialog = !dialog;
     journal = false;
-    allowAudioCall = dialog;
+    allowAudioCall = !allowAudioCall;
   };
 
   const selectRide = async (event: CustomEvent) => {
     const ride: RideRead = event.detail;
-
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
@@ -177,6 +223,7 @@
     const id = Math.random();
     const newErr = { msg: err, id };
     errors.update((e) => [...e, newErr]);
+    const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
   };
 
   const showResolution = ({ detail }) => {
@@ -186,22 +233,23 @@
   };
 
   const updateAccount = async ({ detail }) => {
-    await updateUserAccount(detail, parsedJWT.sub).then((res) => {
-      if (!res && res.status !== 200) {
-        showError(res.statusText);
-      } else {
-        journal = false;
-        modalOpened = false;
-      }
-    });
+    const res = await updateUserAccount(detail, $parsedJWT.sub);
+    if (res.access_token) {
+      localStorage.setItem("access_token", res.access_token);
+      localStorage.setItem("refresh_token", res.refresh_token);
+      OpenAPI.TOKEN = res.access_token;
+      $parsedJWT = await parseJwt(res.access_token);
+    } else {
+      ErrorMessage(res);
+    }
   };
 
   const deleteUser = async () => {
-    UserService.deleteUser(parsedJWT.sub)
+    await UserService.deleteUser($parsedJWT.sub)
       .then(() => {
         localStorage.clear();
         showError("Deleted User");
-        login = true;
+        welcome = true;
       })
       .catch((err) => showError(err));
     pausevideo();
@@ -234,16 +282,22 @@
   };
 
   const nextPassage = (name: string) => {
-    passage = allPassages.find((p) => p.passage === name);
+    let passageFind = allPassages.find((p) => p.passage === name);
 
-    if (passage && !passedPassages.includes(passage.passage)) {
-      emotion.update((e) => e + passage.emotion);
-      if (!passage.branch.includes("Finish") && !(passage.emotion < 0))
-        passedPassages = [...passedPassages, passage.passage];
+    if (passageFind) {
+      if (passageFind.content.match("{user}")) {
+        passageFind.content = passageFind.content.replace("{user}", $parsedJWT.username);
+      }
     }
 
-    if (passage == undefined) {
-      CharactersService.getReviews(parsedJWT.sub)
+    if (passageFind && !passedPassages.includes(passageFind.passage)) {
+      emotion.update((e) => e + passageFind.emotion);
+      if (!passageFind.branch.includes("Finish") && !(passageFind.emotion < 0))
+        passedPassages = [...passedPassages, passageFind.passage];
+    }
+
+    if (passageFind == undefined) {
+      CharactersService.getReviews($parsedJWT.sub)
         .then((res) => {
           reviewList = res;
           passage = undefined;
@@ -255,21 +309,13 @@
         .catch((err) => showError(err));
     }
     allowAudioCall = true;
+
+    passage = passageFind;
   };
 
-  const textParser = async (text: string) => {
-    if (text) {
-      if (text.match("{user}")) {
-        text = text.replace("{user}", parsedJWT.username);
-      }
-    }
-    return text;
-  };
-
-  const updateJournalData = async () => {
+  const updateJournalData = () => {
     // Workaround for adding {user} template parsing for the journal
     let dialogUpdate = passage;
-    dialogUpdate.content = await textParsed;
     // Prevent duplicate passages in journal
     if (journalData.length !== 0) {
       let alreadyInJournal = false;
@@ -284,7 +330,7 @@
     } else journalData.push(dialogUpdate);
   };
 
-  const updateContextData = async (event: CustomEvent) => {
+  const updateContextData = (event: CustomEvent) => {
     if (event.detail.type === "mainProblem") {
       resolutionData.mainProblem = event.detail.text;
     } else if (event.detail.type === "partiesInvolved") {
@@ -294,15 +340,15 @@
     }
   };
 
-  const gotoBranch = async (event: CustomEvent) => {
+  const gotoBranch = (event: CustomEvent) => {
     journal = false;
     dialog = true;
     nextPassage(event.detail.passage);
   };
 
-  const finishRide = async (event: CustomEvent) => {
-    solution = event.detail;
-    nextPassage(currentRide?.passenger.name + solution + "You" + 1);
+  const finishRide = (event: CustomEvent) => {
+    solutionInput = event.detail;
+    nextPassage(currentRide.passenger.name + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -314,47 +360,58 @@
     const currentDate = new Date();
     let currentTime = currentDate.toISOString();
 
-    let reviewScore = Number(passage.branch.replace(/\D/g, ""));
+    let reviewScore: number;
     if (patienceLost) {
-      let test = await CharactersService.getReviews().then((res) =>
+      let review = await CharactersService.getReviews().then((res) =>
         res.find((obj) => obj.rideId === currentRide.id && obj.stars === 0)
       );
-      reviewScore = test.id;
+      reviewScore = review.id;
+    } else {
+      reviewScore = await CharactersService.getReviews().then(
+        (res) =>
+          res.find((obj) => obj.rideId === currentRide.id && obj.solution === solutionInput).id
+      );
     }
 
     const input: ReviewedUserCreate = {
-      userId: parsedJWT.sub,
+      userId: $parsedJWT.sub,
       reviewId: reviewScore,
       date: currentTime,
     };
+
     await CharactersService.postReviewedUser(input).catch((err) => showError(err));
 
-    await CharactersService.getReviews(null, parsedJWT.sub).catch((err) => showError(err));
+    await CharactersService.getReviews($parsedJWT.sub)
+      .then((res) => {
+        reviewList = res;
+        showReviewList = true;
+        if (!(reviewList === undefined || reviewList.length === 0)) {
+          let lastReview = reviewList.at(-1);
 
-    showReviewList = true;
-    //Achievement: Completed first ride
-    if (reviewList.length === 1) {
-      handleAchievement(1);
-    }
+          //Achievement: Completed first ride
+          if (lastReview.description != "Finished tutorial") {
+            handleAchievement(1);
+          }
 
-    const lastReview = reviewList.at(-1);
+          // Achievement: 5 stars on Ride Paolo
+          if (lastReview.stars === 5 && lastReview.rideId === 2) {
+            handleAchievement(2);
+          }
 
-    if (lastReview) {
-      // Achievement: 5 stars on Ride Paolo
-      if (lastReview.stars === 5) {
-        handleAchievement(2);
-      }
-      // Achievement: 4 stars on a Ride Paolo
-      if (lastReview.stars === 4) {
-        handleAchievement(4);
-      }
-      //Achievement: Tutorial complete
-      if (lastReview.description.includes("Finished Tutorial")) {
-        handleAchievement(6);
-      }
-    }
-    // Achievement: Completed all rides
-    // handleAchievement(9);
+          // Achievement: 4 stars on a Ride Paolo
+          if (lastReview.stars === 4 && lastReview.rideId === 2) {
+            handleAchievement(4);
+          }
+
+          //Achievement: Tutorial complete
+          if (lastReview.description === "Finished tutorial") {
+            handleAchievement(6);
+          }
+        }
+        // Achievement: Completed all rides
+        // handleAchievement(9);
+      })
+      .catch((err) => showError(err));
 
     quitRide();
   };
@@ -369,8 +426,10 @@
   };
 
   const quitRide = () => {
-    passage = undefined;
+    $rideQuit = true;
+    $passageName = "";
     currentRide = undefined;
+    passage = undefined;
     ambientNoise = false;
     pausevideo();
     journalData = [];
@@ -392,7 +451,7 @@
   }
 
   const getUnlockedAchievements = async () => {
-    await UserService.getAchievements(parsedJWT.sub)
+    await UserService.getAchievements($parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
       .catch((err) => showError(err));
 
@@ -405,20 +464,22 @@
 
   const handleAchievement = async (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    let achievement = await isAchieved({
-      userId: parsedJWT.sub,
-      unlockedAchievementsIds: unlockedAchievementsIds,
-      achievementId: achievementId,
-      reviewList: reviewList,
-      currentRide: currentRide,
-      rideList: rideList,
-      resolutionData: resolutionData,
-    });
-    if (achievement) {
-      triggerAchievement = true;
-      achievementCarousel.push(allAchievements[achievementId - 1].name);
+    if (!unlockedAchievementsIds.includes(achievementId)) {
+      let achievement = await isAchieved({
+        userId: $parsedJWT.sub,
+        unlockedAchievementsIds: unlockedAchievementsIds,
+        achievementId: achievementId,
+        reviewList: reviewList,
+        currentRide: currentRide,
+        rideList: rideList,
+        resolutionData: resolutionData,
+      });
+      if (achievement) {
+        await getUnlockedAchievements();
+        triggerAchievement = true;
+        achievementCarousel.push(allAchievements[achievementId - 1].name);
+      }
     }
-    await getUnlockedAchievements();
   };
 
   onMount(async () => {
@@ -439,15 +500,15 @@
 
   $: if (passage) {
     if (allowAudioCall) {
-      textParsed = textParser(passage.content);
-      if (animalease && passage.speaker !== "You") {
+      let processedText = passage.content.replace(/<[^>]+>/g, "");
+      if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            string: passage.content,
+            string: processedText,
           }),
         })
           .then((response) => response.blob())
@@ -466,7 +527,7 @@
     }
   }
 
-  $: if ($emotion <= 70) {
+  $: if ($emotion === 0) {
     filledjournal = false;
     patienceLost = true;
   }
@@ -502,7 +563,7 @@
   </div>
 
   <video
-    class="fixed h-screen w-screen object-fill"
+    class="fixed h-screen w-screen object-cover overflow-hidden"
     loop
     muted
     autoplay={typeof passage === "object"}>
@@ -517,7 +578,7 @@
       bind:showDriverModal
       on:achievement={(event) => handleAchievement(event.detail.achievementId)}
       lang="NL"
-      username={parsedJWT.username}
+      username={$parsedJWT.username}
       {allAchievements}
       {unlockedAchievements}
       {reviewList} />
@@ -597,32 +658,31 @@
         </div>
       {/if}
       {#if dialog}
-        <div in:fade class="absolute left-0 right-0 top-48 m-auto z-20">
-          {#await passage then dialog}
-            {#await textParsed then parsedText}
-              {#if !patienceLost}
-                <Dialog
-                  on:next={nextPassageName}
-                  continueButton={dialog.continueButton}
-                  user={dialog.speaker}
-                  dialogColor={dialog.attribute.color}
-                  text={parsedText}
-                  font={dialog.attribute.fontFamily}
-                  fontSize={dialog.attribute.fontSize}
-                  color={dialog.attribute.color} />
-              {:else}
-                <Dialog
-                  on:next={createReview}
-                  continueButton={true}
-                  text="You pissed off {currentRide.passenger
-                    .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
-                  dialogColor="#BF616A"
-                  color="#e5e9f0" />
-              {/if}
-            {/await}
-          {/await}
+        <div in:fade class="absolute right-0 left-0 top-16 lg:top-48 m-auto z-20 px-4">
+          {#if passage}
+            {#if !patienceLost}
+              <Dialog
+                on:next={nextPassageName}
+                continueButton={passage.continueButton}
+                user={passage.speaker}
+                text={passage.content}
+                font={passage.attribute.fontFamily}
+                fontSize={passage.attribute.fontSize}
+                color={passage.attribute.color} />
+            {:else}
+              <Dialog
+                on:next={createReview}
+                continueButton={true}
+                text="You pissed off {currentRide.passenger
+                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                color="#e5e9f0" />
+            {/if}
+          {/if}
         </div>
-        <Progress {allPassages} {passedPassages} />
+        <Progress passenger={currentRide.passenger.name} {allPassages} {passedPassages} />
+        {#if currentRide.passenger.name == "Arty"}
+          <Arrow {passage} />
+        {/if}
       {/if}
       <Multimedia
         on:dialog={toggleDialog}
@@ -633,13 +693,13 @@
         on:journalPressed={toggleJournal}
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
-        on:toggleAnimalease={toggleAnimalease}
+        on:toggleAnimalese={toggleAnimalese}
         on:toggleReview={() => (showReviewList = false)}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
-        {animalease}
+        modalOpened={false}
+        {animalese}
         {showReviewList}
-        {modalOpened}
         {passage}
         {reviewList}
         {rideList}

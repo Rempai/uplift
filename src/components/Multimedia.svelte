@@ -4,6 +4,7 @@
   import type { AchievementRead, PassageRead, ReviewRead, RideRead } from "@/lib/client";
 
   import { radios } from "@/lib/radio";
+  import { parsedJWT } from "@/lib/stores";
 
   import Modal from "@/components/Modal.svelte";
   import Button from "@/components/Button.svelte";
@@ -28,7 +29,7 @@
   export let filledjournal: boolean;
   export let journal: boolean;
   export let modalOpened: boolean;
-  export let animalease: boolean;
+  export let animalese: boolean;
 
   export let allAchievements: Array<AchievementRead>;
   export let unlockedAchievementsIds = [];
@@ -38,6 +39,7 @@
   export let ambientNoise: boolean;
 
   let dialogToggled = false;
+  let journalToggled = false;
   let activeContent: string;
   let modalHeader = "Menu";
   let singleReviewData = {
@@ -68,6 +70,7 @@
 
   const handleModal = () => {
     if (activeContent === "Reviews") dispatch("toggleReview");
+    if (activeContent === "Achievements") dispatch("getAchievements");
     if (modalOpened === true) activeContent = null;
     journal = !journal;
     // modalHeader = "Menu"; // reset modal header to an empty string
@@ -88,7 +91,7 @@
   };
 
   const dialog = () => {
-    if (passage !== null) {
+    if (passage) {
       dispatch("dialog");
       dialogToggled = !dialogToggled;
     }
@@ -102,6 +105,7 @@
   const toggleJournal = () => {
     if (passage && filledjournal) {
       dispatch("journalPressed");
+      journalToggled = !journalToggled;
     }
   };
 
@@ -150,8 +154,20 @@
     audioRadio = this;
   }
 
+  const toggleCheatSheet = () => {
+    showInfo = !showInfo;
+  };
+
+  let colors = ["aurora-orange", "aurora-red", "aurora-yellow", "aurora-green", "aurora-purple"];
+  let currentColorIndex = Number(localStorage.getItem("currentColorIndex")) || 0;
+  $: bgColor = colors[currentColorIndex];
+
   $: if (showReviewList) {
     forward("Reviews");
+  }
+
+  $: if ($parsedJWT) {
+    modalOpened = false;
   }
 
   $: if (reviewList) {
@@ -161,6 +177,7 @@
   $: if (radioSelect === 4) {
     handleAchievement(5);
   }
+
   $: dialogIconSrc =
     passage && dialogToggled
       ? "multimedia/Dialogue_white_icon.png"
@@ -184,9 +201,9 @@
   <img
     src="cheatsheet.png"
     alt=""
-    class="absolute h-screen w-full z-50 bg-center bg-cover bg-no-repeat"
+    class="absolute h-screen w-full bg-center bg-cover bg-no-repeat z-20"
     style="background-size: 100% 100%"
-    on:click={() => (showInfo = !showInfo)}
+    on:click={toggleCheatSheet}
     on:keypress />
 {/if}
 
@@ -195,13 +212,13 @@
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
         {#each allAchievements as ach}
-          {#await unlockedAchievementsIds then _}
+          {#if unlockedAchievementsIds}
             {#if unlockedAchievementsIds.includes(ach.id)}
               <div class="relative">
                 <Tooltip title={ach.description} position={"top"}>
                   <div
-                    class="py-4 px-2 cursor-pointer bg-aurora-green/80 hover:bg-aurora-green rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center  bg-contain bg-fixed bg-center">
-                    <p class="text-sm text-center">{ach.name}</p>
+                    class="cursor-pointer hover:brightness-110 rounded border-2 border-storm-3 w-20 h-20 flex justify-center items-center bg-contain bg-fixed bg-center">
+                    <img src={ach.icon} alt="" />
                   </div>
                 </Tooltip>
               </div>
@@ -215,7 +232,7 @@
                 </div>
               </Tooltip>
             {/if}
-          {/await}
+          {/if}
         {/each}
       </div>
     </div>
@@ -335,23 +352,23 @@
   {:else if activeContent === "Radio"}
     <div class="px-4 my-3 flex flex-col items-center gap-3">
       {#if passage}
-        {#if animalease}
+        {#if animalese}
           <Button
             onClick={() => {
               if (passage) {
-                dispatch("toggleAnimalease");
+                dispatch("toggleAnimalese");
               }
             }}
-            text="Disable Animalease"
+            text="Disable Animalese"
             class="bg-aurora-orange" />
         {:else}
           <Button
             onClick={() => {
               if (passage) {
-                dispatch("toggleAnimalease");
+                dispatch("toggleAnimalese");
               }
             }}
-            text="Enable Animalease"
+            text="Enable Animalese"
             class="bg-aurora-green" />
         {/if}
         <Button
@@ -477,13 +494,13 @@
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
         <div slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange" />
+          <ClarityLicenseSolid class="text-aurora-orange text-{bgColor}" id="diverLicense" />
         </div>
       </Button>
       <Button
         id="info"
         ariaLabel="Information"
-        onClick={() => (showInfo = !showInfo)}
+        onClick={toggleCheatSheet}
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none">
         <div slot="icon">
           <img src="multimedia/Info_Icon.png" alt="info" />
@@ -497,7 +514,7 @@
         <div slot="icon">
           <img
             src={dialogIconSrc}
-            alt="info"
+            alt="dialog"
             class:cursor-not-allowed={dialogIconSrc === "multimedia/Dialogue_red_icon.png"} />
         </div>
       </Button>
@@ -539,12 +556,14 @@
           onClick={toggleJournal}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            <img
-              class:cursor-not-allowed={!passage}
-              class:hover:brightness-50={!passage}
-              class:brightness-50={!passage}
-              src="multimedia/Notes_icon.png"
-              alt="notes" />
+            {#if passage && reviewList.length != 0}
+              <img src="multimedia/Notes_icon.png" alt="notes" />
+            {:else}
+              <img
+                class="cursor-not-allowed hover:brightness-50 brightness-50"
+                src="multimedia/Notes_icon.png"
+                alt="notes" />
+            {/if}
           </div>
         </Button>
         <Button
