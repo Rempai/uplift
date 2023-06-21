@@ -2,7 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
+  import { passageName, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
   import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -150,7 +150,6 @@
   };
 
   const startGame = async () => {
-    $validation.length = 0;
     const token = localStorage.getItem("access_token");
     $parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
@@ -240,6 +239,7 @@
             } else if ($parsedJWT.username === parsedJwt.username && res.type === "username") {
               ErrorMessage("That is your current username");
             } else if (res.type === "password") {
+              $parsedJWT = parsedJwt;
               ErrorMessage("Your password has been changed");
             }
           });
