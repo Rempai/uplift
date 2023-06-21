@@ -13,7 +13,7 @@
   const audio = new Audio("achievement-sylized-fx-2.mp3");
   const dispatch = createEventDispatcher();
 
-  $: if (achievementCarousel) {
+  $: if (triggerAchievement) {
     if (triggerAchievement === true) {
       audio.play();
       rotationAngle.set(360, { duration: 3750, easing: cubicOut });
