@@ -6,12 +6,12 @@ export const radios = [
   {
     id: 1,
     name: "BBC",
-    source: "https://stream.live.vc.bbcmedia.co.uk/bbc_radio_one",
+    source: "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service",
   },
   {
     id: 2,
     name: "SkyRadio",
-    source: "https://25353.live.streamtheworld.com/SKYRADIO.mp3",
+    source: "https://22673.live.streamtheworld.com/SKYRADIO.mp3",
   },
   {
     id: 3,
@@ -33,5 +33,15 @@ export const radios = [
     id: 6,
     name: "Arabnights Radio",
     source: "http://arabnights-prod.live-streams.nl:8020/live",
+  },
+  {
+    id: 7,
+    name: "Joe Rogan",
+    source: "https://files.catbox.moe/chn5kz.m4a",
+  },
+  {
+    id: 8,
+    name: "Joe RoganV2",
+    source: "https://files.catbox.moe/d9pdcw.opus",
   },
 ];

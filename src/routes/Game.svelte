@@ -2,7 +2,15 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import { passageName, validation, emotion, rendered, rideQuit, parsedJWT } from "@/lib/stores";
+  import {
+    passageName,
+    validation,
+    emotion,
+    rendered,
+    rideQuit,
+    parsedJWT,
+    errors,
+  } from "@/lib/stores";
   import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -10,6 +18,7 @@
     updateUserAccount,
   } from "@/lib/authProcesses";
   import { isAchieved } from "@/lib/achievementsLogic";
+
   import {
     CharactersService,
     OpenAPI,
@@ -25,7 +34,6 @@
   import Dialog from "@/components/Dialog.svelte";
   import Button from "@/components/Button.svelte";
   import Form from "@/components/Form.svelte";
-  import Notification from "@/components/Notification.svelte";
   import Modal from "@/components/Modal.svelte";
   import CustomMenu from "@/components/contextMenu/CustomMenu.svelte";
   import Journal from "@/components/Journal.svelte";
@@ -35,10 +43,9 @@
   import Multimedia from "@/components/Multimedia.svelte";
   import DriverModal from "@/components/DriverModal.svelte";
   import Arrow from "@/components/Arrow.svelte";
+  import Error from "@/components/Error.svelte";
 
   import Background from "/background.webm";
-
-  let messages: Array<string> = [];
 
   let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
@@ -215,7 +222,9 @@
 
   const showError = (err: string) => {
     const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
-    messages = [...messages, cleanedError];
+    const id = Math.random();
+    const newErr = { msg: cleanedError, id };
+    errors.update((e) => [...e, newErr]);
   };
 
   const showResolution = ({ detail }) => {
@@ -504,7 +513,8 @@
 
   $: if (passage) {
     if (allowAudioCall) {
-      let processedText = passage.content.replace(/<[^>]+>/g, "");
+      if (audio) audio.pause();
+      let processedText = passage.content.replace(/<i>[\s\S]*?<\/i>/g, "").replace(/<[^>]+>/g, "");
       if (animalese && passage.speaker !== "You") {
         fetch("https://audio.appelsapje.net/", {
           method: "POST",
@@ -518,7 +528,6 @@
           .then((response) => response.blob())
           .then((blob) => {
             allowAudioCall = false;
-            if (audio) audio.pause();
             audio = new Audio();
             audio.src = URL.createObjectURL(blob);
             audio.playbackRate = 3.5;
@@ -559,7 +568,11 @@
     on:finishRide={finishRide}
     {resolution}
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
-  <Notification {messages} />
+  <div class="absolute right-0 w-full max-h-full overflow-hidden flex flex-col">
+    {#each $errors as error}
+      <Error message={error.msg} id={error.id} />
+    {/each}
+  </div>
   <video
     class="fixed h-screen w-screen object-cover overflow-hidden"
     loop
