@@ -220,10 +220,10 @@
   };
 
   const showError = (err: string) => {
-    const id = Math.random();
-    const newErr = { msg: err, id };
-    errors.update((e) => [...e, newErr]);
     const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
+    const id = Math.random();
+    const newErr = { msg: cleanedError, id };
+    errors.update((e) => [...e, newErr]);
   };
 
   const showResolution = ({ detail }) => {
