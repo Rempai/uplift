@@ -18,6 +18,7 @@
     updateUserAccount,
   } from "@/lib/authProcesses";
   import { isAchieved } from "@/lib/achievementsLogic";
+
   import {
     CharactersService,
     OpenAPI,
@@ -42,9 +43,9 @@
   import Multimedia from "@/components/Multimedia.svelte";
   import DriverModal from "@/components/DriverModal.svelte";
   import Arrow from "@/components/Arrow.svelte";
+  import Error from "@/components/Error.svelte";
 
   import Background from "/background.webm";
-  import Error from "@/components/Error.svelte";
 
   let rideList: Array<RideRead>;
   let reviewList: Array<ReviewRead>;
@@ -555,13 +556,11 @@
     on:finishRide={finishRide}
     {resolution}
     on:achievement={(event) => handleAchievement(event.detail.achievementId)} />
-
-  <div class="absolute right-0 w-full flex flex-col">
+  <div class="absolute right-0 w-full max-h-full overflow-hidden flex flex-col">
     {#each $errors as error}
       <Error message={error.msg} id={error.id} />
     {/each}
   </div>
-
   <video
     class="fixed h-screen w-screen object-cover overflow-hidden"
     loop
