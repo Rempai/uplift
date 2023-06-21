@@ -1,7 +1,12 @@
 <script lang="ts">
-  import { errors } from "@/lib/stores";
   import { fade } from "svelte/transition";
   import { onMount, afterUpdate } from "svelte";
+
+  import { errors } from "@/lib/stores";
+
+  import Button from "@/components/Button.svelte";
+
+  import MaterialSymbolsCancelOutline from '~icons/material-symbols/cancel-outline';
 
   export let message = "";
   export let id: number;
@@ -28,16 +33,22 @@
 {#if visible}
   <div class="flex flex-col items-end space-y-4">
     <div
-      class="bg-aurora-red text-white p-4 rounded shadow z-50 transition w-80 mt-2 mr-2 cursor-pointer"
+      class="bg-aurora-red p-4 rounded shadow z-50 transition w-80 mt-2 mr-2 cursor-pointer relative"
       on:click={deleteError}
       on:keydown
       transition:fade>
+      <Button class="absolute top-2 right-2 !m-0 !p-0 shadow-transparent">
+        <div slot="icon">
+          <MaterialSymbolsCancelOutline class="text-storm-3" />
+        </div>
+      </Button>
+      <div>
+      </div>
       <p>{message}</p>
-      <!-- Progress bar with animation if anyone want's to continue with it -->
-
       <div
         class="progress-bar h-2 rounded bg-[#a8414a] mt-2"
-        style={`animation-duration: 5000ms`} />
+        style={`animation-duration: 5000ms`}
+      />
     </div>
   </div>
 {/if}
