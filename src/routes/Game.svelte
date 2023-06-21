@@ -80,7 +80,7 @@
 
   let ambientNoise = false;
   let animalese = true;
-  let volumeAmbient = 1;
+  let volumeAmbient = 0.5;
   let allowAudioCall = true;
   let audioAmbient;
   let audio;
@@ -531,7 +531,7 @@
             audio = new Audio();
             audio.src = URL.createObjectURL(blob);
             audio.playbackRate = 3.5;
-            audio.volume = 0.5;
+            audio.volume = 0.2;
             audio.play();
           })
           .catch((error) => console.error(error));
