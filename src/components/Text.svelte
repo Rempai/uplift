@@ -14,6 +14,8 @@
   export let color: string;
   export let text: string;
   export let continueButton: boolean;
+  export let skip: boolean;
+  export let dialogPlaying: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -51,8 +53,17 @@
         const progress = ~~(totalLength * t);
         const { textNode, range, text } = getCurrentRange(progress);
         const [start, end] = range;
-        const textLength = ((progress - start) / (end - start)) * text.length;
+
+        const textLength = skip ? (end) : (((progress - start) / (end - start)) * text.length);
+
+        console.log("current: " + textLength + ". end: " + end);
         textNode.textContent = text.slice(0, textLength);
+        if (textLength === end) {
+          dialogPlaying = false;
+        }
+        else {
+          dialogPlaying = true;
+        }
       },
     };
   }
@@ -71,9 +82,15 @@
   }
 
   const handleClick = () => {
-    $rendered = false;
-    $finishedPassageRender = false;
-    dispatch("next");
+    if (dialogPlaying) {
+      skip = true;
+    }
+    else {
+      skip = false;
+      $rendered = false;
+      $finishedPassageRender = false;
+      dispatch("next");
+    }
   };
 </script>
 
