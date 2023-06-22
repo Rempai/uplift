@@ -212,7 +212,7 @@
     <div class="px-4 mt-3 max-w-lg mx-auto">
       <div class="flex justify-center flex-wrap gap-3">
         {#each allAchievements as ach}
-          {#if unlockedAchievementsIds}
+          {#await unlockedAchievementsIds then _}
             {#if unlockedAchievementsIds.includes(ach.id)}
               <div class="relative">
                 <Tooltip title={ach.description} position={"top"}>
@@ -232,7 +232,7 @@
                 </div>
               </Tooltip>
             {/if}
-          {/if}
+          {/await}
         {/each}
       </div>
     </div>
@@ -494,7 +494,7 @@
         class="w-6 h-6 !p-0 !shadow-transparent !rounded-none"
         onClick={() => dispatch("driverModal")}>
         <div slot="icon">
-          <ClarityLicenseSolid class="text-aurora-orange text-{bgColor}" id="diverLicense" />
+          <ClarityLicenseSolid class="text-aurora-orange text-{bgColor}" id="driversLicenseIcon" />
         </div>
       </Button>
       <Button
@@ -556,7 +556,7 @@
           onClick={toggleJournal}
           class="w-full h-full !p-0 !shadow-transparent">
           <div slot="icon">
-            {#if passage && reviewList.length != 0}
+            {#if passage}
               <img src="multimedia/Notes_icon.png" alt="notes" />
             {:else}
               <img

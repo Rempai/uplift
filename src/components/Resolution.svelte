@@ -92,8 +92,11 @@
   const finishRide = async (solution: string) => {
     visibleSolution = [];
     score = 0;
+
     // Achievement : Perfect journal for Ride Paolo
-    handleAchievement(7);
+    if (currentRide.passenger.name === "Paolo") {
+      handleAchievement(7);
+    }
     dispatch("finishRide", solution);
   };
 
@@ -102,8 +105,8 @@
     visibleSolution = await getSolution(score);
   };
 
-  const handleAchievement = (id: number) => {
-    dispatch("achievement", { id });
+  const handleAchievement = (achievementId: number) => {
+    dispatch("achievement", { achievementId });
   };
 
   $: if (resolution) {
