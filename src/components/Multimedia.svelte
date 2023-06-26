@@ -290,7 +290,7 @@
         {#if rideList.length}
           {#if passage}
             <p class="text-center w-full">You are already in a ride.</p>
-            {#if filledjournal}
+            {#if filledjournal && reviewList.length > 0}
               <div class="flex mt-3 justify-center">
                 <Button
                   onClick={() => dispatch("quitRide")}

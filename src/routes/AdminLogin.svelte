@@ -2,31 +2,30 @@
   import { push } from "svelte-spa-router";
 
   import { parseJwt } from "@/lib/jwtParser";
-  import { validation } from "@/lib/stores";
-  import { validationErrorCheck } from "@/lib/validation";
   import { loginForAccessToken } from "@/lib/authProcesses";
+  import { errors } from "@/lib/stores";
+  import { ErrorMessage } from "@/lib/error";
 
   import Form from "@/components/Form.svelte";
   import Button from "@/components/Button.svelte";
+  import Error from "@/components/Error.svelte";
 
-  $validation.length = 0;
   const handleSubmit = async ({ target }) => {
-    const login = await loginForAccessToken(target);
-    if (login == true) {
-      let parsedJwt = await parseJwt(localStorage.getItem("access_token"));
-      if (parsedJwt.role === "Admin" || parsedJwt.role === "Writer") {
-        push("/admin");
-      } else {
-        // TODO: show error that user is not admin
-        push("/");
-      }
-    } else {
-      validationErrorCheck(login, false);
-    }
-
-    if (localStorage.getItem("access_token") === null) {
-      return;
-    }
+    await loginForAccessToken(target)
+      .then((login) => {
+        if (login.access_token != null) {
+          parseJwt(login.access_token).then((parsedJWT) => {
+            if (parsedJWT.role === "Admin" || parsedJWT.role === "Writer") {
+              push("/admin");
+            } else {
+              ErrorMessage("Does not have the required role");
+            }
+          });
+        } else {
+          ErrorMessage(login);
+        }
+      })
+      .catch((err) => ErrorMessage(err));
   };
 </script>
 
@@ -34,6 +33,11 @@
   <title>Admin | Login</title>
 </svelte:head>
 
+<div class="absolute right-0 w-full max-h-full overflow-hidden flex flex-col">
+  {#each $errors as error}
+    <Error message={error.msg} id={error.id} />
+  {/each}
+</div>
 <main
   class="w-full h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center">
   <div class="flex flex-col items-center w-fit p-6 md:px-48 rounded bg-night-2/80 shadow">

@@ -2,15 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import {
-    passageName,
-    validation,
-    emotion,
-    rendered,
-    rideQuit,
-    parsedJWT,
-    errors,
-  } from "@/lib/stores";
+  import { passageName, emotion, rendered, rideQuit, parsedJWT, errors } from "@/lib/stores";
   import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -18,6 +10,7 @@
     updateUserAccount,
   } from "@/lib/authProcesses";
   import { isAchieved } from "@/lib/achievementsLogic";
+  import { ErrorMessage } from "@/lib/error";
 
   import {
     CharactersService,
@@ -115,37 +108,6 @@
       });
   };
 
-  const ErrorMessage = (str: string) => {
-    function isJsonString(str: string) {
-      try {
-        JSON.parse(str);
-      } catch {
-        return false;
-      }
-      return true;
-    }
-
-    if (typeof str === "object") {
-      // @ts-ignore
-      const res = Object.values(str)[3].message;
-
-      if (isJsonString(res)) {
-        const obj = JSON.parse(res);
-        if (obj.length === 1) {
-          showError(obj[0].message);
-        } else if (obj.length > 1) {
-          obj.forEach((element) => {
-            showError(element.message);
-          });
-        }
-      } else if (typeof res === "string") {
-        showError(res);
-      } else {
-        showError(str);
-      }
-    }
-  };
-
   const handleLogout = () => {
     localStorage.clear();
     welcome = true;
@@ -155,22 +117,21 @@
   };
 
   const startGame = async () => {
-    $validation.length = 0;
     const token = localStorage.getItem("access_token");
     $parsedJWT = await parseJwt(token);
     OpenAPI.TOKEN = token;
 
     await CharactersService.getRides()
       .then((res) => (rideList = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => (reviewList = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     await UserService.getAchievements()
       .then((res) => (allAchievements = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     await getUnlockedAchievements();
 
@@ -208,7 +169,7 @@
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
       .then((res) => (Array.isArray(res) ? ([passage] = res) : (passage = res)))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     currentRide = ride;
     dialog = true;
@@ -220,13 +181,6 @@
     emotion.set(100);
   };
 
-  const showError = (err: string) => {
-    const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
-    const id = Math.random();
-    const newErr = { msg: cleanedError, id };
-    errors.update((e) => [...e, newErr]);
-  };
-
   const showResolution = ({ detail }) => {
     journal = false;
     resolution = true;
@@ -234,25 +188,39 @@
   };
 
   const updateAccount = async ({ detail }) => {
-    const res = await updateUserAccount(detail, $parsedJWT.sub);
-    if (res.access_token) {
-      localStorage.setItem("access_token", res.access_token);
-      localStorage.setItem("refresh_token", res.refresh_token);
-      OpenAPI.TOKEN = res.access_token;
-      $parsedJWT = await parseJwt(res.access_token);
-    } else {
-      ErrorMessage(res);
-    }
+    await updateUserAccount(detail, $parsedJWT.sub)
+      .then((res) => {
+        if (res.access_token) {
+          parseJwt(res.access_token).then((parsed) => {
+            if ($parsedJWT.username != parsed.username) {
+              localStorage.setItem("access_token", res.access_token);
+              localStorage.setItem("refresh_token", res.refresh_token);
+              OpenAPI.TOKEN = res.access_token;
+              ErrorMessage("Username has been changed to " + parsed.username);
+              $parsedJWT = parsed;
+            } else if ($parsedJWT.username === parsed.username && res.type === "username") {
+              ErrorMessage("That is your current username");
+            } else if (res.type === "password") {
+              ErrorMessage("Your password has been changed");
+              $parsedJWT = parsed;
+            }
+          });
+        } else {
+          ErrorMessage(res);
+        }
+      })
+      .catch((err) => ErrorMessage(err));
   };
 
   const deleteUser = async () => {
     await UserService.deleteUser($parsedJWT.sub)
       .then(() => {
         localStorage.clear();
-        showError("Deleted User");
+        quitRide();
+        ErrorMessage("Deleted User");
         welcome = true;
       })
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
     pausevideo();
 
     unlockedAchievements = [];
@@ -310,7 +278,7 @@
           dialog = false;
           pausevideo();
         })
-        .catch((err) => showError(err));
+        .catch((err) => ErrorMessage(err));
     }
     allowAudioCall = true;
 
@@ -385,7 +353,7 @@
       date: currentTime,
     };
 
-    await CharactersService.postReviewedUser(input).catch((err) => showError(err));
+    await CharactersService.postReviewedUser(input).catch((err) => ErrorMessage(err));
 
     await CharactersService.getReviews($parsedJWT.sub)
       .then((res) => {
@@ -417,7 +385,7 @@
         // Achievement: Completed all rides
         // handleAchievement(9);
       })
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     quitRide();
   };
@@ -460,7 +428,7 @@
   const getUnlockedAchievements = async () => {
     await UserService.getAchievements($parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
-      .catch((err) => showError(err));
+      .catch((err) => ErrorMessage(err));
 
     unlockedAchievements.forEach((item) => {
       if (!unlockedAchievementsIds.includes(item.achievementId)) {
@@ -685,7 +653,7 @@
                 on:next={createReview}
                 continueButton={true}
                 text="You pissed off {currentRide.passenger
-                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                  .name}! Exits the vehicle while yelling, and left a 0-star review..."
                 color="#e5e9f0" />
             {/if}
           {/if}

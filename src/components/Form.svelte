@@ -1,8 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { validation } from "@/lib/stores";
-
   import Button from "@/components/Button.svelte";
 
   export let login = false;
@@ -15,17 +13,12 @@
 
   export let handleSubmit;
 
-  const submitAndRefresh = (target) => {
-    handleSubmit(target);
-    $validation = $validation;
-  };
-
   const dispatch = createEventDispatcher();
 </script>
 
 <div class="form flex flex-col items-center">
   <form
-    on:submit|preventDefault={submitAndRefresh}
+    on:submit|preventDefault={handleSubmit}
     {enctype}
     method="POST"
     class="flex flex-col items-center mt-2 g-2 w-full">
@@ -54,13 +47,6 @@
     {:else}
       <slot name="forms" />
     {/if}
-    <div class:hidden={$validation.length === 0}>
-      <ul>
-        {#each $validation as name}
-          <li class="text-aurora-red">{name}</li>
-        {/each}
-      </ul>
-    </div>
     <Button type="submit" text="submit" class={submitButton} />
   </form>
   {#if backButton}

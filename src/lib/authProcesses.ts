@@ -41,9 +41,21 @@ export const registerForAccessToken = async (target: HTMLFormElement) => {
 export const updateUserAccount = async (target: HTMLFormElement, parse_jwt_sub: number) => {
   const formData = new FormData(target);
   const value = Object.fromEntries(formData.entries());
-  try {
-    return await UserService.updateUser(parse_jwt_sub, value);
-  } catch (e) {
-    return e;
-  }
+
+  let returnValue;
+  await UserService.updateUser(parse_jwt_sub, value)
+    .then((update) => {
+      if (value.password != null || value.newPassword != null || value.repeatPassword != null) {
+        returnValue = "password";
+      } else {
+        returnValue = "username";
+      }
+      // @ts-ignore
+      update.type = returnValue;
+      returnValue = update;
+    })
+    .catch((err) => {
+      returnValue = err;
+    });
+  return returnValue;
 };

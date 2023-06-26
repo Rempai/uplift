@@ -212,7 +212,7 @@ export async function checkAccount() {
   );
 
   if (acc) {
-    if (acc.role !== "Admin" && acc.role !== "Writer") push("/");
+    if (acc.role !== "Admin" && acc.role !== "Writer") push("/admin/login");
   }
 }
 

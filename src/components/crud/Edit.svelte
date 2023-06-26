@@ -1,11 +1,12 @@
 <script lang="ts">
   import { push } from "svelte-spa-router";
 
-  import { validation } from "@/lib/stores";
-  import { validationErrorCheck, validateData } from "@/lib/validation";
+  import { errors } from "@/lib/stores";
   import { getData } from "@/lib/adminLogic";
+  import { ErrorMessage } from "@/lib/error";
 
   import Form from "@/components/Form.svelte";
+  import Error from "@/components/Error.svelte";
 
   import Highlight from "svelte-highlight";
   import vbscriptHtml from "svelte-highlight/languages/vbscript-html";
@@ -31,31 +32,24 @@
     id = parts[parts.length - 1];
   }
 
-  $validation.length = 0;
-
   const updateForm = async ({ target }) => {
     const formData = new FormData(target);
     const value = Object.fromEntries(formData.entries());
 
-    await validateData(crudRoute, value, false).then(async () => {
-      for (let x in value) {
-        if (value[x] === "") {
-          delete value[x];
-        } else if (value[x] === "on") {
-          // @ts-ignore
-          value[x] = true;
-        } else if (/^\d+$/.test(value[x].toString())) {
-          // @ts-ignore
-          value[x] = parseInt(value[x].toString());
-        }
+    for (let x in value) {
+      if (value[x] === "") {
+        delete value[x];
+      } else if (value[x] === "on") {
+        // @ts-ignore
+        value[x] = true;
+      } else if (/^\d+$/.test(value[x].toString())) {
+        // @ts-ignore
+        value[x] = parseInt(value[x].toString());
       }
-      await service(id, value)
-        .then(() => push("/admin/" + page))
-        .catch((err) => {
-          validationErrorCheck(err, true);
-          $validation = $validation;
-        });
-    });
+    }
+    await service(id, value)
+      .then(() => push("/admin/" + page))
+      .catch((err) => ErrorMessage(err));
   };
 
   const checkHTML = async () => {
@@ -76,6 +70,11 @@
   {@html onedark}
 </svelte:head>
 
+<div class="absolute right-0 w-full max-h-full overflow-hidden flex flex-col">
+  {#each $errors as error}
+    <Error message={error.msg} id={error.id} />
+  {/each}
+</div>
 <main class={preview ? "flex flex-wrap gap-4 admin-space" : "admin-space"}>
   <div class="card flex-1">
     <h1 class="capitalize">Edit {page}</h1>
