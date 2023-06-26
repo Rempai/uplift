@@ -22,10 +22,6 @@
 <div class="md:flex min-h-screen admin-space" style="margin-top: {contentMargin}px;">
   <AdminNav on:navHeight={setContentMargin} />
   <div class="overflow-auto flex-1 p-5">
-    <Create
-      crudRoute={crudRoute.route}
-      service={crudRoute.service}
-      formHTML={crudRoute.html}
-      enctype={crudRoute.enctype} />
+    <Create service={crudRoute.service} formHTML={crudRoute.html} enctype={crudRoute.enctype} />
   </div>
 </div>

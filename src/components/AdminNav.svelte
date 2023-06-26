@@ -22,7 +22,7 @@
 
   const logout = () => {
     localStorage.clear();
-    push("/");
+    push("/admin/login");
   };
 
   const toggleMenu = () => {

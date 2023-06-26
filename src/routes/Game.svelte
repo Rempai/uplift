@@ -2,15 +2,7 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
 
-  import {
-    passageName,
-    validation,
-    emotion,
-    rendered,
-    rideQuit,
-    parsedJWT,
-    errors,
-  } from "@/lib/stores";
+  import { passageName, emotion, rendered, rideQuit, parsedJWT, errors } from "@/lib/stores";
   import { parseJwt } from "@/lib/jwtParser";
   import {
     loginForAccessToken,
@@ -18,6 +10,7 @@
     updateUserAccount,
   } from "@/lib/authProcesses";
   import { isAchieved } from "@/lib/achievementsLogic";
+  import { ErrorMessage } from "@/lib/error";
 
   import {
     CharactersService,
@@ -115,39 +108,6 @@
       });
   };
 
-  const ErrorMessage = (str: string) => {
-    function isJsonString(str: string) {
-      try {
-        JSON.parse(str);
-      } catch {
-        return false;
-      }
-      return true;
-    }
-
-    if (typeof str === "object") {
-      // @ts-ignore
-      const res = Object.values(str)[3].message;
-
-      if (isJsonString(res)) {
-        const obj = JSON.parse(res);
-        if (obj.length === 1) {
-          showError(obj[0].message);
-        } else if (obj.length > 1) {
-          obj.forEach((element) => {
-            showError(element.message);
-          });
-        }
-      } else if (typeof res === "string") {
-        showError(res);
-      } else {
-        showError(str);
-      }
-    } else if (typeof str === "string") {
-      showError(str);
-    }
-  };
-
   const handleLogout = () => {
     localStorage.clear();
     welcome = true;
@@ -221,13 +181,6 @@
     emotion.set(100);
   };
 
-  const showError = (err: string) => {
-    const cleanedError = err.toString().replace(/^(ApiError|TypeError):\s*/, "");
-    const id = Math.random();
-    const newErr = { msg: cleanedError, id };
-    errors.update((e) => [...e, newErr]);
-  };
-
   const showResolution = ({ detail }) => {
     journal = false;
     resolution = true;
@@ -243,13 +196,13 @@
               localStorage.setItem("access_token", res.access_token);
               localStorage.setItem("refresh_token", res.refresh_token);
               OpenAPI.TOKEN = res.access_token;
-              $parsedJWT = parsedJwt;
               ErrorMessage("Username has been changed to " + parsedJwt.username);
+              $parsedJWT = parsedJwt;
             } else if ($parsedJWT.username === parsedJwt.username && res.type === "username") {
               ErrorMessage("That is your current username");
             } else if (res.type === "password") {
-              $parsedJWT = parsedJwt;
               ErrorMessage("Your password has been changed");
+              $parsedJWT = parsedJwt;
             }
           });
         } else {
@@ -263,6 +216,7 @@
     await UserService.deleteUser($parsedJWT.sub)
       .then(() => {
         localStorage.clear();
+        quitRide();
         ErrorMessage("Deleted User");
         welcome = true;
       })
@@ -687,7 +641,7 @@
                 on:next={createReview}
                 continueButton={true}
                 text="You pissed off {currentRide.passenger
-                  .name}! Whilst yelling at you, he exits the vehicle, and left a 0-star review..."
+                  .name}! Exits the vehicle while yelling, and left a 0-star review..."
                 color="#e5e9f0" />
             {/if}
           {/if}
