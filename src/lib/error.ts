@@ -31,7 +31,7 @@ export const ErrorMessage = (str: string) => {
         });
       }
     } else {
-      showError(str);
+      showError(res);
     }
   } else if (typeof str === "string") {
     showError(str);

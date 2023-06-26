@@ -6,7 +6,7 @@
   import { ErrorMessage } from "@/lib/error";
 
   import Form from "@/components/Form.svelte";
-  import Error from "../Error.svelte";
+  import Error from "@/components/Error.svelte";
 
   export let enctype = "application/x-www-form-urlencoded";
   export let formHTML: string | CallableFunction;

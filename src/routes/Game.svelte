@@ -191,18 +191,18 @@
     await updateUserAccount(detail, $parsedJWT.sub)
       .then((res) => {
         if (res.access_token) {
-          parseJwt(res.access_token).then((parsedJwt) => {
-            if ($parsedJWT.username != parsedJwt.username) {
+          parseJwt(res.access_token).then((parsed) => {
+            if ($parsedJWT.username != parsed.username) {
               localStorage.setItem("access_token", res.access_token);
               localStorage.setItem("refresh_token", res.refresh_token);
               OpenAPI.TOKEN = res.access_token;
-              ErrorMessage("Username has been changed to " + parsedJwt.username);
-              $parsedJWT = parsedJwt;
-            } else if ($parsedJWT.username === parsedJwt.username && res.type === "username") {
+              ErrorMessage("Username has been changed to " + parsed.username);
+              $parsedJWT = parsed;
+            } else if ($parsedJWT.username === parsed.username && res.type === "username") {
               ErrorMessage("That is your current username");
             } else if (res.type === "password") {
               ErrorMessage("Your password has been changed");
-              $parsedJWT = parsedJwt;
+              $parsedJWT = parsed;
             }
           });
         } else {

@@ -6,7 +6,7 @@
   import { ErrorMessage } from "@/lib/error";
 
   import Form from "@/components/Form.svelte";
-  import Error from "../Error.svelte";
+  import Error from "@/components/Error.svelte";
 
   import Highlight from "svelte-highlight";
   import vbscriptHtml from "svelte-highlight/languages/vbscript-html";
