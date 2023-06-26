@@ -73,7 +73,7 @@
 
   let ambientNoise = false;
   let animalese = true;
-  let volumeAmbient = 1;
+  let volumeAmbient = 0.5;
   let allowAudioCall = true;
   let audioAmbient;
   let audio;
@@ -111,8 +111,8 @@
   const handleLogout = () => {
     localStorage.clear();
     welcome = true;
-    unlockedAchievements.length = 0;
-    unlockedAchievementsIds.length = 0;
+    unlockedAchievements = [];
+    unlockedAchievementsIds = [];
     quitRide();
   };
 
@@ -152,19 +152,19 @@
   };
 
   const toggleJournal = () => {
-    $rendered = true;
     journal = !journal;
     journal ? (dialog = false) : (dialog = true);
   };
 
   const toggleDialog = () => {
-    $rendered = true;
     dialog = !dialog;
     journal = false;
     allowAudioCall = !allowAudioCall;
   };
 
   const selectRide = async (event: CustomEvent) => {
+    $rideQuit = false;
+    $rendered = false;
     const ride: RideRead = event.detail;
     await PassageHandlingService.getPassages(undefined, ride.id)
       .then((res) => (allPassages = res))
@@ -222,6 +222,9 @@
       })
       .catch((err) => ErrorMessage(err));
     pausevideo();
+
+    unlockedAchievements = [];
+    unlockedAchievementsIds = [];
   };
 
   const nextPassageName = () => {
@@ -315,7 +318,9 @@
     nextPassage(event.detail.passage);
   };
 
-  const finishRide = (event: CustomEvent) => {
+  const finishRide = async (event: CustomEvent) => {
+    $rideQuit = true;
+    $rendered = false;
     solutionInput = event.detail;
     nextPassage(currentRide.passenger.name + solutionInput + "You" + 1);
     journalData = [];
@@ -363,12 +368,12 @@
           }
 
           // Achievement: 5 stars on Ride Paolo
-          if (lastReview.stars === 5 && lastReview.rideId === 2) {
-            handleAchievement(2);
+          if (lastReview.stars === 5 && lastReview.ride.id === 2) {
+            handleAchievement(10);
           }
 
           // Achievement: 4 stars on a Ride Paolo
-          if (lastReview.stars === 4 && lastReview.rideId === 2) {
+          if (lastReview.stars === 4 && lastReview.ride.id === 2) {
             handleAchievement(4);
           }
 
@@ -396,6 +401,7 @@
 
   const quitRide = () => {
     $rideQuit = true;
+    $rendered = false;
     $passageName = "";
     currentRide = undefined;
     passage = undefined;
@@ -430,25 +436,31 @@
       }
     });
   };
-
+  let achievement;
   const handleAchievement = async (achievementId: number) => {
     // TODO: Achievement emotion meter: emotion stays above level whole game
-    if (!unlockedAchievementsIds.includes(achievementId)) {
-      let achievement = await isAchieved({
-        userId: $parsedJWT.sub,
-        unlockedAchievementsIds: unlockedAchievementsIds,
-        achievementId: achievementId,
-        reviewList: reviewList,
-        currentRide: currentRide,
-        rideList: rideList,
-        resolutionData: resolutionData,
-      });
-      if (achievement) {
-        await getUnlockedAchievements();
-        triggerAchievement = true;
-        achievementCarousel.push(allAchievements[achievementId - 1].name);
-      }
+    achievement = await isAchieved({
+      userId: $parsedJWT.sub,
+      unlockedAchievementsIds: unlockedAchievementsIds,
+      achievementId: achievementId,
+      reviewList: reviewList,
+      currentRide: currentRide,
+      rideList: rideList,
+      resolutionData: resolutionData,
+    });
+
+    if (achievement) {
+      await getUnlockedAchievements();
+      triggerAchievement = true;
+      achievementCarousel.push(allAchievements[achievementId - 1].name);
     }
+  };
+
+  const toggleReview = () => {
+    if (passage === undefined) {
+      $rideQuit = true;
+    }
+    showReviewList = false;
   };
 
   onMount(async () => {
@@ -487,7 +499,7 @@
             audio = new Audio();
             audio.src = URL.createObjectURL(blob);
             audio.playbackRate = 3.5;
-            audio.volume = 0.5;
+            audio.volume = 0.2;
             audio.play();
           })
           .catch((error) => console.error(error));
@@ -512,9 +524,9 @@
       <Achievement
         on:killAchievement={() => {
           triggerAchievement = false;
-          achievementCarousel.length = 0;
+          achievementCarousel = [];
         }}
-        achievement={achievementCarousel}
+        {achievementCarousel}
         {triggerAchievement} />
     {/if}
   {/await}
@@ -661,7 +673,7 @@
         on:updateAccount={updateAccount}
         on:toggleAmbient={toggleAmbient}
         on:toggleAnimalese={toggleAnimalese}
-        on:toggleReview={() => (showReviewList = false)}
+        on:toggleReview={toggleReview}
         on:driverModal={() => (showDriverModal = !showDriverModal)}
         on:achievement={(event) => handleAchievement(event.detail.achievementId)}
         modalOpened={false}
