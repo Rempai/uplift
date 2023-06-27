@@ -20,3 +20,5 @@ export const rideQuit = writable<boolean>(false);
 export const finishedPassageRender = writable<boolean>(false);
 export const tutorialElements = writable<any>();
 export const tutorialImageElements = writable<any>();
+export const skipDialog = writable<boolean>(false);
+export const dialogPlaying = writable<boolean>(false);
