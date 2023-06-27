@@ -7,8 +7,6 @@
 
   import PhTriangleFill from "~icons/ph/triangle-fill";
 
-  import { skipDialog, dialogPlaying } from "@/lib/stores";
-
   export let speed: number;
   export let delay: number;
   export let font: string;
@@ -17,61 +15,63 @@
   export let text: string;
   export let continueButton: boolean;
 
+  let skipDialog: boolean;
+  let dialogPlaying: boolean;
+
   const dispatch = createEventDispatcher();
 
   function typewriter(node, { delay, speed }) {
-  const textNodes = getAllTextNodes(node);
+    const textNodes = getAllTextNodes(node);
 
-  if (!textNodes.length) {
-    throw new Error(`This transition only works on elements with text nodes`);
-  }
-
-  let totalLength = 0;
-  const ranges = textNodes.map((textNode) => {
-    const range = [totalLength, totalLength + textNode.textContent.length];
-    totalLength += textNode.textContent.length;
-    const text = textNode.textContent;
-    textNode.textContent = "";
-    return { textNode, range, text };
-  });
-
-  let currentRangeIndex = 0;
-  function getCurrentRange(i) {
-    while (ranges[currentRangeIndex].range[1] < i && currentRangeIndex < ranges.length) {
-      const { textNode, text } = ranges[currentRangeIndex];
-      textNode.textContent = text; // finish typing up the last node
-      currentRangeIndex++;
+    if (!textNodes.length) {
+      throw new Error(`This transition only works on elements with text nodes`);
     }
-    return ranges[currentRangeIndex];
+
+    let totalLength = 0;
+    const ranges = textNodes.map((textNode) => {
+      const range = [totalLength, totalLength + textNode.textContent.length];
+      totalLength += textNode.textContent.length;
+      const text = textNode.textContent;
+      textNode.textContent = "";
+      return { textNode, range, text };
+    });
+
+    let currentRangeIndex = 0;
+    function getCurrentRange(i) {
+      while (ranges[currentRangeIndex].range[1] < i && currentRangeIndex < ranges.length) {
+        const { textNode, text } = ranges[currentRangeIndex];
+        textNode.textContent = text; // finish typing up the last node
+        currentRangeIndex++;
+      }
+      return ranges[currentRangeIndex];
+    }
+    const duration = totalLength * speed;
+
+    return {
+      delay,
+      duration,
+      tick: (t) => {
+        let progress = ~~(totalLength * t);
+        if (skipDialog) progress = totalLength;
+        const { textNode, range, text } = getCurrentRange(progress);
+        const [start, end] = range;
+
+        let textLength;
+        if (skipDialog) {
+          textLength = end - start;
+        } else {
+          textLength = progress - start;
+        }
+
+        textNode.textContent = text.slice(0, textLength);
+        if (textLength === end - start) {
+          dialogPlaying = false;
+        } else {
+          dialogPlaying = true;
+        }
+      },
+    };
   }
-  const duration = totalLength * speed;
-
-  return {
-    delay,
-    duration,
-    tick: (t) => {
-      let progress = ~~(totalLength * t);
-      if($skipDialog)
-        progress = totalLength;
-      const { textNode, range, text } = getCurrentRange(progress);
-      const [start, end] = range;
-
-      let textLength;
-      if ($skipDialog) {
-        textLength = end - start; // Set textLength to the full length of the range if skip is true
-      } else {
-        textLength = progress - start; // Calculate textLength based on progress and start
-      }
-
-      textNode.textContent = text.slice(0, textLength);
-      if (textLength === end - start) {
-        $dialogPlaying = false;
-      } else {
-        $dialogPlaying = true;
-      }
-    },
-  };
-}
 
   function getAllTextNodes(node) {
     if (node.nodeType === 3) {
@@ -87,11 +87,10 @@
   }
 
   const handleClick = () => {
-    if ($dialogPlaying) {
-      $skipDialog = true;
-    }
-    else {
-      $skipDialog = false;
+    if (dialogPlaying) {
+      skipDialog = true;
+    } else {
+      skipDialog = false;
       $rendered = false;
       $finishedPassageRender = false;
       dispatch("next");
