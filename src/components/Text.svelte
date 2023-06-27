@@ -15,6 +15,9 @@
   export let text: string;
   export let continueButton: boolean;
 
+  let skipDialog: boolean;
+  let dialogPlaying: boolean;
+
   const dispatch = createEventDispatcher();
 
   function typewriter(node, { delay, speed }) {
@@ -48,11 +51,24 @@
       delay,
       duration,
       tick: (t) => {
-        const progress = ~~(totalLength * t);
+        let progress = ~~(totalLength * t);
+        if (skipDialog) progress = totalLength;
         const { textNode, range, text } = getCurrentRange(progress);
         const [start, end] = range;
-        const textLength = ((progress - start) / (end - start)) * text.length;
+
+        let textLength;
+        if (skipDialog) {
+          textLength = end - start;
+        } else {
+          textLength = progress - start;
+        }
+
         textNode.textContent = text.slice(0, textLength);
+        if (textLength === end - start) {
+          dialogPlaying = false;
+        } else {
+          dialogPlaying = true;
+        }
       },
     };
   }
@@ -71,9 +87,14 @@
   }
 
   const handleClick = () => {
-    $rendered = false;
-    $finishedPassageRender = false;
-    dispatch("next");
+    if (dialogPlaying) {
+      skipDialog = true;
+    } else {
+      skipDialog = false;
+      $rendered = false;
+      $finishedPassageRender = false;
+      dispatch("next");
+    }
   };
 </script>
 
