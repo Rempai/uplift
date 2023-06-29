@@ -425,10 +425,6 @@
     audioAmbient = this;
   }
 
-  const stripFlag = (speaker) => {
-    return speaker.split(" ")[0];
-  };
-
   const getUnlockedAchievements = async () => {
     await UserService.getAchievements($parsedJWT.sub)
       .then((res) => (unlockedAchievements = res))
@@ -647,7 +643,7 @@
               <Dialog
                 on:next={nextPassageName}
                 continueButton={passage.continueButton}
-                user={stripFlag(passage.speaker)}
+                user={passage.speaker.split(" ")[0]}
                 text={passage.content}
                 font={passage.attribute.fontFamily}
                 fontSize={passage.attribute.fontSize}
