@@ -90,7 +90,7 @@
         class="flex h-full w-min flex-wrap overflow-y-auto overflow-x-hidden border-r-4 border-night-1">
         <Tabs
           bind:activeTabValue={currentTab}
-          passenger={currentRide.passenger.name}
+          passenger={currentRide.passenger.name.split(" ")[0]}
           items={tabItems} />
         <Button
           onClick={gotoBranch}
