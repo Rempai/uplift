@@ -322,7 +322,7 @@
     $rideQuit = true;
     $rendered = false;
     solutionInput = event.detail;
-    nextPassage(currentRide.passenger.name + solutionInput + "You" + 1);
+    nextPassage(currentRide.passenger.name.split(" ")[0] + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -643,7 +643,7 @@
               <Dialog
                 on:next={nextPassageName}
                 continueButton={passage.continueButton}
-                user={passage.speaker}
+                user={passage.speaker.split(" ")[0]}
                 text={passage.content}
                 font={passage.attribute.fontFamily}
                 fontSize={passage.attribute.fontSize}
