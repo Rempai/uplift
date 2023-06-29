@@ -322,7 +322,7 @@
     $rideQuit = true;
     $rendered = false;
     solutionInput = event.detail;
-    nextPassage(currentRide.passenger.name + solutionInput + "You" + 1);
+    nextPassage(currentRide.passenger.name.split(" ")[0] + solutionInput + "You" + 1);
     journalData = [];
     resolution = false;
     clearResolutionData();
@@ -424,6 +424,10 @@
     // eslint-disable-next-line  @typescript-eslint/no-this-alias
     audioAmbient = this;
   }
+
+  const stripFlag = (speaker) => {
+    return speaker.split(" ")[0];
+  };
 
   const getUnlockedAchievements = async () => {
     await UserService.getAchievements($parsedJWT.sub)
@@ -643,7 +647,7 @@
               <Dialog
                 on:next={nextPassageName}
                 continueButton={passage.continueButton}
-                user={passage.speaker}
+                user={stripFlag(passage.speaker)}
                 text={passage.content}
                 font={passage.attribute.fontFamily}
                 fontSize={passage.attribute.fontSize}

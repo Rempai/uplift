@@ -94,7 +94,7 @@
     score = 0;
 
     // Achievement : Perfect journal for Ride Paolo
-    if (currentRide.passenger.name === "Paolo") {
+    if (currentRide.passenger.name.split(" ")[0] === "Paolo") {
       handleAchievement(7);
     }
     dispatch("finishRide", solution);
@@ -138,7 +138,7 @@
 <Modal modalHeader="Resolution" showModal={resolution} closeButton={false}>
   <div class="flex w-full justify-center">
     <div class="flex flex-col overflow-y-auto overflow-x-hidden h-full pb-4">
-      <p class="text-3xl text-frost-1 text-center">What should {currentRide.passenger.name} do?</p>
+      <p class="text-3xl text-frost-1 text-center">What should {currentRide.passenger.name.split(" ")[0]} do?</p>
       {#await visibleSolution then solution}
         {#each solution as solution}
           <div class="flex flex-col mt-6">
