@@ -85,7 +85,7 @@
           value={branchProgress[branch] ?? 0} />
         <p class="pt-2 capitalize">
           {#if branch !== "Trunk"}
-            {branch.split(passenger)[1]}
+            {branch.split(passenger.split(" ")[0])[1]}
           {:else}
             {branch}
           {/if}
